@@ -80,8 +80,8 @@ export default function Home() {
                           className="bg-transparent text-gray-800 dark:text-gray-200 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-purple-500 focus:outline-none resize rounded-md "
                         />
                       ) : (
-                        // <pre>{item.text}</pre>
-                        item.text
+                        <pre>{item.text}</pre>
+                        // item.text
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
