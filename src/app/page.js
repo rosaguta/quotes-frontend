@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import he from 'he'; 
 
 export default function Home() {
   const [jsonData, setJsonData] = useState(null);
@@ -24,6 +25,7 @@ export default function Home() {
   };
 
   const handleSendClick = async (editedItem) => {
+    console.log(JSON.stringify(editedItem))
     try {
       // Assuming your server supports the PUT request for updating an item
       await fetch(`http://localhost:8080/quotes/${editedItem.id}`, {
@@ -47,7 +49,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col">
-      <div className="-m-1.5 overflow-x-auto">
+      <div className=" overflow-x-auto">
         <div className="p-1.5 min-w-full inline-block align-middle">
           <div className="overflow-hidden">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -64,7 +66,7 @@ export default function Home() {
                   <tr key={index} className={editableIndex === index ? "bg-gray-200 dark:bg-gray-700" : "hover:bg-gray-100 dark:hover:bg-gray-700"}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
                       {editableIndex === index ? (
-                        <input
+                        <textarea
                           type="text"
                           value={item.text}
                           onChange={(e) => {
@@ -75,15 +77,16 @@ export default function Home() {
                               return newData;
                             });
                           }}
-                          className="bg-transparent text-gray-800 dark:text-gray-200 border-none focus:outline-none"
+                          className="bg-transparent text-gray-800 dark:text-gray-200 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-purple-500 focus:outline-none resize rounded-md "
                         />
                       ) : (
+                        // <pre>{item.text}</pre>
                         item.text
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                       {editableIndex === index ? (
-                        <input
+                        <textarea
                           type="text"
                           value={item.person}
                           onChange={(e) => {
@@ -94,14 +97,30 @@ export default function Home() {
                               return newData;
                             });
                           }}
-                          className="bg-transparent text-gray-800 dark:text-gray-200 border-none focus:outline-none"
+                          className="bg-transparent text-gray-800 dark:text-gray-200 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-purple-500 focus:outline-none resize rounded-md "
                         />
                       ) : (
                         item.person
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                      {item.dateTimeCreated}
+                    {editableIndex === index ? (
+                        <textarea
+                          type="text"
+                          value={item.dateTimeCreated}
+                          onChange={(e) => {
+                            const editedItem = { ...item, dateTimeCreated: e.target.value };
+                            setJsonData((prevData) => {
+                              const newData = [...prevData];
+                              newData[index] = editedItem;
+                              return newData;
+                            });
+                          }}
+                          className="bg-transparent text-gray-800 dark:text-gray-200 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-purple-500 focus:outline-none resize rounded-md "
+                        />
+                      ) : (
+                        item.dateTimeCreated
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                       {editableIndex === index ? (
