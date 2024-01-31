@@ -1,15 +1,16 @@
 "use client"
 import Link from 'next/link';
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
+// import process from "next/dist/build/webpack/loaders/resolve-url-loader/lib/postcss";
 
 const HomePage = () => {
-    const [quote, SetQuote] = useState(null);
-    const [rizz, SetRizz] = useState(null)
+    const [quote, SetQuote] = useState("");
+    const [rizz, SetRizz] = useState("")
 
     useEffect(() => {
         const fetchQuote = async () => {
             try {
-                const response = await fetch(`https://quote.digitalindividuals.com/quotes/random`);
+                const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/quotes/random`);
                 const data = await response.text();
                 SetQuote(data);
             } catch (error) {
@@ -18,7 +19,7 @@ const HomePage = () => {
         };
         const fetchRizz = async () => {
             try {
-                const response = await fetch(`https://quote.digitalindividuals.com/rizzes/random`);
+                const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/rizzes/random`);
                 const data = await response.text();
                 SetRizz(data);
             } catch (error) {
@@ -31,29 +32,31 @@ const HomePage = () => {
 
     return (
         <div>
-            <div className="flex overflow-hidden min-h-screen items-stretch">
+            <div className="flex overflow-hidden h-screen items-stretch">
                 <div
-                    className="basis-1/2 grow overflow-hidden m-10 flex-1 items-center justify-center duration-300 hover:scale-105">
+                    className="basis-1/2 grow overflow-hidden m-10 flex-1 items-center justify-center duration-300 hover:scale-105 ">
                     <div className="m-2">{quote}</div>
                     <Link href="/quotes">
-                        <div className="transition ease-out h-full rounded p-10 bg-purple-950 hover:bg-indigo-950 hover:shadow-lg">
-                            <p className="text-white m-2 text-xl font-bold">Quotes</p>
+                        <div
+                            className="transition ease-out h-5/6 object-cover p-10 rounded-2xl bg-purple-950 hover:bg-indigo-950 ">
+                            <p className="text-white m-2 text-4xl font-bold ">Quotes</p>
                         </div>
                     </Link>
                 </div>
 
-                <div
-                    className="basis-1/2 grow overflow-hidden m-10 flex-1 items-center justify-center duration-300 hover:scale-105">
+                <div className="basis-1/2 grow overflow-hidden m-10 flex-1 items-center justify-center duration-300 hover:scale-105 ">
                     <div className="m-2">{rizz}</div>
                     <Link href="/rizz">
-                        <div className="transition ease-out  h-full object-cover p-10 rounded bg-purple-950 hover:bg-indigo-950">
-                            <p className="m-2 text-xl font-bold">Rizz</p>
+                        <div
+                            className="transition ease-out h-5/6 object-cover p-10 rounded-2xl bg-purple-950 hover:bg-indigo-950">
+                            <p className="text-white m-2 text-4xl font-bold">Rizz</p>
                         </div>
                     </Link>
                 </div>
             </div>
         </div>
-    );
+    )
+        ;
 };
 
 export default HomePage;

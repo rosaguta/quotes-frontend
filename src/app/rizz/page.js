@@ -9,7 +9,7 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`https://quote.digitalindividuals.com/rizzes`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/rizzes`);
         const data = await response.json();
         setJsonData(data);
       } catch (error) {
@@ -28,7 +28,7 @@ export default function Home() {
     console.log(JSON.stringify(editedItem))
     try {
       // Assuming your server supports the PUT request for updating an item
-      await fetch(`https://quote.digitalindividuals.com/rizzes/${editedItem.id}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/rizzes/${editedItem.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
