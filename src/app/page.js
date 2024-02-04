@@ -7,6 +7,7 @@ const HomePage = () => {
     const [quote, SetQuote] = useState("");
     const [rizz, SetRizz] = useState("")
 
+
     useEffect(() => {
         const fetchQuote = async () => {
             try {
@@ -32,6 +33,7 @@ const HomePage = () => {
 
     return (
         <div>
+
             <div className="flex overflow-hidden h-screen items-stretch">
                 <div
                     className="basis-1/2 grow overflow-hidden m-10 flex-1 items-center justify-center duration-300 hover:scale-105 ">
@@ -55,8 +57,7 @@ const HomePage = () => {
                 </div>
             </div>
         </div>
-    )
-        ;
+    );
 };
 
 export default HomePage;
