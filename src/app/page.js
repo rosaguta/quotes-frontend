@@ -38,9 +38,9 @@ const HomePage = () => {
                     <span className="relative px-6 py-3 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">Want to edit something?</span>
                 </button>
             </div>
-            <div className="flex overflow-hidden h-lvh items-stretch">
+            <div className="flex overflow-hidden h-5/6 items-stretch">
                 <div
-                    className="basis-1/2 grow overflow-hidden m-10 flex-1 h-4/6 items-center justify-center duration-300 hover:scale-105">
+                    className="basis-1/2 grow overflow-hidden m-10 flex-1 items-center justify-center duration-300 hover:scale-105">
                     <div className="m-2 italic">{quote}</div>
                     <Link href="/quotes">
                         <button className="relative inline-flex items-center justify-center h-5/6 w-full p-1 mb-2 me-2 overflow-hidden font-bold text-6xl rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
@@ -50,7 +50,7 @@ const HomePage = () => {
                 </div>
 
                 <div
-                    className="basis-1/2 grow overflow-hidden m-10 flex-1 h-4/6 items-center justify-center duration-300 hover:scale-105">
+                    className="basis-1/2 grow overflow-hidden m-10 flex-1 items-center justify-center duration-300 hover:scale-105">
                     <div className="m-2 italic">{rizz}</div>
                     <Link href="/rizz">
                         <button className="relative inline-flex items-center justify-center h-5/6 w-full p-1 mb-2 me-2 overflow-hidden font-bold text-6xl rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 group-hover:from-purple-500 group-hover:to-pink-500 hover:text-white dark:text-white focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800">
