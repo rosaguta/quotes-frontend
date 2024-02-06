@@ -44,16 +44,23 @@ export default function Home() {
   };
 
   if (!jsonData) {
-    return <div>Loading...</div>;
+    return <div className="w-full min-h-screen flex justify-center items-center">
+      <div className="flex min-h-screen w-full items-center justify-center">
+        <div
+            className="flex h-44 w-44 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-500 to-pink-500 animate-spin">
+          <div className="h-36 w-36 rounded-full bg-black"></div>
+        </div>
+      </div>
+    </div>;
   }
 
   return (
-    <div className="flex flex-col">
-      <div className=" overflow-x-auto">
-        <div className="p-1.5 min-w-full inline-block align-middle">
-          <div className="overflow-hidden">
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-              <thead>
+      <div className="flex flex-col">
+        <div className=" overflow-x-auto">
+          <div className="p-1.5 min-w-full inline-block align-middle">
+            <div className="overflow-hidden">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead>
                 <tr>
                   <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Text</th>
                   <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Person</th>

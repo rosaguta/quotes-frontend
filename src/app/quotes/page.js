@@ -48,7 +48,13 @@ export default function Home() {
   };
 
   if (!jsonData) {
-    return <div>Loading...</div>;
+    return <div className="w-full min-h-screen flex justify-center items-center">
+      <div className="flex min-h-screen w-full items-center justify-center">
+        <div className="flex h-44 w-44 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-500 to-pink-500 animate-spin">
+          <div className="h-36 w-36 rounded-full bg-black"></div>
+        </div>
+      </div>
+    </div>;
   }
 
   return (
