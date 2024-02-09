@@ -27,7 +27,7 @@ const LoginModal = ({ isOpen, toggleModal }) => {
                 <div className="fixed z-10 inset-0 overflow-y-auto">
                     <div className="flex items-center justify-center min-h-screen px-4 py-6 text-center sm:block sm:p-0">
                         <div className="fixed inset-0 transition-opacity">
-                            <div className="absolute inset-0 bg-gray-950 opacity-90 backdrop-filter backdrop-blur-lg"></div>
+                            <div className="absolute inset-0 opacity-90 backdrop-filter backdrop-blur-sm"></div>
                         </div>
                         <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true"></span>
                         <div className="inline-block align-bottom bg-white dark:bg-gray-900 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">

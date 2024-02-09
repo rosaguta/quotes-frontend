@@ -1,7 +1,7 @@
 "use client"
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
-import LoginModal from "../../Components/LoginModal";
+import LoginModal from "@/Components/LoginModal";
 
 const HomePage = () => {
     const [quote, setQuote] = useState("");
