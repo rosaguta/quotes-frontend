@@ -22,7 +22,7 @@ const LoginModal = ({ isOpen, toggleModal }) => {
             username: uname,
             password: password
         };
-        const body = JSON.stringify(userData)
+
         // console.log(body)
         // Send POST request
         fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/Auth`, {
