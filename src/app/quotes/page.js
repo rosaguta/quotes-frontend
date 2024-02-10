@@ -1,7 +1,9 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import Cookies from 'js-cookie'
 
 export default function Home() {
+  const token = Cookies.get('Token');
   const [jsonData, setJsonData] = useState(null);
   const [editableIndex, setEditableIndex] = useState(null);
   const [deleteIndex, setDeleteIndex] = useState(null);
@@ -151,8 +153,8 @@ export default function Home() {
                             </>
                         ) : (
                             <>
-                              <button onClick={() => handleEditClick(index)}>Edit</button>
-                              <button onClick={() => handleDeleteClick(index)}>Delete</button>
+                              <button className="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center me-1 mb-1 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900" onClick={() => handleEditClick(index)}>Edit</button>
+                              <button className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-3 py-1.5 text-center me-1 mb-1 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900" onClick={() => handleDeleteClick(index)}>Delete</button>
                             </>
                         )}
                       </td>
@@ -163,13 +165,12 @@ export default function Home() {
             </div>
           </div>
         </div>
-        {/* Modal for confirmation */}
         {deleteIndex !== null && (
-            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
-              <div className="bg-white p-5 rounded-md">
-                <p>Are you sure you want to delete this quote?</p>
-                <button onClick={handleConfirmDelete}>Yes</button>
-                <button onClick={() => setDeleteIndex(null)}>No</button>
+            <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center">
+              <div className="bg-gray-950 p-5 rounded-md">
+                <p className="pb-5">Are you sure you want to delete this quote?</p>
+                <button className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900" onClick={handleConfirmDelete}>Yes</button>
+                <button className="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800" onClick={() => setDeleteIndex(null)}>No</button>
               </div>
             </div>
         )}

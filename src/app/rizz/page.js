@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import he from 'he'; 
+import Cookies from 'js-cookie'
 
 export default function Home() {
   const [jsonData, setJsonData] = useState(null);
