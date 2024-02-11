@@ -1,9 +1,11 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie'
+import 'react-toastify/dist/ReactToastify.css';
+import {toast, ToastContainer} from "react-toastify";
 
 export default function Home() {
-  const token = Cookies.get('Token');
+  const token = Cookies.get('token');
   const [jsonData, setJsonData] = useState(null);
   const [editableIndex, setEditableIndex] = useState(null);
   const [deleteIndex, setDeleteIndex] = useState(null);
@@ -33,12 +35,44 @@ export default function Home() {
   const handleConfirmDelete = async () => {
     try {
       const idToDelete = jsonData[deleteIndex].id;
+      const headerlist = {
+        "Accept": "*/*",
+        "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+        "Authorization": `Bearer ${token}`,
+        "Access-Control-Allow-Origin" : "no-cors"
+      }
 
       // Assuming your server supports the DELETE request for deleting an item
       await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/quotes/${idToDelete}`, {
+        headers: headerlist,
         method: 'DELETE',
+      }).then(response => {
+        if (!response.ok) {
+          if (response.status === 401) {
+            toast.error('Unauthorized: You are not authorized to perform this action.', {
+              position: "bottom-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark"
+            })
+          } else {
+            throw new Error('Network response was not ok');
+          }
+        }else{
+          toast.success("Quote deleted",{position: "bottom-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark"})
+        }
       });
-
       // Remove the deleted item from the jsonData
       setJsonData((prevData) => prevData.filter((item, index) => index !== deleteIndex));
 
@@ -136,8 +170,10 @@ export default function Home() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
                         {editableIndex === index ? (
                             <>
-                              <button onClick={() => handleSendClick(item)}>Send</button>
+                              <button className="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center me-2 mb-2 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900"
+                                  onClick={() => handleSendClick(item)}>Send</button>
                               <button
+                                  className="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800"
                                   onClick={() => {
                                     // Revert changes and cancel editing
                                     setEditableIndex(null);
@@ -153,8 +189,8 @@ export default function Home() {
                             </>
                         ) : (
                             <>
-                              <button className="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center me-1 mb-1 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900" onClick={() => handleEditClick(index)}>Edit</button>
-                              <button className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-3 py-1.5 text-center me-1 mb-1 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900" onClick={() => handleDeleteClick(index)}>Delete</button>
+                              <button className="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center me-1 mb-1 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900" onClick={() => handleEditClick(index)}>Edit</button>
+                              <button className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:outline-none font-medium rounded-lg text-sm px-3 py-1.5 text-center me-1 mb-1 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900" onClick={() => handleDeleteClick(index)}>Delete</button>
                             </>
                         )}
                       </td>
@@ -167,13 +203,16 @@ export default function Home() {
         </div>
         {deleteIndex !== null && (
             <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center">
-              <div className="bg-gray-950 p-5 rounded-md">
-                <p className="pb-5">Are you sure you want to delete this quote?</p>
-                <button className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900" onClick={handleConfirmDelete}>Yes</button>
-                <button className="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800" onClick={() => setDeleteIndex(null)}>No</button>
+              <div className="inline-block align-bottom rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full group bg-gradient-to-br p-1.5 from-red-500 to-pink-700 dark:text-white">
+                <div className="bg-gray-950 p-5 rounded-md">
+                  <p className="pb-5">Are you sure you want to delete this quote?</p>
+                  <button className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900" onClick={handleConfirmDelete}>Yes</button>
+                  <button className="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800" onClick={() => setDeleteIndex(null)}>No</button>
+                </div>
               </div>
             </div>
         )}
+        <ToastContainer />
       </div>
   );
 }
