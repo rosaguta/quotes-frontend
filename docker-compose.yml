@@ -1,0 +1,9 @@
+version: "3.5"
+services:
+  rose:
+    build: .
+    container_name: rose
+    environment:
+      - NEXT_PUBLIC_QUOTE_API=http://65.109.63.215:3004
+    ports:
+      - 3000:3000 
