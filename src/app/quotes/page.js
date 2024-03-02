@@ -98,7 +98,7 @@ export default function Home() {
         <div className=" overflow-x-auto">
           <div className="p-1.5 min-w-full inline-block align-middle">
             <div className="overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <table className="min-w-full divide-y  divide-gray-700">
                 <thead>
                 <tr>
                   <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Text</th>
@@ -107,10 +107,10 @@ export default function Home() {
                   <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Actions</th>
                 </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="divide-y divide-gray-700">
                 {jsonData.map((item, index) => (
-                    <tr key={index} className={editableIndex === index ? "bg-gray-200 dark:bg-gray-700" : "hover:bg-gray-100 dark:hover:bg-gray-700"}>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
+                    <tr key={index} className={editableIndex === index ? "bg-gray-200 bg-gray-700" : "hover:bg-gray-700"}>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-200">
                         {editableIndex === index ? (
                             <textarea
                                 type="text"
@@ -123,13 +123,13 @@ export default function Home() {
                                     return newData;
                                   });
                                 }}
-                                className="bg-transparent text-gray-800 dark:text-gray-200 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-purple-500 focus:outline-none resize rounded-md "
+                                className="bg-transparent text-gray-200 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 bg-gray-700 border-gray-600 placeholder-gray-400 focus:ring-blue-500 focus:border-purple-500 focus:outline-none resize rounded-md "
                             />
                         ) : (
                             <pre>{item.text}</pre>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-200">
                         {editableIndex === index ? (
                             <textarea
                                 type="text"
@@ -142,13 +142,13 @@ export default function Home() {
                                     return newData;
                                   });
                                 }}
-                                className="bg-transparent text-gray-800 dark:text-gray-200 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-purple-500 focus:outline-none resize rounded-md "
+                                className="bg-transparent text-gray-200 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 bg-gray-700 border-gray-600 placeholder-gray-400 focus:ring-blue-500 focus:border-purple-500 focus:outline-none resize rounded-md "
                             />
                         ) : (
                             item.person
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-200">
                         {editableIndex === index ? (
                             <textarea
                                 type="text"
@@ -161,19 +161,19 @@ export default function Home() {
                                     return newData;
                                   });
                                 }}
-                                className="bg-transparent text-gray-800 dark:text-gray-200 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-purple-500 focus:outline-none resize rounded-md "
+                                className="bg-transparent text-gray-200 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 bg-gray-700 border-gray-600 placeholder-gray-400 focus:ring-blue-500 focus:border-purple-500 focus:outline-none resize rounded-md "
                             />
                         ) : (
                             item.dateTimeCreated
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-200">
                         {editableIndex === index ? (
                             <>
-                              <button className="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center me-2 mb-2 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900"
+                              <button className="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center me-2 mb-2 border-purple-400 text-purple-400 hover:text-white hover:bg-purple-500 focus:ring-purple-900"
                                   onClick={() => handleSendClick(item)}>Send</button>
                               <button
-                                  className="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800"
+                                  className="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center me-2 mb-2 border-gray-600 text-gray-400 hover:text-white hover:bg-gray-600 focus:ring-gray-800"
                                   onClick={() => {
                                     // Revert changes and cancel editing
                                     setEditableIndex(null);
@@ -189,8 +189,8 @@ export default function Home() {
                             </>
                         ) : (
                             <>
-                              <button className="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center me-1 mb-1 dark:border-purple-400 dark:text-purple-400 dark:hover:text-white dark:hover:bg-purple-500 dark:focus:ring-purple-900" onClick={() => handleEditClick(index)}>Edit</button>
-                              <button className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:outline-none font-medium rounded-lg text-sm px-3 py-1.5 text-center me-1 mb-1 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900" onClick={() => handleDeleteClick(index)}>Delete</button>
+                              <button className="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center me-1 mb-1 border-purple-400 text-purple-400 hover:text-white hover:bg-purple-500 focus:ring-purple-900" onClick={() => handleEditClick(index)}>Edit</button>
+                              <button className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:outline-none font-medium rounded-lg text-sm px-3 py-1.5 text-center me-1 mb-1 border-red-500 text-red-500 hover:text-white hover:bg-red-600 focus:ring-red-900" onClick={() => handleDeleteClick(index)}>Delete</button>
                             </>
                         )}
                       </td>
@@ -203,11 +203,11 @@ export default function Home() {
         </div>
         {deleteIndex !== null && (
             <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center">
-              <div className="inline-block align-bottom rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full group bg-gradient-to-br p-1.5 from-red-500 to-pink-700 dark:text-white">
+              <div className="inline-block align-bottom rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full group bg-gradient-to-br p-1.5 from-red-500 to-pink-700 text-white">
                 <div className="bg-gray-950 p-5 rounded-md">
                   <p className="pb-5">Are you sure you want to delete this quote?</p>
-                  <button className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900" onClick={handleConfirmDelete}>Yes</button>
-                  <button className="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800" onClick={() => setDeleteIndex(null)}>No</button>
+                  <button className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 border-red-500 text-red-500 hover:text-white hover:bg-red-600 focus:ring-red-900" onClick={handleConfirmDelete}>Yes</button>
+                  <button className="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 border-gray-600 text-gray-400 hover:text-white hover:bg-gray-600 focus:ring-gray-800" onClick={() => setDeleteIndex(null)}>No</button>
                 </div>
               </div>
             </div>

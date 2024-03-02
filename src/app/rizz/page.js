@@ -59,7 +59,7 @@ export default function Home() {
         <div className=" overflow-x-auto">
           <div className="p-1.5 min-w-full inline-block align-middle">
             <div className="overflow-hidden">
-              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <table className="min-w-full divide-y divide-gray-200 divide-gray-700">
                 <thead>
                 <tr>
                   <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Text</th>
@@ -68,10 +68,10 @@ export default function Home() {
                   <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+              <tbody className="divide-y divide-gray-700">
                 {jsonData.map((item, index) => (
-                  <tr key={index} className={editableIndex === index ? "bg-gray-200 dark:bg-gray-700" : "hover:bg-gray-100 dark:hover:bg-gray-700"}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">
+                  <tr key={index} className={editableIndex === index ? "bg-gray-200 bg-gray-700" : "hover:bg-gray-700"}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-200">
                       {editableIndex === index ? (
                         <textarea
                           type="text"
@@ -84,14 +84,14 @@ export default function Home() {
                               return newData;
                             });
                           }}
-                          className="bg-transparent text-gray-800 dark:text-gray-200 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-purple-500 focus:outline-none resize rounded-md "
+                          className="bg-transparent text-gray-200 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 bg-gray-700 border-gray-600 placeholder-gray-400 focus:ring-blue-500 focus:border-purple-500 focus:outline-none resize rounded-md "
                         />
                       ) : (
                         <pre>{item.text}</pre>
                         // item.text
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-200">
                       {editableIndex === index ? (
                         <textarea
                           type="text"
@@ -104,13 +104,13 @@ export default function Home() {
                               return newData;
                             });
                           }}
-                          className="bg-transparent text-gray-800 dark:text-gray-200 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-purple-500 focus:outline-none resize rounded-md "
+                          className="bg-transparent text-gray-200 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 bg-gray-700 border-gray-600 placeholder-gray-400 focus:ring-blue-500 focus:border-purple-500 focus:outline-none resize rounded-md "
                         />
                       ) : (
                         item.person
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-200">
                     {editableIndex === index ? (
                         <textarea
                           type="text"
@@ -123,13 +123,13 @@ export default function Home() {
                               return newData;
                             });
                           }}
-                          className="bg-transparent text-gray-800 dark:text-gray-200 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-purple-500 focus:outline-none resize rounded-md "
+                          className="bg-transparent text-gray-200 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 bg-gray-700 border-gray-600 placeholder-gray-400 focus:ring-blue-500 focus:border-purple-500 focus:outline-none resize rounded-md "
                         />
                       ) : (
                         item.dateTimeCreated
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-200">
                       {editableIndex === index ? (
                         <>
                           <button onClick={() => handleSendClick(item)}>Send</button>
