@@ -101,10 +101,10 @@ export default function Home() {
               <table className="min-w-full divide-y  divide-gray-700">
                 <thead>
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Text</th>
-                  <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Person</th>
-                  <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Created Date</th>
-                  <th scope="col" className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase">Actions</th>
+                  <th scope="col" className="px-6 py-3 text-start text-sm font-medium text-gray-500 uppercase">Text</th>
+                  <th scope="col" className="px-6 py-3 text-start text-sm font-medium text-gray-500 uppercase">Person</th>
+                  <th scope="col" className="px-6 py-3 text-start text-sm font-medium text-gray-500 uppercase">Created Date</th>
+                  <th scope="col" className="px-6 py-3 text-start text-sm font-medium text-gray-500 uppercase">Actions</th>
                 </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-700">
