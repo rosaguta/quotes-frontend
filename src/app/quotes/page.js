@@ -170,10 +170,10 @@ export default function Home() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-200">
                         {editableIndex === index ? (
                             <>
-                              <button className="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center me-2 mb-2 border-purple-400 text-purple-400 hover:text-white hover:bg-purple-500 focus:ring-purple-900"
+                              <button className="hover:text-white border font-medium rounded-lg text-sm px-4 py-2 text-center me-2 mb-2 border-purple-400 text-purple-400 hover:text-white hover:bg-purple-500"
                                   onClick={() => handleSendClick(item)}>Send</button>
                               <button
-                                  className="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center me-2 mb-2 border-gray-600 text-gray-400 hover:text-white hover:bg-gray-600 focus:ring-gray-800"
+                                  className="hover:text-white border font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 border-gray-600 text-gray-400 hover:text-white hover:bg-gray-600 "
                                   onClick={() => {
                                     // Revert changes and cancel editing
                                     setEditableIndex(null);
@@ -189,8 +189,8 @@ export default function Home() {
                             </>
                         ) : (
                             <>
-                              <button className="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-3 py-1.5 text-center me-1 mb-1 border-purple-400 text-purple-400 hover:text-white hover:bg-purple-500 focus:ring-purple-900" onClick={() => handleEditClick(index)}>Edit</button>
-                              <button className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:outline-none font-medium rounded-lg text-sm px-3 py-1.5 text-center me-1 mb-1 border-red-500 text-red-500 hover:text-white hover:bg-red-600 focus:ring-red-900" onClick={() => handleDeleteClick(index)}>Delete</button>
+                              <button className="hover:text-white border font-medium rounded-lg text-sm px-4 py-2 text-center me-2 mb-2 border-purple-400 text-purple-400 hover:text-white hover:bg-purple-500" onClick={() => handleEditClick(index)}>Edit</button>
+                              <button className="hover:text-white border font-medium rounded-lg text-sm px-4 py-2 text-center me-2 mb-2 border-red-500 text-red-500 hover:text-white hover:bg-red-600" onClick={() => handleDeleteClick(index)}>Delete</button>
                             </>
                         )}
                       </td>
@@ -206,8 +206,8 @@ export default function Home() {
               <div className="inline-block align-bottom rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full group bg-gradient-to-br p-1.5 from-red-500 to-pink-700 text-white">
                 <div className="bg-gray-950 p-5 rounded-md">
                   <p className="pb-5">Are you sure you want to delete this quote?</p>
-                  <button className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 border-red-500 text-red-500 hover:text-white hover:bg-red-600 focus:ring-red-900" onClick={handleConfirmDelete}>Yes</button>
-                  <button className="text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 border-gray-600 text-gray-400 hover:text-white hover:bg-gray-600 focus:ring-gray-800" onClick={() => setDeleteIndex(null)}>No</button>
+                  <button className="hover:text-white border font-medium rounded-lg text-sm px-4 py-2 text-center me-2 mb-2 border-red-500 text-red-500 hover:text-white hover:bg-red-600" onClick={handleConfirmDelete}>Yes</button>
+                  <button className="hover:text-white border font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 border-gray-600 text-gray-400 hover:text-white hover:bg-gray-600 " onClick={() => setDeleteIndex(null)}>No</button>
                 </div>
               </div>
             </div>
