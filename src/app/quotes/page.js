@@ -32,6 +32,55 @@ export default function Home() {
     setDeleteIndex(index);
   };
 
+  const handleSendClick= async (item)=>{
+    console.log(item)
+    const headerlist = {
+      "Accept": "*/*",
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+      "Access-Control-Allow-Origin" : "no-cors"
+    }
+    let jsonbody = JSON.stringify(item)
+    console.log(jsonbody)
+    await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/quotes/${item.id}`,{
+      headers: headerlist,
+      method: 'PUT',
+      body: jsonbody,
+    }).then(response =>{
+      if(!response.ok){
+        if(response.status === 401){
+          toast.error('Unauthorized: You are not authorized to perform this action.', {
+            position: "bottom-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark"
+          })
+        }else {
+          throw new Error('Network response was not ok');
+        }
+      }else{
+        toast.success("Quote edited ^-^",{position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark"})
+          setJsonData((prevData) => {
+            const newData = [...prevData];
+            newData[item.id] = item;
+            return newData;
+          });
+      }
+    });
+    
+  };
+
   const handleConfirmDelete = async () => {
     try {
       const idToDelete = jsonData[deleteIndex].id;
@@ -177,11 +226,7 @@ export default function Home() {
                                   onClick={() => {
                                     // Revert changes and cancel editing
                                     setEditableIndex(null);
-                                    setJsonData((prevData) => {
-                                      const newData = [...prevData];
-                                      newData[index] = item;
-                                      return newData;
-                                    });
+                                    
                                   }}
                               >
                                 Cancel
