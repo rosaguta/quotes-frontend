@@ -1,6 +1,5 @@
-'use server'
-import {cookies} from 'next/headers'
+'use client'
 
 export default async function setcookie(token) {
-    cookies().set('token', token)
+    document.cookie = `token=${token}; path=/`;
 }
