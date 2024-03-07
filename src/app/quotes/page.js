@@ -9,6 +9,7 @@ export default function Home() {
   const [jsonData, setJsonData] = useState(null);
   const [editableIndex, setEditableIndex] = useState(null);
   const [deleteIndex, setDeleteIndex] = useState(null);
+  const [originalItem, setOriginalItem] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,6 +27,19 @@ export default function Home() {
 
   const handleEditClick = (index) => {
     setEditableIndex(index);
+    // Store the original item before editing
+    setOriginalItem(jsonData[index]);
+  };
+
+  const handleCancelEdit = () => {
+    // Revert changes and cancel editing
+    setJsonData((prevData) => {
+      const newData = [...prevData];
+      newData[editableIndex] = originalItem; // Restore original item
+      return newData;
+    });
+    setEditableIndex(null);
+    setOriginalItem(null); // Reset original item state
   };
 
   const handleDeleteClick = (index) => {
@@ -71,6 +85,7 @@ export default function Home() {
           draggable: true,
           progress: undefined,
           theme: "dark"})
+          setEditableIndex(null);
           setJsonData((prevData) => {
             const newData = [...prevData];
             newData[item.id] = item;
@@ -223,11 +238,7 @@ export default function Home() {
                                   onClick={() => handleSendClick(item)}>Send</button>
                               <button
                                   className="hover:text-white border font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 border-gray-600 text-gray-400 hover:text-white hover:bg-gray-600 "
-                                  onClick={() => {
-                                    // Revert changes and cancel editing
-                                    setEditableIndex(null);
-                                    
-                                  }}
+                                  onClick={handleCancelEdit}
                               >
                                 Cancel
                               </button>
