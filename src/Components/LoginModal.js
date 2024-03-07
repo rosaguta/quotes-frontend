@@ -1,16 +1,16 @@
-'use client'
 import React, { useState } from 'react';
 import setcookie from "@/Components/Cookies";
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ToastContainer, toast } from "react-toastify";
 
-
-const LoginModal = ({ isOpen, toggleModal }) => {
-    library.add(faEye, faEyeSlash)
+const LoginModal = ({ isOpen, toggleModal, onLoginSuccess }) => {
+    library.add(faEye, faEyeSlash);
     const [uname, setUname] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
@@ -23,7 +23,7 @@ const LoginModal = ({ isOpen, toggleModal }) => {
         setPassword(e.target.value);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Prepare the data
@@ -32,32 +32,30 @@ const LoginModal = ({ isOpen, toggleModal }) => {
             password: password
         };
 
-        // console.log(body)
         // Send POST request
-        fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/Auth`, {
+        let response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/Auth`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(userData)
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.text()
-            })
-            .then(data => {
-                // Handle successful login response
-                setcookie(data)
-                // Close the modal after successful login
-                toggleModal();
-            })
-            .catch(error => {
-                // Handle error
-                console.error('Error logging in:', error);
-                // You can add code here to display an error message to the user
-            });
+        });
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                onLoginSuccess(false)
+            } else {
+                throw new Error('Network response was not ok');
+            }
+        } else {
+            let jwt = await response.text();
+            setcookie(jwt);
+            onLoginSuccess(true)
+            toggleModal();
+            
+            // Call the callback function with the user data
+            ;
+        }
     };
 
     return (
@@ -81,44 +79,47 @@ const LoginModal = ({ isOpen, toggleModal }) => {
                                             <form onSubmit={handleSubmit} className="space-y-4">
                                                 <div>
                                                     <label htmlFor="text"
-                                                           className="block text-sm font-medium text-gray-300">Username</label>
+                                                        className="block text-sm font-medium text-gray-300">Username</label>
                                                     <input type="text" id="uname" name="uname" value={uname}
-                                                           onChange={handleEmailChange} autoComplete="email" required
-                                                           className="mt-1 p-2 border border-gray-700 block w-full shadow-sm sm:text-sm rounded-md text-gray-800"/>
+                                                        onChange={handleEmailChange} autoComplete="email" required
+                                                        className="mt-1 p-2 border border-gray-700 block w-full shadow-sm sm:text-sm rounded-md text-gray-800" />
                                                 </div>
                                                 <div className="relative">
                                                     <label htmlFor="password"
-                                                           className="block text-sm font-medium text-gray-300">Password</label>
+                                                        className="block text-sm font-medium text-gray-300">Password</label>
                                                     <input type={showPassword ? "text" : "password"} id="password"
-                                                           name="password"
-                                                           value={password} onChange={handlePasswordChange}
-                                                           autoComplete="current-password" required
-                                                           className="mt-1 p-2 border border-gray-700 block w-full shadow-sm sm:text-sm rounded-md text-gray-800"/>
+                                                        name="password"
+                                                        value={password} onChange={handlePasswordChange}
+                                                        autoComplete="current-password" required
+                                                        className="mt-1 p-2 border border-gray-700 block w-full shadow-sm sm:text-sm rounded-md text-gray-800" />
                                                     <button type="button" onClick={togglePasswordVisibility}
-                                                            className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-300 focus:outline-none">
+                                                        className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-300 focus:outline-none">
                                                         {showPassword ? (
-                                                            <span className="pt-6 pr-1 text-gray-900 items-center"> {<FontAwesomeIcon icon={"eye"}/>}</span>
+                                                            <span className="pt-6 pr-1 text-gray-900 items-center"> {<FontAwesomeIcon icon={"eye"} />}</span>
                                                         ) : (
-                                                            <span className="pt-6 pr-1 text-gray-900 items-center"> {<FontAwesomeIcon icon={"eye-slash"}/>}</span>
+                                                            <span className="pt-6 pr-1 text-gray-900 items-center"> {<FontAwesomeIcon icon={"eye-slash"} />}</span>
                                                         )}
                                                     </button>
                                                 </div>
                                                 <button type="submit"
-                                                        className="text-purple-700 hover:text-white border border-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 border-purple-400 text-purple-400 hover:text-white hover:bg-purple-500 focus:ring-purple-900">
+                                                    className="border font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 border-purple-400 text-purple-400 hover:text-white hover:bg-purple-500 focus:ring-purple-900">
                                                     Sign in
                                                 </button>
                                                 <button onClick={toggleModal} type="button"
-                                                        className="absolute right-5 text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 border-gray-600 text-gray-400 hover:text-white hover:bg-gray-600 focus:ring-gray-800">
+                                                    className="absolute right-5 border  font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 border-gray-600 text-gray-400 hover:text-white hover:bg-gray-600 focus:ring-gray-800">
                                                     Cancel
                                                 </button>
                                             </form>
                                         </div>
                                     </div>
                                 </div>
+                                
                             </div>
-
+                            
                         </div>
+                        
                     </div>
+                    
                 </div>
             )}
         </>
