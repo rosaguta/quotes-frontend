@@ -1,9 +1,9 @@
 "use client"
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
-import LoginModal from "@/Components/LoginModal";
+import LoginModal from "../Components/LoginModal";
 import { toast, ToastContainer } from "react-toastify";
-import { SparklesCore } from "@/Components/ui/sparkles";
+import { SparklesCore } from "../Components/ui/sparkles";
 
 const HomePage = () => {
     const [quote, setQuote] = useState("");

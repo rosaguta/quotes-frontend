@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Particles, { initParticlesEngine } from "../../../node_modules/@tsparticles/react/dist";
 import type { Container, SingleOrMultiple } from "@tsparticles/engine";
 import { loadSlim } from "@tsparticles/slim";
-import { cn } from "@/utils/cn";
+import { cn } from "../../utils/cn";
 import { motion, useAnimation } from "framer-motion";
 
 type ParticlesProps = {

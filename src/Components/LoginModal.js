@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import setcookie from "@/Components/Cookies";
+import setcookie from "./Cookies";
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
