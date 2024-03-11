@@ -4,6 +4,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.min.css'
 
 const LoginModal = ({ isOpen, toggleModal, onLoginSuccess }) => {
     library.add(faEye, faEyeSlash);
@@ -43,7 +44,7 @@ const LoginModal = ({ isOpen, toggleModal, onLoginSuccess }) => {
 
         if (!response.ok) {
             if (response.status === 401) {
-                onLoginSuccess(false)
+               onLoginSuccess(false)
             } else {
                 throw new Error('Network response was not ok');
             }
@@ -52,7 +53,7 @@ const LoginModal = ({ isOpen, toggleModal, onLoginSuccess }) => {
             setcookie(jwt);
             onLoginSuccess(true)
             toggleModal();
-            
+
             // Call the callback function with the user data
             ;
         }
@@ -115,7 +116,6 @@ const LoginModal = ({ isOpen, toggleModal, onLoginSuccess }) => {
                                 </div>
                                 
                             </div>
-                            
                         </div>
                         
                     </div>
