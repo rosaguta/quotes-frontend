@@ -8,10 +8,10 @@ job("Build and push Docker") {
             file = "./Dockerfile"
             labels["vendor"] = "DigitalIndividuals"
 
-            val spaceRepo = "cfr-r.divsphere.net/q-frontend"
+            val spaceRepo = "cfr-r.divsphere.net/q-frontend:latest"
             // image tags for 'docker push'
             tags {
-                +"$quotes-frontend:latest"
+                +"cfr-r.divsphere.net/q-frontend:latest"
             }
         }
     }
