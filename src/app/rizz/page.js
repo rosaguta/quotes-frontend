@@ -77,7 +77,7 @@ export default function Home() {
           throw new Error('Network response was not ok');
         }
       }else{
-        toast.success("Quote edited ^-^",{position: "bottom-right",
+        toast.success("Rizz edited ^-^",{position: "bottom-right",
           autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
@@ -127,7 +127,7 @@ export default function Home() {
             throw new Error('Network response was not ok');
           }
         }else{
-          toast.success("Quote deleted",{position: "bottom-right",
+          toast.success("Deleted: never thought that this would",{position: "bottom-right",
             autoClose: 3000,
             hideProgressBar: false,
             closeOnClick: true,
