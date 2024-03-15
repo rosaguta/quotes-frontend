@@ -1,4 +1,10 @@
 job("Build and push Docker") {
+    startOn {
+        gitPush {
+            anyBranchMatching {
+                +"main"
+            }
+        }
     host("Build artifacts and a Docker image") {
        dockerBuildPush {
 
