@@ -56,7 +56,7 @@ export default function Home() {
     }
     let jsonbody = JSON.stringify(item)
     console.log(jsonbody)
-    await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/quotes/${item.id}`,{
+    await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/rizzes/${item.id}`,{
       headers: headerlist,
       method: 'PUT',
       body: jsonbody,
@@ -107,7 +107,7 @@ export default function Home() {
       }
 
       // Assuming your server supports the DELETE request for deleting an item
-      await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/quotes/${idToDelete}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/rizzes/${idToDelete}`, {
         headers: headerlist,
         method: 'DELETE',
       }).then(response => {
