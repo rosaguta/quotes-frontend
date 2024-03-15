@@ -1,17 +1,21 @@
 job("Build and push Docker") {
     startOn {
         gitPush {
-            anyBranchMatching {
-                +"main"
-            }
+            branchFilter = "+:<default>"
+        }
+    }
+
+    steps {
+        dockerBuild {
+            name = "Build Docker image"
+            file = "./Dockerfile"
+            imageId = "cfr-r.divsphere.net/quote-frontend:latest"
+            labels["vendor"] = "DigitalIndividuals"
         }
 
-        file = "./Dockerfile"
-        labels["vendor"] = "DigitalIndividuals"
-        // image tags for 'docker push'
-        tags {
-            +"cfr-r.divsphere.net/q-frontend:latest"
+        dockerPush {
+            name = "Push Docker image"
+            imageId = "cfr-r.divsphere.net/quote-frontend:latest"
         }
-        
     }
 }
