@@ -255,7 +255,7 @@ export default function Home() {
                       )}
                     </td>
                     {rights &&
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-200">
+                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-200 max-w-[500px]">
                       {editableIndex === index ? (
                         <textarea
                           type="text"
