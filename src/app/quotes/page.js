@@ -3,26 +3,39 @@ import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie'
 import 'react-toastify/dist/ReactToastify.css';
 import { toast, ToastContainer } from "react-toastify";
+import * as jose from 'jose'
 
 export default function Home() {
   const token = Cookies.get('token');
+  let claims = null
+  if (token) {
+    claims = jose.decodeJwt(token);
+    console.log(claims)
+  }
   const [jsonData, setJsonData] = useState(null);
   const [editableIndex, setEditableIndex] = useState(null);
   const [deleteIndex, setDeleteIndex] = useState(null);
   const [originalItem, setOriginalItem] = useState(null);
 
   useEffect(() => {
+
     const fetchData = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/quotes`);
+        const headerlist = {
+          "Accept": "*/*",
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+          "Access-Control-Allow-Origin": "no-cors"
+        }
+        const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/quotes`,{headers: headerlist,});
         const data = await response.json();
         setJsonData(data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-
     fetchData();
+
   }, []);
 
   const handleEditClick = (index) => {
@@ -151,8 +164,9 @@ export default function Home() {
     } catch (error) {
       console.error("Error deleting data:", error);
     }
+    
   };
-
+  const rights = claims ? claims.Rights === "True" : false;
   if (!jsonData) {
     return <div className="w-full min-h-screen flex justify-center items-center">
       <div className="flex min-h-screen w-full items-center justify-center">
@@ -174,6 +188,9 @@ export default function Home() {
                   <th scope="col" className="px-6 py-3 text-start text-sm font-medium text-gray-500 uppercase">Text</th>
                   <th scope="col" className="px-6 py-3 text-start text-sm font-medium text-gray-500 uppercase">Person</th>
                   <th scope="col" className="px-6 py-3 text-start text-sm font-medium text-gray-500 uppercase">Created Date</th>
+                  {rights &&
+                    <th scope="col" className="px-6 py-3 text-start text-sm font-medium text-gray-500 uppercase">Context</th>                  
+                  }
                   <th scope="col" className="px-6 py-3 text-start text-sm font-medium text-gray-500 uppercase">Actions</th>
                 </tr>
               </thead>
@@ -237,6 +254,26 @@ export default function Home() {
                         item.dateTimeCreated
                       )}
                     </td>
+                    {rights &&
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-200">
+                      {editableIndex === index ? (
+                        <textarea
+                          type="text"
+                          value={item.context}
+                          onChange={(e) => {
+                            const editedItem = { ...item, context: e.target.value };
+                            setJsonData((prevData) => {
+                              const newData = [...prevData];
+                              newData[index] = editedItem;
+                              return newData;
+                            });
+                          }}
+                          className="bg-transparent text-gray-200 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 bg-gray-700 border-gray-600 placeholder-gray-400 focus:ring-blue-500 focus:border-purple-500 focus:outline-none resize rounded-md "
+                        />
+                      ) : (
+                        item.context
+                      )}
+                    </td>}
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-200">
                       {editableIndex === index ? (
                         <>
