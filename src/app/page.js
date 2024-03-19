@@ -1,14 +1,23 @@
 "use client"
 import Link from 'next/link';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import LoginModal from "../Components/LoginModal";
 import { toast, ToastContainer } from "react-toastify";
 import { SparklesCore } from "../Components/ui/sparkles";
+import Image from 'next/image';
 
 const HomePage = () => {
     const [quote, setQuote] = useState("");
     const [rizz, setRizz] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [particleSettingsOpen, setParticleSettingsOpen] = useState(false);
+    const [particleSettings, setParticleSettings] = useState({
+        minSize: 0.4,
+        maxSize: 1,
+        particleDensity: 25
+    });
+
+    const sparklesRef = useRef(null);
 
     useEffect(() => {
         const fetchQuote = async () => {
@@ -37,6 +46,9 @@ const HomePage = () => {
 
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
+    };
+    const toggleParticleSettings = () => {
+        setParticleSettingsOpen(!particleSettingsOpen);
     };
 
     const handleLoginSuccess = (bool) => {
@@ -67,16 +79,63 @@ const HomePage = () => {
 
     };
 
+    const handleParticleSettingsChange = (event) => {
+        console.log(event)
+        const setting = event.split(',')
+        console.log(setting)
+        setParticleSettings({
+            ...particleSettings,
+            [setting[0]]: parseFloat(setting[1]) // Convert value to float
+        });
+    };
+    
+
     return (
         <div>
-            <SparklesCore
+           <SparklesCore
+                ref={sparklesRef}
+                {...particleSettings}
                 background="transparent"
-                minSize={0.4}
-                maxSize={1}
-                particleDensity={25}
                 className="w-full h-full absolute"
                 particleColor="#FFFFFF"
             />
+            <div className="fixed bottom-5 left-5">
+                <button onClick={toggleParticleSettings} className="relative inline-flex items-center justify-center bg-black p-0 mb-2 me-2 overflow-hidden text-base font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white text-white focus:outline-none focus:ring-cyan-800">
+                    <img src="cog.svg" alt="cog lol" width={25} height={25} className='transition-all ease-in duration-75 bg-black  group-hover:bg-opacity-0'></img>
+                </button>
+            </div>
+            {particleSettingsOpen && (
+                <div className="fixed bottom-5 left-20 bg-gray-950 p-4 border rounded shadow-lg flex">
+                    <h2 className="text-lg font-bold mb-2 mr-10">Particle Settings</h2>
+                    <div className="mb-2">
+                        <label className="block text-gray-300 text-sm font-bold mb-1">Min Size</label>
+                        <input
+                            type="number"
+                            value={particleSettings.minSize}
+                            onChange={(e) => handleParticleSettingsChange('minSize,'+ parseFloat(e.target.value))}
+                            className="border rounded w-full py-1 px-2 bg-black"
+                        />
+                    </div>
+                    <div className="mb-2">
+                        <label className="block text-gray-300 text-sm font-bold mb-1">Max Size</label>
+                        <input
+                            type="number"
+                            value={particleSettings.maxSize}
+                            onChange={(e) => handleParticleSettingsChange('maxSize,'+ parseFloat(e.target.value))}
+                            className="border rounded w-full py-1 px-2 bg-black"
+                        />
+                    </div>
+                    <div className="mb-2">
+                        <label className="block text-gray-300 text-sm font-bold mb-1">Particle Density</label>
+                        <input
+                            type="number"
+                            value={particleSettings.particleDensity}
+                            onChange={(e) => handleParticleSettingsChange('particleDensity,'+parseFloat(e.target.value))}
+                            className="border rounded w-full py-1 px-2 bg-black"
+                        />
+                    </div>
+                </div>
+            )}    
             <div>
                 <div className="h-screen pt-5 overflow-hidden">
                     <div className="flex flex-col items-center">
@@ -107,7 +166,9 @@ const HomePage = () => {
                             </Link>
                         </div>
                     </div>
+                    
                 </div>
+                
                 <ToastContainer />
             </div>
         </div>
