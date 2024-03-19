@@ -16,10 +16,11 @@ const HomePage = () => {
         maxSize: 1,
         particleDensity: 25
     });
-
+    const [buttonarray] = useState([])
     const sparklesRef = useRef(null);
-
+    
     useEffect(() => {
+
         const fetchQuote = async () => {
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/quotes/random`);
@@ -42,8 +43,18 @@ const HomePage = () => {
 
         fetchQuote();
         fetchRizz();
-    }, []);
+        
+        const handleKeydown = (event) =>{
+            buttonarray.push(event.key)
+            //console.log(buttonarray)
+        }
+        document.addEventListener("keydown", handleKeydown);
+        return () => {
+            document.removeEventListener("keydown", handleKeydown);
+        };
 
+    }, []);
+    
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
     };
@@ -63,7 +74,6 @@ const HomePage = () => {
                 progress: undefined,
                 theme: "dark"
             });
-            console.log("User logged in successfully:", bool);
         } else {
             toast.error("wrong credentials lol", {
                 position: "bottom-right",
@@ -80,19 +90,17 @@ const HomePage = () => {
     };
 
     const handleParticleSettingsChange = (event) => {
-        console.log(event)
         const setting = event.split(',')
-        console.log(setting)
         setParticleSettings({
             ...particleSettings,
             [setting[0]]: parseFloat(setting[1]) // Convert value to float
         });
     };
-    
+
 
     return (
         <div>
-           <SparklesCore
+            <SparklesCore
                 ref={sparklesRef}
                 {...particleSettings}
                 background="transparent"
@@ -112,7 +120,7 @@ const HomePage = () => {
                         <input
                             type="number"
                             value={particleSettings.minSize}
-                            onChange={(e) => handleParticleSettingsChange('minSize,'+ parseFloat(e.target.value))}
+                            onChange={(e) => handleParticleSettingsChange('minSize,' + parseFloat(e.target.value))}
                             className="border rounded w-full py-1 px-2 bg-black"
                         />
                     </div>
@@ -121,7 +129,7 @@ const HomePage = () => {
                         <input
                             type="number"
                             value={particleSettings.maxSize}
-                            onChange={(e) => handleParticleSettingsChange('maxSize,'+ parseFloat(e.target.value))}
+                            onChange={(e) => handleParticleSettingsChange('maxSize,' + parseFloat(e.target.value))}
                             className="border rounded w-full py-1 px-2 bg-black"
                         />
                     </div>
@@ -130,12 +138,12 @@ const HomePage = () => {
                         <input
                             type="number"
                             value={particleSettings.particleDensity}
-                            onChange={(e) => handleParticleSettingsChange('particleDensity,'+parseFloat(e.target.value))}
+                            onChange={(e) => handleParticleSettingsChange('particleDensity,' + parseFloat(e.target.value))}
                             className="border rounded w-full py-1 px-2 bg-black"
                         />
                     </div>
                 </div>
-            )}    
+            )}
             <div>
                 <div className="h-screen pt-5 overflow-hidden">
                     <div className="flex flex-col items-center">
@@ -166,9 +174,9 @@ const HomePage = () => {
                             </Link>
                         </div>
                     </div>
-                    
+
                 </div>
-                
+
                 <ToastContainer />
             </div>
         </div>
