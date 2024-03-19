@@ -10,7 +10,6 @@ export default function Home() {
   let claims = null
   if (token) {
     claims = jose.decodeJwt(token);
-    console.log(claims)
   }
   const [jsonData, setJsonData] = useState(null);
   const [editableIndex, setEditableIndex] = useState(null);
@@ -60,7 +59,6 @@ export default function Home() {
   };
 
   const handleSendClick = async (item) => {
-    console.log(item)
     const headerlist = {
       "Accept": "*/*",
       "Content-Type": "application/json",
@@ -68,7 +66,6 @@ export default function Home() {
       "Access-Control-Allow-Origin": "no-cors"
     }
     let jsonbody = JSON.stringify(item)
-    console.log(jsonbody)
     await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/quotes/${item.id}`, {
       headers: headerlist,
       method: 'PUT',
