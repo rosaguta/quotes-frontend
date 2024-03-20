@@ -18,6 +18,8 @@ const HomePage = () => {
     });
     const [buttonarray] = useState([])
     const sparklesRef = useRef(null);
+    const CoolWords = useState(["shark", "trans", "pride"]);
+    
     
     useEffect(() => {
 
@@ -45,8 +47,10 @@ const HomePage = () => {
         fetchRizz();
         
         const handleKeydown = (event) =>{
-            buttonarray.push(event.key)
-            //console.log(buttonarray)
+            let Key = String.toString(event.key)
+            Key.toLocaleLowerCase()
+            buttonarray.push(Key)
+            // console.log(buttonarray)
         }
         document.addEventListener("keydown", handleKeydown);
         return () => {
