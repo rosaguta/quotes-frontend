@@ -3,8 +3,7 @@ import Link from 'next/link';
 import React, { useState, useEffect, useRef } from 'react';
 import LoginModal from "../Components/LoginModal";
 import { toast, ToastContainer } from "react-toastify";
-import { SparklesCore } from "../Components/ui/sparkles";
-import Image from 'next/image';
+import { SparklesCore } from "../Components/ui/sparkles";;
 
 const HomePage = () => {
     const [quote, setQuote] = useState("");
@@ -16,11 +15,29 @@ const HomePage = () => {
         maxSize: 1,
         particleDensity: 25
     });
-    const [buttonarray] = useState([])
-    const sparklesRef = useRef(null);
-    const CoolWords = useState(["shark", "trans", "pride"]);
-    
-    
+    const [coolModeActivated, setCoolMode] = useState(false)
+    let buttonstring = ""
+    const CoolWords = ["shark", "trans", "pride"];
+
+    const findCoolWord = (str) => {
+        for (const word of CoolWords) {
+            if (str.includes(word)) {
+                return true
+            }
+        }
+    }
+    const handleKeydown = (event) => {
+        let Key = event.key
+        let key = Key.toLocaleLowerCase()
+        buttonstring = buttonstring.concat(key)
+        console.log(buttonstring)
+        if ((findCoolWord(buttonstring))) {
+            console.log("THIS IS POGGGGG")
+            setCoolMode(true)
+            buttonstring = ""
+        }
+    }
+
     useEffect(() => {
 
         const fetchQuote = async () => {
@@ -45,20 +62,14 @@ const HomePage = () => {
 
         fetchQuote();
         fetchRizz();
-        
-        const handleKeydown = (event) =>{
-            let Key = String.toString(event.key)
-            Key.toLocaleLowerCase()
-            buttonarray.push(Key)
-            // console.log(buttonarray)
-        }
+
         document.addEventListener("keydown", handleKeydown);
         return () => {
             document.removeEventListener("keydown", handleKeydown);
         };
 
     }, []);
-    
+
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
     };
@@ -101,16 +112,64 @@ const HomePage = () => {
         });
     };
 
+    let flexmode = "relative"
+
+
+
 
     return (
-        <div>
-            <SparklesCore
-                ref={sparklesRef}
-                {...particleSettings}
-                background="transparent"
-                className="w-full h-full absolute"
-                particleColor="#FFFFFF"
-            />
+
+        <div className={coolModeActivated === true ? flexmode : ''}>
+            {!coolModeActivated ? (
+
+                <SparklesCore
+                    {...particleSettings}
+                    background="transparent"
+                    className="w-full h-full absolute"
+                    particleColor="#FFFFFF"
+                />
+            ) : (
+                <div className='absolute'>
+                    <div className='flex flex-col h-screen w-screen'>
+                        <div>
+                            <SparklesCore
+                                background="transparent"
+                                className=""
+                                particleColor="#5BCEFA"
+                            />
+                        </div>
+                        <div>
+                            <SparklesCore
+                                background="transparent"
+                                className=""
+                                particleColor="#F5A9B8"
+                            />
+                        </div>
+                        <div>
+                            <SparklesCore
+                                background="transparent"
+                                className=""
+                                particleColor="#FFFFFF"
+                            />
+                        </div>
+                        <div>
+                            <SparklesCore
+                                background="transparent"
+                                className=""
+                                particleColor="#F5A9B8"
+                            />
+                        </div>
+                        <div>
+                            <SparklesCore
+                                background="transparent"
+                                className=""
+                                particleColor="#5BCEFA"
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div className="fixed bottom-5 left-5">
                 <button onClick={toggleParticleSettings} className="relative inline-flex items-center justify-center bg-black p-0 mb-2 me-2 overflow-hidden text-base font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white text-white focus:outline-none focus:ring-cyan-800">
                     <img src="cog.svg" alt="cog lol" width={25} height={25} className='transition-all ease-in duration-75 bg-black  group-hover:bg-opacity-0'></img>
