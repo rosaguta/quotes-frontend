@@ -120,7 +120,7 @@ export const SparklesCore = (props: ParticlesProps) => {
                 },
               },
               color: {
-                value: particleColor || "#ffffff",
+                value: particleColor || ["#5BCEFA", "#F5A9B8", "#FFFFFF"],
                 animation: {
                   h: {
                     count: 0,

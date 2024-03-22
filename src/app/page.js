@@ -11,9 +11,9 @@ const HomePage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [particleSettingsOpen, setParticleSettingsOpen] = useState(false);
     const [particleSettings, setParticleSettings] = useState({
-        minSize: 0.4,
-        maxSize: 1,
-        particleDensity: 25
+        minSize: 0.8,
+        maxSize: 1.2,
+        particleDensity: 80
     });
     const [coolModeActivated, setCoolMode] = useState(false)
     let buttonstring = ""
@@ -126,48 +126,14 @@ const HomePage = () => {
                     {...particleSettings}
                     background="transparent"
                     className="w-full h-full absolute"
-                    particleColor="#FFFFFF"
+                    particleColor='#FFFFFF'
                 />
             ) : (
-                <div className='absolute'>
-                    <div className='flex flex-col h-screen w-screen'>
-                        <div>
-                            <SparklesCore
-                                background="transparent"
-                                className=""
-                                particleColor="#5BCEFA"
-                            />
-                        </div>
-                        <div>
-                            <SparklesCore
-                                background="transparent"
-                                className=""
-                                particleColor="#F5A9B8"
-                            />
-                        </div>
-                        <div>
-                            <SparklesCore
-                                background="transparent"
-                                className=""
-                                particleColor="#FFFFFF"
-                            />
-                        </div>
-                        <div>
-                            <SparklesCore
-                                background="transparent"
-                                className=""
-                                particleColor="#F5A9B8"
-                            />
-                        </div>
-                        <div>
-                            <SparklesCore
-                                background="transparent"
-                                className=""
-                                particleColor="#5BCEFA"
-                            />
-                        </div>
-                    </div>
-                </div>
+                <SparklesCore
+                    {...particleSettings}
+                    background="transparent"
+                    className="w-full h-full absolute"
+                />
             )}
 
             <div className="fixed bottom-5 left-5">
@@ -219,7 +185,7 @@ const HomePage = () => {
                     <div className="flex overflow-hidden h-5/6 items-stretch ">
                         <div
                             className="basis-1/2 grow overflow-hidden m-10 flex-1 items-center justify-center duration-300 hover:scale-105 ">
-                            <div className="m-2 italic">{quote}</div>
+                            <div className="m-2 italic text-lg">{quote}</div>
                             <Link href="/quotes">
                                 <button className="relative inline-flex items-center justify-center h-5/6 w-full p-1 mb-2 me-2 overflow-hidden font-bold text-6xl rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white text-white focus:outline-none focus:ring-blue-800">
                                     <span className="relative items-center inline-flex justify-center py-3 transition-all ease-in duration-75 h-full w-full bg-gray-950 rounded-md group-hover:bg-opacity-0">Quotes</span>
@@ -229,7 +195,7 @@ const HomePage = () => {
 
                         <div
                             className="basis-1/2 grow overflow-hidden m-10 flex-1 items-center justify-center duration-300 hover:scale-105">
-                            <div className="m-2 italic">{rizz}</div>
+                            <div className="m-2 italic text-lg">{rizz}</div>
                             <Link href="/rizz">
                                 <button className="relative inline-flex items-center justify-center h-5/6 w-full p-1 mb-2 me-2 overflow-hidden font-bold text-6xl rounded-lg group bg-gradient-to-br from-purple-500 to-pink-500 group-hover:from-purple-500 group-hover:to-pink-500 hover:text-white text-white focus:outline-none focus:ring-purple-800 ">
                                     <span className="relative items-center inline-flex justify-center py-3 transition-all ease-in duration-75 h-full w-full bg-gray-950 rounded-md group-hover:bg-opacity-0">Rizz</span>
