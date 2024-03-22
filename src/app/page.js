@@ -136,9 +136,9 @@ const HomePage = () => {
                 />
             )}
 
-            <div className="fixed bottom-5 left-5">
-                <button onClick={toggleParticleSettings} className="relative inline-flex items-center justify-center bg-black p-0 mb-2 me-2 overflow-hidden text-base font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white text-white focus:outline-none focus:ring-cyan-800">
-                    <img src="cog.svg" alt="cog lol" width={25} height={25} className='transition-all ease-in duration-75 bg-black  group-hover:bg-opacity-0'></img>
+            <div className="fixed bottom-5 left-5 rounded-lg bg-black">
+                <button onClick={toggleParticleSettings} className="relative inline-flex items-center justify-center bg-black p-0 mb-2 me-2 overflow-hidden text-base font-medium text-gray-900 rounded group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white text-white focus:outline-none focus:ring-cyan-800">
+                    <img src="cog.svg" alt="cog lol" width={25} height={25} className='transition-all ease-in duration-75 bg-black group-hover:bg-opacity-0'></img>
                 </button>
             </div>
             {particleSettingsOpen && (
