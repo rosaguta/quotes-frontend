@@ -32,7 +32,6 @@ const HomePage = () => {
         buttonstring = buttonstring.concat(key)
         console.log(buttonstring)
         if ((findCoolWord(buttonstring))) {
-            console.log("THIS IS POGGGGG")
             setCoolMode(true)
             buttonstring = ""
         }
