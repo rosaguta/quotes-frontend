@@ -13,7 +13,7 @@ const HomePage = () => {
     const [particleSettings, setParticleSettings] = useState({
         minSize: 0.8,
         maxSize: 1.2,
-        particleDensity: 80
+        particleDensity: 50
     });
     const [coolModeActivated, setCoolMode] = useState(false)
     let buttonstring = ""
