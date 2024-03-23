@@ -30,7 +30,6 @@ const HomePage = () => {
         let Key = event.key
         let key = Key.toLocaleLowerCase()
         buttonstring = buttonstring.concat(key)
-        console.log(buttonstring)
         if ((findCoolWord(buttonstring))) {
             setCoolMode(true)
             buttonstring = ""
