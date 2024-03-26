@@ -140,7 +140,7 @@ const HomePage = () => {
                 </button>
             </div>
             {particleSettingsOpen && (
-                <div className="fixed bottom-5 left-20 bg-gray-950 p-4 border rounded shadow-lg flex">
+                <div className="fixed bottom-5 left-20 bg-black p-4 border rounded shadow-lg flex">
                     <h2 className="text-lg font-bold mb-2 mr-10">Particle Settings</h2>
                     <div className="mb-2">
                         <label className="block text-gray-300 text-sm font-bold mb-1">Min Size</label>
@@ -148,7 +148,7 @@ const HomePage = () => {
                             type="number"
                             value={particleSettings.minSize}
                             onChange={(e) => handleParticleSettingsChange('minSize,' + parseFloat(e.target.value))}
-                            className="border rounded w-full py-1 px-2 bg-black"
+                            className="border rounded w-full py-1 px-2 bg-black focus:border-purple-500 "
                         />
                     </div>
                     <div className="mb-2">
@@ -157,7 +157,7 @@ const HomePage = () => {
                             type="number"
                             value={particleSettings.maxSize}
                             onChange={(e) => handleParticleSettingsChange('maxSize,' + parseFloat(e.target.value))}
-                            className="border rounded w-full py-1 px-2 bg-black"
+                            className="border rounded w-full py-1 px-2 bg-black focus:border-purple-500 "
                         />
                     </div>
                     <div className="mb-2">
@@ -166,7 +166,7 @@ const HomePage = () => {
                             type="number"
                             value={particleSettings.particleDensity}
                             onChange={(e) => handleParticleSettingsChange('particleDensity,' + parseFloat(e.target.value))}
-                            className="border rounded w-full py-1 px-2 bg-black"
+                            className="border rounded w-full py-1 px-2 bg-black focus:border-purple-500 "
                         />
                     </div>
                 </div>
@@ -211,4 +211,4 @@ const HomePage = () => {
 };
 
 export default HomePage;
-// woah no way a test?
+//woah a chaange

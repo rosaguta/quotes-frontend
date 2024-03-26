@@ -191,7 +191,7 @@ export default function Home() {
                   <th scope="col" className="px-6 py-3 text-start text-sm font-medium text-gray-500 uppercase">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700">
+              <tbody className="divide-y divide-gray-700 max-w-full">
                 {jsonData.map((item, index) => (
                   <tr key={index} className={editableIndex === index ? "bg-gray-200 bg-gray-700" : "hover:bg-gray-700"}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-200">
@@ -210,7 +210,7 @@ export default function Home() {
                           className="bg-transparent text-gray-200 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 bg-gray-700 border-gray-600 placeholder-gray-400 focus:ring-blue-500 focus:border-purple-500 focus:outline-none resize rounded-md "
                         />
                       ) : (
-                        <pre>{item.text}</pre>
+                        <pre className='whitespace-normal max-w-lg'>{item.text}</pre>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-200">
@@ -252,7 +252,7 @@ export default function Home() {
                       )}
                     </td>
                     {rights &&
-                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-200 max-w-[500px]">
+                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-200 max-w-full">
                       {editableIndex === index ? (
                         <textarea
                           type="text"
