@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Payment, Quote, columns } from "./columns";
+import { Payment, Quote, columns, quoteColumns } from "./columns";
 import { DataTable } from "./data-table";
 import axios from "axios";
 
@@ -35,34 +35,34 @@ interface ApiResponse {
   status: number
 }
 
-const getQuotes = async(): Promise<ApiResponse> =>{
-  const { data } = await axios.get<ApiResponse>("https://quotesapi.divsphere.net/quotes")
-  return data
+const getQuotes = async(): Promise<Quote[]> =>{
+  const { data } = await axios.get<Quote[]>("https://quotesapi.divsphere.net/quotes")
+  const quotes = data
+  console.log(quotes)
+  return quotes
 }
 export default function DemoPage() {
-  const [data, setData] = useState<Payment[]>([]);
-  const [allQuotes, setAllQuotes] = useState<QuoteInterface[]>([])
+  // const [data, setData] = useState<Payment[]>([]);
+  const [allQuotes, setAllQuotes] = useState<Quote[]>([])
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchData() {
-      const result = await getData();
-      const quotes = await getQuotes()
-      setAllQuotes(quotes.data)
-      setData(result);
+    const fetchData = async ()=>{
+      const quotes = (await getQuotes())
+
+      setAllQuotes((quotes))
       setLoading(false);
     }
     fetchData();
 
   }, []);
-
   if (loading) {
     return <div>Loading...</div>; // Add a loading state while the data is being fetched.
   }
 
   return (
     <div className="container mx-auto py-10">
-      <DataTable columns={columns} data={data} />
+      <DataTable columns={quoteColumns} data={allQuotes} />
     </div>
   );
 }
