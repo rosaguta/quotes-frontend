@@ -40,14 +40,15 @@ const AloneTimeChart = ({ data }) => {
     acc[userName].totalMinutes += curr.aloneInMillis / (1000 * 60);
     return acc;
   }, {});
-
+  // sort descending by minutes
+  const sortedUsers = Object.values(userTotals).sort((a, b) => b.totalMinutes - a.totalMinutes);
   // Prepare data for Chart.js
   const chartData = {
-    labels: Object.values(userTotals).map(user => user.username),
+    labels: Object.values(sortedUsers).map(user => user.username),
     datasets: [
       {
         label: 'Minutes Alone',
-        data: Object.values(userTotals).map(user => Math.round(user.totalMinutes)),
+        data: Object.values(sortedUsers).map(user => Math.round(user.totalMinutes)),
         backgroundColor: 'rgba(79, 70, 229, 0.8)', // Indigo color matching previous example
         borderColor: 'rgba(79, 70, 229, 1)',
         borderWidth: 1,
