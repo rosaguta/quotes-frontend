@@ -29,6 +29,7 @@
     "react-toastify": "^10.0.4",
     "react-tsparticles": "^2.12.2",
     "recharts": "^2.14.1",
+    "satori": "^0.12.0",
     "tailwind-merge": "^2.2.1"
   },
   "devDependencies": {

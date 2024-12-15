@@ -13,7 +13,7 @@ import {
 import { Bar } from 'react-chartjs-2';
 import { Card, CardHeader, CardTitle, CardContent } from '../Components/ui/card';
 import "chartjs-plugin-datalabels"
-import ChartDataLabels from 'chartjs-plugin-datalabels'; 
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 // Register ChartJS components
 ChartJS.register(
   CategoryScale,
@@ -58,6 +58,9 @@ const AloneTimeChart = ({ data }) => {
     ],
   };
   const options = {
+    animation: {
+      duration: 0
+    },
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -65,14 +68,14 @@ const AloneTimeChart = ({ data }) => {
         align: 'top',
         anchor: 'start',
         color: 'white',
-        font:{
+        font: {
           weight: 'bold'
         },
-        formatter: function(value, context){
+        formatter: function (value, context) {
           return value + " minutes"
         }
-        
-    },
+
+      },
       legend: {
         display: false,
         position: 'top',
@@ -82,7 +85,7 @@ const AloneTimeChart = ({ data }) => {
       },
       tooltip: {
         callbacks: {
-          label: function(context) {
+          label: function (context) {
             return `${Math.round(context.raw)} minutes`;
           }
         }
@@ -108,7 +111,7 @@ const AloneTimeChart = ({ data }) => {
         }
       }
     },
-    
+
   };
 
   return (
