@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -25,7 +25,9 @@ ChartJS.register(
   ChartDataLabels
 );
 
-const AloneTimeChart = ({ data }) => {
+const AloneTimeChart = ({ data, toImage }) => {
+  const chartRef = useRef(null);
+  const [imageUrl, setImageUrl] = useState(null);
   // Parse the data if it's a string
   const parsedData = typeof data === 'string' ? JSON.parse(data) : data;
 
@@ -81,7 +83,12 @@ const AloneTimeChart = ({ data }) => {
         position: 'top',
       },
       title: {
-        display: false,
+        display: true,
+        text: "Total Time Alone Per User",
+        color: 'white',
+        font: {
+          weight: 'bold',
+        },
       },
       tooltip: {
         callbacks: {
@@ -114,8 +121,47 @@ const AloneTimeChart = ({ data }) => {
 
   };
 
+  useEffect(() => {
+    if (toImage) {
+      // Create an offscreen canvas
+      const canvas = document.createElement('canvas');
+      canvas.width = 800;  // Set desired width
+      canvas.height = 400; // Set desired height
+
+      // Create a new Chart instance on the offscreen canvas
+      const ctx = canvas.getContext('2d');
+      const chart = new ChartJS(ctx, {
+        type: 'bar',
+        data: chartData,
+        options: {
+          ...options,
+          // Override any responsive options for fixed size
+          responsive: false,
+          maintainAspectRatio: false,
+        }
+      });
+
+      // Convert to image immediately
+      const imageUrl = canvas.toDataURL('image/png');
+      setImageUrl(imageUrl);
+
+      // Clean up
+      chart.destroy();
+    }
+  }, [toImage]);
+
+  if (toImage && imageUrl) {
+    const link = document.createElement('a');
+    link.href = imageUrl;
+    link.download = 'lonerChartImage.png';
+    link.click();
+    return (
+      <div></div>
+    );
+  }
+
   return (
-    <Card className="w-full">
+    <Card className="w-1/2">
       <CardHeader>
         <CardTitle>Total Time Alone Per User</CardTitle>
       </CardHeader>
@@ -125,5 +171,4 @@ const AloneTimeChart = ({ data }) => {
     </Card>
   );
 };
-
 export default AloneTimeChart;
