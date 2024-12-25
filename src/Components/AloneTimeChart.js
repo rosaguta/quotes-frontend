@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef, useState, useEffect } from 'react';
+import React from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -13,7 +13,7 @@ import {
 import { Bar } from 'react-chartjs-2';
 import { Card, CardHeader, CardTitle, CardContent } from '../Components/ui/card';
 import "chartjs-plugin-datalabels"
-import ChartDataLabels from 'chartjs-plugin-datalabels';
+import ChartDataLabels from 'chartjs-plugin-datalabels'; 
 // Register ChartJS components
 ChartJS.register(
   CategoryScale,
@@ -25,9 +25,7 @@ ChartJS.register(
   ChartDataLabels
 );
 
-const AloneTimeChart = ({ data, toImage }) => {
-  const chartRef = useRef(null);
-  const [imageUrl, setImageUrl] = useState(null);
+const AloneTimeChart = ({ data }) => {
   // Parse the data if it's a string
   const parsedData = typeof data === 'string' ? JSON.parse(data) : data;
 
@@ -60,9 +58,6 @@ const AloneTimeChart = ({ data, toImage }) => {
     ],
   };
   const options = {
-    animation: {
-      duration: 0
-    },
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
@@ -70,29 +65,24 @@ const AloneTimeChart = ({ data, toImage }) => {
         align: 'top',
         anchor: 'start',
         color: 'white',
-        font: {
+        font:{
           weight: 'bold'
         },
-        formatter: function (value, context) {
+        formatter: function(value, context){
           return value + " minutes"
         }
-
-      },
+        
+    },
       legend: {
         display: false,
         position: 'top',
       },
       title: {
-        display: true,
-        text: "Total Time Alone Per User",
-        color: 'white',
-        font: {
-          weight: 'bold',
-        },
+        display: false,
       },
       tooltip: {
         callbacks: {
-          label: function (context) {
+          label: function(context) {
             return `${Math.round(context.raw)} minutes`;
           }
         }
@@ -118,57 +108,19 @@ const AloneTimeChart = ({ data, toImage }) => {
         }
       }
     },
-
+    
   };
 
-  useEffect(() => {
-    if (toImage) {
-      // Create an offscreen canvas
-      const canvas = document.createElement('canvas');
-      canvas.width = 800;  // Set desired width
-      canvas.height = 400; // Set desired height
-
-      // Create a new Chart instance on the offscreen canvas
-      const ctx = canvas.getContext('2d');
-      const chart = new ChartJS(ctx, {
-        type: 'bar',
-        data: chartData,
-        options: {
-          ...options,
-          // Override any responsive options for fixed size
-          responsive: false,
-          maintainAspectRatio: false,
-        }
-      });
-
-      // Convert to image immediately
-      const imageUrl = canvas.toDataURL('image/png');
-      setImageUrl(imageUrl);
-
-      // Clean up
-      chart.destroy();
-    }
-  }, [toImage]);
-
-  if (toImage && imageUrl) {
-    const link = document.createElement('a');
-    link.href = imageUrl;
-    link.download = 'lonerChartImage.png';
-    link.click();
-    return (
-      <div></div>
-    );
-  }
-
   return (
-    <Card className="w-1/2">
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Total Time Alone Per User</CardTitle>
       </CardHeader>
-      <CardContent className="h-[400px]">
+      <CardContent className="h-[550px]">
         <Bar data={chartData} options={options} />
       </CardContent>
     </Card>
   );
 };
+
 export default AloneTimeChart;
