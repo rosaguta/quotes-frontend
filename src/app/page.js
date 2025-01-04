@@ -3,7 +3,7 @@ import Link from 'next/link';
 import React, { useState, useEffect, useRef } from 'react';
 import LoginModal from "../Components/LoginModal";
 import { toast, ToastContainer } from "react-toastify";
-import { SparklesCore } from "../Components/ui/sparkles";
+import { SparklesCore } from "../components/ui/sparkles";
 
 const HomePage = () => {
     const [quote, setQuote] = useState("");
