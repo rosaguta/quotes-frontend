@@ -16,7 +16,7 @@ export default function Home() {
   const [editableIndex, setEditableIndex] = useState(null);
   const [deleteIndex, setDeleteIndex] = useState(null);
   const [originalItem, setOriginalItem] = useState(null);
-
+  const [dummyState, setDummyState] = useState(0);
   useEffect(() => {
 
     const fetchData = async () => {
@@ -35,7 +35,7 @@ export default function Home() {
       }
     };
     fetchData();
-
+    setDummyState((prev) => prev + 1);
   }, []);
 
   const handleEditClick = (index) => {
@@ -59,7 +59,7 @@ export default function Home() {
     setDeleteIndex(index);
   };
 
-  const handleSendClick = async (item) => {
+  const handleSendClick = async (item: Quote) => {
     const headerlist = {
       "Accept": "*/*",
       "Content-Type": "application/json",
@@ -109,9 +109,8 @@ export default function Home() {
 
   };
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = async (id: string) => {
     try {
-      const idToDelete = jsonData[deleteIndex].id;
       const headerlist = {
         "Accept": "*/*",
         "User-Agent": "Thunder Client (https://www.thunderclient.com)",
@@ -120,7 +119,7 @@ export default function Home() {
       }
 
       // Assuming your server supports the DELETE request for deleting an item
-      await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/quotes/${idToDelete}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/quotes/${id}`, {
         headers: headerlist,
         method: 'DELETE',
       }).then(response => {
@@ -151,11 +150,12 @@ export default function Home() {
             theme: "dark"
           })
           // Remove the deleted item from the jsonData
-          setJsonData((prevData) => prevData.filter((item, index) => index !== deleteIndex));
-
-          // Clear the delete index after successful deletion
-          setDeleteIndex(null);
-
+          console.log("jsonData is not yet set")
+          setJsonData((prevData) => {
+            if (!prevData) return prevData; // Safeguard
+            return prevData.filter((item) => item.id !== id); // Use the `id` instead of `deleteIndex`
+          });
+          console.log("jsonData is set")
         }
       });
 
@@ -180,21 +180,11 @@ export default function Home() {
       <div className=" overflow-x-auto">
         <div className="p-1.5 min-w-full inline-block align-middle">
           <div className="overflow-hidden">
-            <DataTable columns={columns} data={jsonData}/>
+          <DataTable columns={columns(handleSendClick, handleConfirmDelete)} data={jsonData}/>
           </div>
         </div>
       </div>
-      {deleteIndex !== null && (
-        <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center">
-          <div className="inline-block align-bottom rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full group bg-gradient-to-br p-1.5 from-red-500 to-pink-700 text-white">
-            <div className="bg-gray-950 p-5 rounded-md">
-              <p className="pb-5">Are you sure you want to delete this quote?</p>
-              <button className="hover:text-white border font-medium rounded-lg text-sm px-4 py-2 text-center me-2 mb-2 border-red-500 text-red-500 hover:text-white hover:bg-red-600" onClick={handleConfirmDelete}>Yes</button>
-              <button className="hover:text-white border font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 border-gray-600 text-gray-400 hover:text-white hover:bg-gray-600 " onClick={() => setDeleteIndex(null)}>No</button>
-            </div>
-          </div>
-        </div>
-      )}
+     
       <ToastContainer />
     </div>
   );
