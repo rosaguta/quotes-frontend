@@ -52,6 +52,7 @@ export default function Home() {
       )
     );
     setEditModalOpen(false);
+    handleSendClick(updatedQuote)
   };
   const handleDeleteClick = (index) => {
     setDeleteIndex(index);
