@@ -53,9 +53,6 @@ const LoginModal = ({ isOpen, toggleModal, onLoginSuccess }) => {
             setcookie(jwt);
             onLoginSuccess(true)
             toggleModal();
-
-            // Call the callback function with the user data
-            ;
         }
     };
 

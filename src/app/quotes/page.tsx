@@ -6,6 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import * as jose from 'jose'
 import { columns, Quote } from '@/components/columns';
 import { DataTable } from '@/components/data-table';
+import EditQuoteModal from "@/components/EditQuoteModal"
 export default function Home() {
   const token = Cookies.get('token');
   let claims = null
@@ -13,7 +14,8 @@ export default function Home() {
     claims = jose.decodeJwt(token);
   }
   const [jsonData, setJsonData] = useState<Quote[] | null>(null);
-  const [editableIndex, setEditableIndex] = useState(null);
+  const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
+  const [quoteToEdit, setQuoteToEdit] = useState<Quote | null>(null)
   const [deleteIndex, setDeleteIndex] = useState(null);
   const [originalItem, setOriginalItem] = useState(null);
   const [dummyState, setDummyState] = useState(0);
@@ -27,7 +29,7 @@ export default function Home() {
           "Authorization": `Bearer ${token}`,
           "Access-Control-Allow-Origin": "no-cors"
         }
-        const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/quotes`,{headers: headerlist,});
+        const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/quotes`, { headers: headerlist, });
         const data: Quote[] = await response.json();
         setJsonData(data);
       } catch (error) {
@@ -35,26 +37,22 @@ export default function Home() {
       }
     };
     fetchData();
-    setDummyState((prev) => prev + 1);
   }, []);
 
   const handleEditClick = (index) => {
-    setEditableIndex(index);
-    // Store the original item before editing
-    setOriginalItem(jsonData[index]);
+    console.log("index:", index)
+    console.log("quote:", jsonData.find((el)=>el.id == index))
+    setQuoteToEdit(jsonData.find((el)=>el.id == index)); // Directly set the new quote to edit
+    setEditModalOpen(true); // Ensure the modal opens
   };
-
-  const handleCancelEdit = () => {
-    // Revert changes and cancel editing
-    setJsonData((prevData) => {
-      const newData = [...prevData];
-      newData[editableIndex] = originalItem; // Restore original item
-      return newData;
-    });
-    setEditableIndex(null);
-    setOriginalItem(null); // Reset original item state
+  const handleSaveQuote = (updatedQuote) => {
+    setJsonData((prevData) =>
+      prevData.map((quote) =>
+        quote.id === updatedQuote.id ? updatedQuote : quote
+      )
+    );
+    setEditModalOpen(false);
   };
-
   const handleDeleteClick = (index) => {
     setDeleteIndex(index);
   };
@@ -98,7 +96,7 @@ export default function Home() {
           progress: undefined,
           theme: "dark"
         })
-        setEditableIndex(null);
+        setEditModalOpen(false);
         setJsonData((prevData) => {
           const newData = [...prevData];
           newData[item.id] = item;
@@ -162,9 +160,8 @@ export default function Home() {
     } catch (error) {
       console.error("Error deleting data:", error);
     }
-    
+
   };
-  const rights = claims ? claims.Rights === "True" : false;
   if (!jsonData) {
     return <div className="w-full min-h-screen flex justify-center items-center">
       <div className="flex min-h-screen w-full items-center justify-center">
@@ -177,14 +174,25 @@ export default function Home() {
 
   return (
     <div className="flex flex-col">
+      {editModalOpen && (
+
+        <EditQuoteModal
+          isOpen={editModalOpen}
+          toggleModal={setEditModalOpen}
+          Quote={quoteToEdit}
+          onSave={handleSaveQuote}
+        />
+      )
+      }
+
       <div className=" overflow-x-auto">
         <div className="p-1.5 min-w-full inline-block align-middle">
           <div className="overflow-hidden">
-          <DataTable columns={columns(handleSendClick, handleConfirmDelete)} data={jsonData}/>
+            <DataTable columns={columns(handleEditClick, handleConfirmDelete)} data={jsonData} />
           </div>
         </div>
       </div>
-     
+
       <ToastContainer />
     </div>
   );

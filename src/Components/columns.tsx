@@ -27,7 +27,7 @@ console.log(token);
 
 // Table columns
 export const columns = (
-  handleEditQuote: (quote: Quote) => void,
+  handleEditQuote: (id: number) => void,
   handleDeleteQuote: (id: string) => void
 ): ColumnDef<Quote>[] => [
     {
@@ -95,7 +95,7 @@ export const columns = (
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <DropdownMenuItem onClick={() => handleEditQuote(quote)}>
+                  <DropdownMenuItem onClick={() => handleEditQuote(quote.id)}>
                     Edit
                   </DropdownMenuItem>
                   <DropdownMenuItem
