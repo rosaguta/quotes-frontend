@@ -32,14 +32,14 @@ export const columns = (
 ): ColumnDef<Quote>[] => [
     {
       accessorKey: "text",
-      header: "Text",
+      header: () => <p className="text-lg">Text</p>,
       cell: ({ row }) => {
         const textParts = row.getValue<string>("text").split("\n");
         return (
           <p>
             {textParts.map((part, index) => (
               <React.Fragment key={index}>
-                {part}
+                <p className="text-lg">{part}</p>
                 <br />
               </React.Fragment>
             ))}
@@ -49,11 +49,14 @@ export const columns = (
     },
     {
       accessorKey: "person",
-      header: "Person",
+      header: () =><p className="text-lg">Person</p> ,
+      cell:({row})=>{
+        return <p className="text-lg">{row.getValue<string>("person")}</p>
+      }
     },
     {
       accessorKey: "dateTimeCreated",
-      header: "When",
+      header: ()=><p className="text-lg">When</p> ,
       cell: ({ row }) => {
         const convertedDate = new Date(row.getValue("dateTimeCreated"));
         const pad = (num: number) => String(num).padStart(2, "0");
@@ -71,7 +74,7 @@ export const columns = (
           ":" +
           pad(convertedDate.getUTCSeconds());
 
-        return date + " at " + time;
+        return <p className="text-lg">{date + " at " + time}</p>;
       },
     },
     ...(token

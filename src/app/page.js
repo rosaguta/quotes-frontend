@@ -1,7 +1,7 @@
 "use client"
 import Link from 'next/link';
 import React, { useState, useEffect, useRef } from 'react';
-import LoginModal from "../Components/LoginModal";
+import LoginModal from "../components/LoginModal";
 import { toast, ToastContainer } from "react-toastify";
 import { SparklesCore } from "../components/ui/sparkles";
 
