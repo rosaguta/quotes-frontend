@@ -20,21 +20,24 @@ const HomePage = () => {
       timestamp: '01/12/2023 21:00',
       author: 'Liv',
       message: 'Hoe kan ik in mezelf busten',
-      href: '/quotes'
+      href: '/quotes',
+      colors: [[39, 42, 242],[134, 39, 242]]
     },
     {
       title: 'Rizz',
       timestamp: '17/06/2024 12:02',
       author: 'Rose',
       message: 'Hey girl ik heb een lodge, Wil je met me intrekken??',
-      href: '/rizz'
+      href: '/rizz',
+      colors: [[255, 0, 221],[174, 0, 255]]
     },
     {
       title: 'Insults',
       timestamp: '21/09/2024 22:13',
       author: 'Daan',
       message: 'je kan de tinteltyfus krijgen',
-      href: '/insults'
+      href: '/insults',
+      colors: [[237, 19, 19],[237, 19, 103]]
     }
   ];
 
@@ -45,12 +48,12 @@ const HomePage = () => {
         background="transparent"
         className="w-full h-full absolute"
         particleColor='#FFFFFF'
-      />
+      />/
       <div className="min-h-scree p-8">
         <div className="max-w-screen-xl mx-auto flex items-center">
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             {sections.map((section) => (
-              <CardSpotlight className=''>
+              <CardSpotlight className='' colors={section.colors}>
                 <div className='relative select-none'>
                   <Link href={section.href}>
                     <div className="flex items-center justify-between mb-4 ">
