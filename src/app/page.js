@@ -9,35 +9,71 @@ import { SparklesCore } from '@/components/ui/sparkles';
 
 const HomePage = () => {
 
+  const [quote, setQuote] = useState(null)
+  const [rizz, setRizz] = useState(null)
+  const [insult, setInsult] = useState(null)
   const [particleSettings, setParticleSettings] = useState({
     minSize: 1,
     maxSize: 1.5,
     particleDensity: 50
   });
+
+  useEffect(() => {
+    const formatDate = (isoString) => {
+      const date = new Date(isoString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const seconds = String(date.getSeconds()).padStart(2, '0');
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    };
+    const fetchData = async () => {
+      const fetchEndpoint = async (endpoint) => {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/${endpoint}/random?asObject=true`)
+        return await response.json()
+      }
+      const [fetchedQuote, fetchedRizz, fetchedInsult] = await Promise.all([
+        fetchEndpoint("quotes"),
+        fetchEndpoint("rizzes"),
+        fetchEndpoint("insults")
+      ]);
+
+      fetchedQuote.dateTimeCreated = formatDate(fetchedQuote.dateTimeCreated)
+      fetchedRizz.dateTimeCreated = formatDate(fetchedRizz.dateTimeCreated)
+      fetchedInsult.dateTimeCreated = formatDate(fetchedInsult.dateTimeCreated)
+
+      setQuote(fetchedQuote)
+      setRizz(fetchedRizz)
+      setInsult(fetchedInsult)
+    }
+
+    fetchData()
+
+
+  }, [])
+
+
+
   const sections = [
     {
       title: 'Quotes',
-      timestamp: '01/12/2023 21:00',
-      author: 'Liv',
-      message: 'Hoe kan ik in mezelf busten',
+      ...quote,
       href: '/quotes',
-      colors: [[39, 42, 242],[134, 39, 242]]
+      colors: [[39, 42, 242], [134, 39, 242]]
     },
     {
       title: 'Rizz',
-      timestamp: '17/06/2024 12:02',
-      author: 'Rose',
-      message: 'Hey girl ik heb een lodge, Wil je met me intrekken??',
+      ...rizz,
       href: '/rizz',
-      colors: [[255, 0, 221],[174, 0, 255]]
+      colors: [[255, 0, 221], [174, 0, 255]]
     },
     {
       title: 'Insults',
-      timestamp: '21/09/2024 22:13',
-      author: 'Daan',
-      message: 'je kan de tinteltyfus krijgen',
+      ...insult,
       href: '/insults',
-      colors: [[237, 19, 19],[237, 19, 103]]
+      colors: [[237, 19, 19], [237, 19, 103]]
     }
   ];
 
@@ -48,12 +84,12 @@ const HomePage = () => {
         background="transparent"
         className="w-full h-full absolute"
         particleColor='#FFFFFF'
-      />/
-      <div className="min-h-scree p-8">
-        <div className="max-w-screen-xl mx-auto flex items-center">
+      />
+      <div className="min-h-screen p-8">
+        <div className="max-w-screen-xl mx-auto flex items-center justify-center">
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             {sections.map((section) => (
-              <CardSpotlight className='' colors={section.colors}>
+              <CardSpotlight className='lg:max-w-none max-w-80' colors={section.colors}>
                 <div className='relative select-none'>
                   <Link href={section.href}>
                     <div className="flex items-center justify-between mb-4 ">
@@ -62,9 +98,9 @@ const HomePage = () => {
                     </div>
                     <div className="space-y-2">
                       <p className="text-gray-400 text-sm">
-                        {section.author} - {section.timestamp}
+                        {section.person} - {section.dateTimeCreated}
                       </p>
-                      <p className="text-gray-300">{section.message}</p>
+                      <p className="text-gray-300">{section.text}</p>
                     </div>
                   </Link>
                 </div>
