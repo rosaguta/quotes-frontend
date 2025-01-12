@@ -8,12 +8,12 @@ import { CardSpotlight } from '@/components/ui/card-spotlight';
 import { SparklesCore } from '@/components/ui/sparkles';
 
 const HomePage = () => {
-  
+
   const [particleSettings, setParticleSettings] = useState({
     minSize: 1,
     maxSize: 1.5,
     particleDensity: 50
-});
+  });
   const sections = [
     {
       title: 'Quotes',
@@ -40,36 +40,36 @@ const HomePage = () => {
 
   return (
     <div>
-    <SparklesCore
-                    {...particleSettings}
-                    background="transparent"
-                    className="w-full h-full absolute"
-                    particleColor='#FFFFFF'
-                />
-    <div className="min-h-scree p-8">
-      <div className="max-w-screen-xl mx-auto flex items-center">
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-          {sections.map((section) => (
-            <CardSpotlight className=''>
-              <div className='relative select-none'>
-                <Link href={section.href}>
-                  <div className="flex items-center justify-between mb-4 ">
-                    <h2 className="text-2xl font-bold text-white">{section.title}</h2>
-                    {section.icon}
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-gray-400 text-sm">
-                      {section.author} - {section.timestamp}
-                    </p>
-                    <p className="text-gray-300">{section.message}</p>
-                  </div>
-                </Link>
-              </div>
-            </CardSpotlight>
-          ))}
+      <SparklesCore
+        {...particleSettings}
+        background="transparent"
+        className="w-full h-full absolute"
+        particleColor='#FFFFFF'
+      />
+      <div className="min-h-scree p-8">
+        <div className="max-w-screen-xl mx-auto flex items-center">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            {sections.map((section) => (
+              <CardSpotlight className=''>
+                <div className='relative select-none'>
+                  <Link href={section.href}>
+                    <div className="flex items-center justify-between mb-4 ">
+                      <h2 className="text-2xl font-bold text-white">{section.title}</h2>
+                      {section.icon}
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-gray-400 text-sm">
+                        {section.author} - {section.timestamp}
+                      </p>
+                      <p className="text-gray-300">{section.message}</p>
+                    </div>
+                  </Link>
+                </div>
+              </CardSpotlight>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
     </div>
   );
 };
