@@ -1,11 +1,19 @@
 "use client"
 import React from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Motion } from 'lucide-react';
 import Link from 'next/link';
 import { CardSpotlight } from '@/components/ui/card-spotlight';
+import { SparklesCore } from '@/components/ui/sparkles';
 
 const HomePage = () => {
+  
+  const [particleSettings, setParticleSettings] = useState({
+    minSize: 1,
+    maxSize: 1.5,
+    particleDensity: 50
+});
   const sections = [
     {
       title: 'Quotes',
@@ -31,7 +39,14 @@ const HomePage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-zinc-950 p-8">
+    <div>
+    <SparklesCore
+                    {...particleSettings}
+                    background="transparent"
+                    className="w-full h-full absolute"
+                    particleColor='#FFFFFF'
+                />
+    <div className="min-h-scree p-8">
       <div className="max-w-screen-xl mx-auto flex items-center">
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           {sections.map((section) => (
@@ -54,6 +69,7 @@ const HomePage = () => {
           ))}
         </div>
       </div>
+    </div>
     </div>
   );
 };
