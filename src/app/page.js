@@ -6,12 +6,15 @@ import { Motion } from 'lucide-react';
 import Link from 'next/link';
 import { CardSpotlight } from '@/components/ui/card-spotlight';
 import { SparklesCore } from '@/components/ui/sparkles';
+import { User } from 'lucide-react';
+import LoginModal from '@/components/LoginModal';
 
 const HomePage = () => {
 
   const [quote, setQuote] = useState(null)
   const [rizz, setRizz] = useState(null)
   const [insult, setInsult] = useState(null)
+  const [loginModalOpen, setLoginModalOpen] = useState(false)
   const [particleSettings, setParticleSettings] = useState({
     minSize: 0.5,
     maxSize: 2,
@@ -74,9 +77,9 @@ const HomePage = () => {
     };
 
   }, [])
-
-
-
+  const handleUserClick = ()=>{
+    setLoginModalOpen(!loginModalOpen )
+  }
   const sections = [
     {
       title: 'Quotes',
@@ -115,7 +118,11 @@ const HomePage = () => {
           className="w-full h-full absolute"
         />
       )}
+      <User onClick={handleUserClick} className='absolute bottom-4 right-4 hover:cursor-pointer' > </User>
+      <LoginModal isOpen={loginModalOpen} toggleModal={handleUserClick}></LoginModal>
+
       <div className=" p-8">
+        
         <div className=" mx-auto flex items-center justify-center">
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             {sections.map((section) => (
@@ -139,6 +146,7 @@ const HomePage = () => {
           </div>
         </div>
       </div>
+      
     </div>
   );
 };
