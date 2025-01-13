@@ -61,7 +61,7 @@ const HomePage = () => {
       title: 'Quotes',
       ...quote,
       href: '/quotes',
-      colors: [[39, 42, 242], [134, 39, 242]]
+      colors: [[39, 42, 242], [200, 17, 237]]
     },
     {
       title: 'Rizz',
@@ -85,15 +85,15 @@ const HomePage = () => {
         className="w-full h-full absolute"
         particleColor='#FFFFFF'
       />
-      <div className="min-h-screen p-8">
-        <div className="max-w-screen-xl mx-auto flex items-center justify-center">
+      <div className=" p-8">
+        <div className=" mx-auto flex items-center justify-center">
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             {sections.map((section) => (
               <CardSpotlight className='lg:max-w-none max-w-80' colors={section.colors}>
                 <div className='relative select-none'>
                   <Link href={section.href}>
                     <div className="flex items-center justify-between mb-4 ">
-                      <h2 className="text-2xl font-bold text-white">{section.title}</h2>
+                      <h2 className="text-2xl min-w-72 font-bold text-white">{section.title}</h2>
                       {section.icon}
                     </div>
                     <div className="space-y-2">
