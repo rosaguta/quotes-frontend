@@ -13,11 +13,29 @@ const HomePage = () => {
   const [rizz, setRizz] = useState(null)
   const [insult, setInsult] = useState(null)
   const [particleSettings, setParticleSettings] = useState({
-    minSize: 1,
-    maxSize: 1.5,
-    particleDensity: 50
+    minSize: 0.5,
+    maxSize: 2,
+    particleDensity: 25
   });
-
+  const [coolModeActivated, setCoolMode] = useState(false)
+  let buttonstring = ""
+  const CoolWords = ["shark", "trans", "pride"];
+  const findCoolWord = (str) => {
+    for (const word of CoolWords) {
+      if (str.includes(word)) {
+        return true
+      }
+    }
+  }
+  const handleKeydown = (event) => {
+    let Key = event.key
+    let key = Key.toLocaleLowerCase()
+    buttonstring = buttonstring.concat(key)
+    if ((findCoolWord(buttonstring))) {
+      setCoolMode(true)
+      buttonstring = ""
+    }
+  }
   useEffect(() => {
     const formatDate = (isoString) => {
       const date = new Date(isoString);
@@ -50,7 +68,10 @@ const HomePage = () => {
     }
 
     fetchData()
-
+    document.addEventListener("keydown", handleKeydown);
+    return () => {
+      document.removeEventListener("keydown", handleKeydown);
+    };
 
   }, [])
 
@@ -79,12 +100,21 @@ const HomePage = () => {
 
   return (
     <div>
-      <SparklesCore
-        {...particleSettings}
-        background="transparent"
-        className="w-full h-full absolute"
-        particleColor='#FFFFFF'
-      />
+      {!coolModeActivated ? (
+
+        <SparklesCore
+          {...particleSettings}
+          background="transparent"
+          className="w-full h-full absolute"
+          particleColor='#FFFFFF'
+        />
+      ) : (
+        <SparklesCore
+          {...particleSettings}
+          background="transparent"
+          className="w-full h-full absolute"
+        />
+      )}
       <div className=" p-8">
         <div className=" mx-auto flex items-center justify-center">
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
