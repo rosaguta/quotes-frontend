@@ -32,14 +32,14 @@ export const columns = (
 ): ColumnDef<Quote>[] => [
     {
       accessorKey: "text",
-      header: () => <p className="text-lg">Text</p>,
+      header: () => <p className="md:text-lg">Text</p>,
       cell: ({ row }) => {
         const textParts = row.getValue<string>("text").split("\n");
         return (
           <p>
             {textParts.map((part, index) => (
               <React.Fragment key={index}>
-                <p className="text-lg">{part}</p>
+                <p className="md:text-lg">{part}</p>
                 <br />
               </React.Fragment>
             ))}
@@ -49,14 +49,14 @@ export const columns = (
     },
     {
       accessorKey: "person",
-      header: () =><p className="text-lg">Person</p> ,
+      header: () =><p className="md:text-lg">Person</p> ,
       cell:({row})=>{
-        return <p className="text-lg">{row.getValue<string>("person")}</p>
+        return <p className="md:text-lg">{row.getValue<string>("person")}</p>
       }
     },
     {
       accessorKey: "dateTimeCreated",
-      header: ()=><p className="text-lg">When</p> ,
+      header: ()=><p className="md:text-lg">When</p> ,
       cell: ({ row }) => {
         const convertedDate = new Date(row.getValue("dateTimeCreated"));
         const pad = (num: number) => String(num).padStart(2, "0");
@@ -74,14 +74,17 @@ export const columns = (
           ":" +
           pad(convertedDate.getUTCSeconds());
 
-        return <p className="text-lg">{date + " at " + time}</p>;
+        return <p className="md:text-lg">{date + " at " + time}</p>;
       },
     },
     ...(token
       ? [
         {
           accessorKey: "context",
-          header: "Context",
+          header: () =><p className="md:text-lg">Context</p> ,
+          cell:({row})=>{
+            return <p className="md:text-lg">{row.getValue("context")}</p>
+          }
         },
         {
           id: "actions",

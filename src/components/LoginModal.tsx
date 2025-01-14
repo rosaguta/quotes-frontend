@@ -9,8 +9,8 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import setcookie from "./Cookies";
-
+import Setcookie from "./Cookies";
+import * as jose from 'jose'
 type User = {
   Username: string;
   Password: string;
@@ -50,7 +50,10 @@ const LoginModal = ({ isOpen, toggleModal, onLoginSuccess }) => {
     }
 } else {
     let jwt = await response.text();
-    setcookie(jwt);
+    const claims = jose.decodeJwt(jwt);
+    console.log(claims.exp);
+    const rfc2822 = new Date(claims.exp * 1000).toUTCString();
+    Setcookie(jwt, rfc2822)
     onLoginSuccess(true)
     toggleModal();
 }
@@ -63,7 +66,7 @@ const LoginModal = ({ isOpen, toggleModal, onLoginSuccess }) => {
       onClick={() => toggleModal(false)}
     >
       <div
-        className="w-1/6 bg-white rounded-lg shadow-lg"
+        className="w-1/4 bg-white rounded-lg shadow-lg"
         onClick={(e) => e.stopPropagation()}
       >
         <Card>
@@ -98,7 +101,7 @@ const LoginModal = ({ isOpen, toggleModal, onLoginSuccess }) => {
               </button>
             </div>
             <div className="mt-4 flex w-full justify-center">
-              <Button className="bg-indigo-700 hover:bg-indigo-500 text-white"
+              <Button className="bg-white transition ease-in-out duration-300 hover:bg-primary/90 text-black"
               onClick={sendLogin}>
                 Login
               </Button>
