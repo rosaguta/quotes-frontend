@@ -2,6 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import React from "react";
+import { useState } from "react";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,9 +22,9 @@ export type Quote = {
   dateTimeCreated: any;
 };
 
-const token = Cookies.get("token");
+// const token = Cookies.get("token");
 
-console.log(token);
+// console.log(token);
 
 // Table columns
 export const columns = (
@@ -77,7 +78,7 @@ export const columns = (
         return <p className="md:text-lg">{date + " at " + time}</p>;
       },
     },
-    ...(token
+    ...(Cookies.get('token')
       ? [
         {
           accessorKey: "context",

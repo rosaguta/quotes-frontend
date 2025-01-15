@@ -8,30 +8,35 @@ import { columns, Quote } from '@/components/columns';
 import { DataTable } from '@/components/data-table';
 import EditQuoteModal from "@/components/EditQuoteModal"
 export default function Home() {
-  const token = Cookies.get('token');
-  let claims = null
-  if (token) {
-    claims = jose.decodeJwt(token);
-  }
+  // const token = Cookies.get('token');
+  // let claims = null
+  // if (token) {
+  //   claims = jose.decodeJwt(token);
+  // }
   const [jsonData, setJsonData] = useState<Quote[] | null>(null);
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [quoteToEdit, setQuoteToEdit] = useState<Quote | null>(null)
   const [deleteIndex, setDeleteIndex] = useState(null);
   const [originalItem, setOriginalItem] = useState(null);
   const [dummyState, setDummyState] = useState(0);
+  const [jwtToken, setJwtToken] = useState<string>()
   useEffect(() => {
 
     const fetchData = async () => {
       try {
+        const token = Cookies.get('token')
         const headerlist = {
           "Accept": "*/*",
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
           "Access-Control-Allow-Origin": "no-cors"
         }
-        const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/quotes`, { headers: headerlist, });
+        if(token){
+          headerlist["Authorization"] = `Bearer ${token}` 
+        }
+        const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/Quotes`, { headers: headerlist, });
         const data: Quote[] = await response.json();
         setJsonData(data);
+        setJwtToken(token)
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -62,7 +67,7 @@ export default function Home() {
     const headerlist = {
       "Accept": "*/*",
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
+      "Authorization": `Bearer ${jwtToken}`,
       "Access-Control-Allow-Origin": "no-cors"
     }
     let jsonbody = JSON.stringify(item)
@@ -113,7 +118,7 @@ export default function Home() {
       const headerlist = {
         "Accept": "*/*",
         "User-Agent": "Thunder Client (https://www.thunderclient.com)",
-        "Authorization": `Bearer ${token}`,
+        "Authorization": `Bearer ${jwtToken}`,
         "Access-Control-Allow-Origin": "no-cors"
       }
 
