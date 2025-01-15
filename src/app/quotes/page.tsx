@@ -18,6 +18,7 @@ import {
   AlertDialogAction
 } from "@/components/ui/alert-dialog"
 import MasornyView from '@/components/MasornyView';
+import { SparklesCore } from '@/components/ui/sparkles';
 export default function Home() {
   // const token = Cookies.get('token');
   // let claims = null
@@ -32,27 +33,52 @@ export default function Home() {
   const [originalItem, setOriginalItem] = useState(null);
   const [dummyState, setDummyState] = useState(0);
   const [jwtToken, setJwtToken] = useState<string>()
-  useEffect(() => {
+  const [particleSettings, setParticleSettings] = useState({
+      minSize: 0.5,
+      maxSize: 2,
+      particleDensity: 25
+    });
 
+  useEffect(() => {
+    const formatDate = (isoString) => {
+      const date = new Date(isoString);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const seconds = String(date.getSeconds()).padStart(2, '0');
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    };
+  
     const fetchData = async () => {
+      const token = Cookies.get('token');
+      const headers = {
+        "Accept": "*/*",
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "no-cors",
+      };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+  
       try {
-        const token = Cookies.get('token')
-        const headerlist = {
-          "Accept": "*/*",
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "no-cors"
-        }
-        if (token) {
-          headerlist["Authorization"] = `Bearer ${token}`
-        }
-        const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/Quotes`, { headers: headerlist, });
-        const data: Quote[] = await response.json();
+        const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/Quotes`, { headers });
+        let data = await response.json();
+  
+        // Convert dates after fetching
+        data = data.map((quote) => ({
+          ...quote,
+          dateTimeCreated: formatDate(quote.dateTimeCreated),
+        }));
+  
         setJsonData(data);
-        setJwtToken(token)
+        setJwtToken(token);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
+  
     fetchData();
   }, []);
 
@@ -193,7 +219,8 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="">
+      
       {editModalOpen && (
 
         <EditQuoteModal
@@ -208,13 +235,21 @@ export default function Home() {
       <div className=" overflow-x-auto">
         <div className="p-1.5 min-w-full inline-block align-middle">
           <div className="overflow-hidden">
-            {jwtToken?(
+            {jwtToken ? (
               <DataTable columns={columns(handleEditClick, handleDeleteClick)} data={jsonData} />)
-               :
-               (
+              :
+              (
+                <div className=''>
+                <SparklesCore
+                {...particleSettings}
+                background="transparent"
+                className="h-full w-screen absolute"
+                particleColor='#d8d8d8'
+              />
                 <MasornyView data={jsonData} />
-               )}
-            
+                </div>
+              )}
+
           </div>
         </div>
       </div>
