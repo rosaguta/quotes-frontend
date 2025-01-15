@@ -7,6 +7,17 @@ import * as jose from 'jose'
 import { columns, Quote } from '@/components/columns';
 import { DataTable } from '@/components/data-table';
 import EditQuoteModal from "@/components/EditQuoteModal"
+import {
+  AlertDialog,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction
+} from "@/components/ui/alert-dialog"
+import MasornyView from '@/components/MasornyView';
 export default function Home() {
   // const token = Cookies.get('token');
   // let claims = null
@@ -16,6 +27,7 @@ export default function Home() {
   const [jsonData, setJsonData] = useState<Quote[] | null>(null);
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [quoteToEdit, setQuoteToEdit] = useState<Quote | null>(null)
+  const [deleteAlertOpen, setDeleteAlertOpen] = useState(false)
   const [deleteIndex, setDeleteIndex] = useState(null);
   const [originalItem, setOriginalItem] = useState(null);
   const [dummyState, setDummyState] = useState(0);
@@ -30,8 +42,8 @@ export default function Home() {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "no-cors"
         }
-        if(token){
-          headerlist["Authorization"] = `Bearer ${token}` 
+        if (token) {
+          headerlist["Authorization"] = `Bearer ${token}`
         }
         const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/Quotes`, { headers: headerlist, });
         const data: Quote[] = await response.json();
@@ -46,8 +58,8 @@ export default function Home() {
 
   const handleEditClick = (index) => {
     console.log("index:", index)
-    console.log("quote:", jsonData.find((el)=>el.id == index))
-    setQuoteToEdit(jsonData.find((el)=>el.id == index)); // Directly set the new quote to edit
+    console.log("quote:", jsonData.find((el) => el.id == index))
+    setQuoteToEdit(jsonData.find((el) => el.id == index)); // Directly set the new quote to edit
     setEditModalOpen(true); // Ensure the modal opens
   };
   const handleSaveQuote = (updatedQuote) => {
@@ -61,6 +73,8 @@ export default function Home() {
   };
   const handleDeleteClick = (index) => {
     setDeleteIndex(index);
+    setDeleteAlertOpen(!deleteAlertOpen)
+
   };
 
   const handleSendClick = async (item: Quote) => {
@@ -194,11 +208,30 @@ export default function Home() {
       <div className=" overflow-x-auto">
         <div className="p-1.5 min-w-full inline-block align-middle">
           <div className="overflow-hidden">
-            <DataTable columns={columns(handleEditClick, handleConfirmDelete)} data={jsonData} />
+            {jwtToken?(
+              <DataTable columns={columns(handleEditClick, handleDeleteClick)} data={jsonData} />)
+               :
+               (
+                <MasornyView data={jsonData} />
+               )}
+            
           </div>
         </div>
       </div>
-
+      <AlertDialog open={deleteAlertOpen} onOpenChange={setDeleteAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?!?!?</AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogDescription>
+            This cannot be undone :c
+          </AlertDialogDescription>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction>Continue</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <ToastContainer />
     </div>
   );

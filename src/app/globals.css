@@ -80,3 +80,18 @@
     @apply bg-background text-foreground;
     }
 }
+
+.my-masonry-grid {
+  display: flex;
+  margin-left: -30px; /* adjust as needed */
+  width: auto;
+}
+.my-masonry-grid_column {
+  padding-left: 30px; /* adjust as needed */
+  background-clip: padding-box;
+}
+
+/* Optional styling for gaps */
+.my-masonry-grid > .my-masonry-grid_column > * {
+  margin-bottom: 30px; /* adjust as needed */
+}

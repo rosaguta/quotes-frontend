@@ -32,7 +32,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "src/components/MasornyView.jsx", "src/app/page.js"  ],
   "exclude": [
     "node_modules"
   ]

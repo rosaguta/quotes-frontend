@@ -136,7 +136,7 @@ const HomePage = () => {
         <div className=" flex items-center justify-center">
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             {sections.map((section) => (
-              <CardSpotlight className='lg:max-w-none max-w-80' colors={section.colors}>
+              <CardSpotlight key={section.title} className='lg:max-w-none max-w-80' colors={section.colors}>
                 <div className='relative select-none'>
                   <Link href={section.href}>
                     <div className="flex items-center justify-between mb-4 ">
