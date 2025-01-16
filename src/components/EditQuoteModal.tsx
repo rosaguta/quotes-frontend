@@ -11,13 +11,14 @@ import { Input } from "./ui/input"
 import { Label } from "./ui/label"
 import {useState, useEffect} from 'react'
 const EditQuoteModal = ({ isOpen, toggleModal, Quote, onSave }) => {
-    if (!isOpen) return null;
+  const [editedQuote, setEditedQuote] = useState(Quote);
+  useEffect(() => {
+    setEditedQuote(Quote); // Update local state when Quote prop changes
+  }, [Quote]);
+  if (!isOpen) return null;
   
-    const [editedQuote, setEditedQuote] = useState(Quote);
   
-    useEffect(() => {
-      setEditedQuote(Quote); // Update local state when Quote prop changes
-    }, [Quote]);
+    
   
     const handleInputChange = (field, value) => {
       setEditedQuote((prev) => ({

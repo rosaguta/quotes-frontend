@@ -8,6 +8,7 @@ import { User, CircleCheck, CircleMinus } from 'lucide-react';
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/hooks/use-toast"
 import LoginModal from '@/components/LoginModal';
+import DarkCard from '@/components/ui/DarkCard';
 const HomePage = () => {
   const { toast } = useToast()
   const [quote, setQuote] = useState(null)
@@ -102,25 +103,37 @@ const HomePage = () => {
 
   const onLoginSuccess = (loginSucceeded) => {
     if (loginSucceeded) {
-      toast({title:(<div className='flex place-items-center'>
-        <CircleCheck className="p-0.5" color='#00c000'/><p>&nbsp; Access granted</p>
-        </div>), duration:3000, })
-    }else{
-      toast({title:(<div className='flex items-center'>
-        <CircleMinus className="p-0.5" color='#c00000'/><p>&nbsp; Access denied</p>
-        </div>), duration:3000, })
+      toast({
+        title: (<div className='flex place-items-center'>
+          <CircleCheck className="p-0.5" color='#00c000' /><p>&nbsp; Access granted</p>
+        </div>), duration: 3000,
+      })
+    } else {
+      toast({
+        title: (<div className='flex items-center'>
+          <CircleMinus className="p-0.5" color='#c00000' /><p>&nbsp; Access denied</p>
+        </div>), duration: 3000,
+      })
     }
   }
   return (
     <div>
       {!coolModeActivated ? (
 
-        <SparklesCore
-          {...particleSettings}
-          background="transparent"
-          className="w-full h-full absolute"
-          particleColor='#d8d8d8'
-        />
+        <div className="fixed inset-0 opacity-30 -z-20">
+          {[...Array(50)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-[10px] h-[10px] bg-white rounded-full animate-float"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 5}s`,
+                animationDuration: `${5 + Math.random() * 5}s`
+              }}
+            />
+          ))}
+        </div>
       ) : (
         <SparklesCore
           {...particleSettings}
@@ -136,7 +149,7 @@ const HomePage = () => {
         <div className=" flex items-center justify-center">
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             {sections.map((section) => (
-              <CardSpotlight key={section.title} className='lg:max-w-none max-w-80' colors={section.colors}>
+              <DarkCard>
                 <div className='relative select-none'>
                   <Link href={section.href}>
                     <div className="flex items-center justify-between mb-4 ">
@@ -151,13 +164,12 @@ const HomePage = () => {
                     </div>
                   </Link>
                 </div>
-              </CardSpotlight>
+              </DarkCard>
             ))}
           </div>
         </div>
       </div>
       <Toaster />
-
     </div>
   );
 };

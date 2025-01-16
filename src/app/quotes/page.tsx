@@ -34,10 +34,10 @@ export default function Home() {
   const [dummyState, setDummyState] = useState(0);
   const [jwtToken, setJwtToken] = useState<string>()
   const [particleSettings, setParticleSettings] = useState({
-      minSize: 0.5,
-      maxSize: 2,
-      particleDensity: 25
-    });
+    minSize: 0.5,
+    maxSize: 2,
+    particleDensity: 25
+  });
 
   useEffect(() => {
     const formatDate = (isoString) => {
@@ -50,7 +50,7 @@ export default function Home() {
       const seconds = String(date.getSeconds()).padStart(2, '0');
       return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     };
-  
+
     const fetchData = async () => {
       const token = Cookies.get('token');
       const headers = {
@@ -61,24 +61,24 @@ export default function Home() {
       if (token) {
         headers["Authorization"] = `Bearer ${token}`;
       }
-  
+
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/Quotes`, { headers });
         let data = await response.json();
-  
+
         // Convert dates after fetching
         data = data.map((quote) => ({
           ...quote,
           dateTimeCreated: formatDate(quote.dateTimeCreated),
         }));
-  
+
         setJsonData(data);
         setJwtToken(token);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-  
+
     fetchData();
   }, []);
 
@@ -219,8 +219,8 @@ export default function Home() {
   }
 
   return (
-    <div className="">
-      
+    <div className='h-screen'>
+
       {editModalOpen && (
 
         <EditQuoteModal
@@ -239,14 +239,24 @@ export default function Home() {
               <DataTable columns={columns(handleEditClick, handleDeleteClick)} data={jsonData} />)
               :
               (
+
                 <div className=''>
-                <SparklesCore
-                {...particleSettings}
-                background="transparent"
-                className="h-full w-screen absolute"
-                particleColor='#d8d8d8'
-              />
-                <MasornyView data={jsonData} />
+                  <div className="fixed inset-0 opacity-30 -z-20">
+                    {[...Array(100)].map((_, i) => (
+                      <div
+                        key={i}
+                        className="absolute w-[4px] h-[4px] bg-white rounded-full animate-float"
+                        style={{
+                          left: `${Math.random() * 100}%`,
+                          top: `${Math.random() * 100}%`,
+                          animationDelay: `${Math.random() * 5}s`,
+                          animationDuration: `${5 + Math.random() * 5}s`
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <MasornyView data={jsonData} />
+
                 </div>
               )}
 

@@ -17,9 +17,10 @@ type User = {
 };
 
 const LoginModal = ({ isOpen, toggleModal, onLoginSuccess }) => {
-  if (!isOpen) return null;
   const [user, setUser] = useState<User>({ Username: "", Password: "" });
   const [showPassword, setShowPassword] = useState(false);
+
+  if (!isOpen) return null;
 
 
     
