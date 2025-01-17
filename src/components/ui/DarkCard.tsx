@@ -1,24 +1,33 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import DotPattern from './DotPattern';
+import { cn } from '@/lib/utils';
 const DarkCard = ({ children }) => {
-  return (
-    <div className="relative max-w-md p-6 bg-black rounded-xl border-[0.5px] border-[#d51f73] overflow-hidden">
-      <motion.div className="bg-black w-full h-full absolute z-10 inset-0" initial={{scale:1.0}} whileHover={{ scale: 0.0, }}>
-        
-        </motion.div>
-        <div className="absolute inset-0"
-          style={{
-            backgroundImage: 'radial-gradient(#d51f73 0.5px, transparent 0)',
-            backgroundSize: '13px 13px',
-          }}>
+  const [isHovered, setIsHovered] = React.useState(false);
 
-        </div>
-      
+  return (
+    <motion.div
+      className="relative max-w-md p-6 bg-black rounded-xl border-[0.5px] overflow-hidden"
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      whileHover={{ borderColor: "#d51f73" }}
+    >
       <div className="relative z-10">
         {children}
-
       </div>
-    </div>
+      <DotPattern
+        width={12}
+        height={12}
+        cx={1}
+        cy={1}
+        cr={1}
+        className={cn(
+          "[mask-image:linear-gradient(to_bottom_left,white,transparent,transparent)]")}
+        style={{
+          fill: isHovered ? "#d51f73" : "rgba(156, 163, 175, 0.8)", // Adjusted to hover state
+        }}
+      />
+    </motion.div>
   );
 };
 

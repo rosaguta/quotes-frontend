@@ -85,19 +85,19 @@ const HomePage = () => {
       title: 'Quotes',
       ...quote,
       href: '/quotes',
-      colors: [[39, 42, 242], [200, 17, 237]]
+      colors: "purple"
     },
     {
       title: 'Rizz',
       ...rizz,
       href: '/rizz',
-      colors: [[255, 0, 221], [174, 0, 255]]
+      colors:"pink"
     },
     {
       title: 'Insults',
       ...insult,
       href: '/insults',
-      colors: [[237, 19, 19], [237, 19, 103]]
+      color:"red"
     }
   ];
 
@@ -149,7 +149,7 @@ const HomePage = () => {
         <div className=" flex items-center justify-center">
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             {sections.map((section) => (
-              <DarkCard>
+              <DarkCard color={section.color}>
                 <div className='relative select-none'>
                   <Link href={section.href}>
                     <div className="flex items-center justify-between mb-4 ">
