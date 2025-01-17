@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import MasornyView from '@/components/MasornyView';
 import { SparklesCore } from '@/components/ui/sparkles';
+import { Button } from '@/components/ui/button';
 export default function Home() {
   // const token = Cookies.get('token');
   // let claims = null
@@ -273,7 +274,9 @@ export default function Home() {
           </AlertDialogDescription>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction>Continue</AlertDialogAction>
+            <AlertDialogAction asChild>
+              <Button onClick={()=>handleConfirmDelete(deleteIndex)}>continue</Button>
+              </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

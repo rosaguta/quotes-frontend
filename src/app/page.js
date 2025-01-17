@@ -85,19 +85,19 @@ const HomePage = () => {
       title: 'Quotes',
       ...quote,
       href: '/quotes',
-      colors: "purple"
+      color: "#9803fc"
     },
     {
       title: 'Rizz',
       ...rizz,
       href: '/rizz',
-      colors:"pink"
+      color:"#fc03fc"
     },
     {
       title: 'Insults',
       ...insult,
       href: '/insults',
-      color:"red"
+      color:"#ff0000"
     }
   ];
 
@@ -124,7 +124,7 @@ const HomePage = () => {
           {[...Array(50)].map((_, i) => (
             <div
               key={i}
-              className="absolute w-[10px] h-[10px] bg-white rounded-full animate-float"
+              className="absolute w-[4px] h-[4px] bg-white rounded-full animate-float"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
