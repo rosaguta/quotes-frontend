@@ -2,19 +2,22 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { CardSpotlight } from '@/components/ui/card-spotlight';
 import { SparklesCore } from '@/components/ui/sparkles';
-import { User, CircleCheck, CircleMinus } from 'lucide-react';
+import { User, CircleCheck, CircleMinus, UserMinus } from 'lucide-react';
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/hooks/use-toast"
 import LoginModal from '@/components/LoginModal';
 import DarkCard from '@/components/ui/DarkCard';
+import Cookies from 'js-cookie'
+import LogoutModal from '@/components/Logoutmodal';
 const HomePage = () => {
   const { toast } = useToast()
   const [quote, setQuote] = useState(null)
   const [rizz, setRizz] = useState(null)
   const [insult, setInsult] = useState(null)
   const [loginModalOpen, setLoginModalOpen] = useState(false)
+  const [logoutModalOpen, setLogoutModalOpen] = useState(false)
+  const [jwtToken, setJwtToken] = useState(null)
   const [particleSettings, setParticleSettings] = useState({
     minSize: 0.5,
     maxSize: 2,
@@ -40,6 +43,8 @@ const HomePage = () => {
     }
   }
   useEffect(() => {
+    const token = Cookies.get('token');
+    setJwtToken(token)
     const formatDate = (isoString) => {
       const date = new Date(isoString);
       const year = date.getFullYear();
@@ -79,6 +84,11 @@ const HomePage = () => {
   }, [])
   const handleUserClick = () => {
     setLoginModalOpen(!loginModalOpen)
+    handleLoginState()
+  }
+  const handleUserLogoutClick=()=>{
+    setLogoutModalOpen(!logoutModalOpen)
+    handleLoginState()
   }
   const sections = [
     {
@@ -91,16 +101,18 @@ const HomePage = () => {
       title: 'Rizz',
       ...rizz,
       href: '/rizz',
-      color:"#fc03fc"
+      color: "#fc03fc"
     },
     {
       title: 'Insults',
       ...insult,
       href: '/insults',
-      color:"#ff0000"
+      color: "#ff0000"
     }
   ];
-
+  const handleLoginState=()=>{
+    setJwtToken(Cookies.get("token"))
+  }
   const onLoginSuccess = (loginSucceeded) => {
     if (loginSucceeded) {
       toast({
@@ -141,9 +153,13 @@ const HomePage = () => {
           className="w-full h-full absolute"
         />
       )}
-      <User onClick={handleUserClick} className='md:block hidden absolute top-4 right-4 hover:cursor-pointer' > </User>
+      {!jwtToken ? (
+        <User onClick={handleUserClick} className='md:block hidden absolute top-4 right-4 hover:cursor-pointer' > </User>
+      ) : (
+        <UserMinus onClick={handleUserLogoutClick} className="md:block hidden absolute top-4 right-4 hover:cursor-pointer" />
+      )}
       <LoginModal isOpen={loginModalOpen} toggleModal={handleUserClick} onLoginSuccess={onLoginSuccess}></LoginModal>
-
+      <LogoutModal isOpen={logoutModalOpen} toggleModal={handleUserLogoutClick} />
       <div className="p-12">
 
         <div className=" flex items-center justify-center">
