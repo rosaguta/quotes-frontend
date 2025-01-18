@@ -70,7 +70,7 @@ const LoginModal = ({ isOpen, toggleModal, onLoginSuccess }) => {
         className="w-1/4 bg-white rounded-lg shadow-lg"
         onClick={(e) => e.stopPropagation()}
       >
-        <Card>
+        <Card className="bg-black">
           <CardHeader>
             <CardTitle>Login bucko :3</CardTitle>
           </CardHeader>

@@ -36,7 +36,7 @@ const EditQuoteModal = ({ isOpen, toggleModal, Quote, onSave }) => {
           className="w-1/3 bg-white rounded-lg shadow-lg"
           onClick={(e) => e.stopPropagation()}
         >
-          <Card>
+          <Card className="bg-black">
             <CardHeader>
               <CardTitle>Edit Quote</CardTitle>
             </CardHeader>
@@ -63,7 +63,7 @@ const EditQuoteModal = ({ isOpen, toggleModal, Quote, onSave }) => {
               />
               <div className="mt-4 flex w-full justify-center">
                 <Button
-                  className="bg-indigo-700 hover:bg-indigo-500"
+                  className=""
                   onClick={() => onSave(editedQuote)}
                 >
                   Save
