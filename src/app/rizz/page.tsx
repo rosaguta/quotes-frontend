@@ -64,7 +64,7 @@ export default function Home() {
       }
 
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/Quotes`, { headers });
+        const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/Rizzes`, { headers });
         let data = await response.json();
 
         // Convert dates after fetching
@@ -110,7 +110,7 @@ export default function Home() {
       "Access-Control-Allow-Origin": "no-cors"
     }
     let jsonbody = JSON.stringify(item)
-    await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/quotes/${item.id}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/Rizzes/${item.id}`, {
       headers: headerlist,
       method: 'PUT',
       body: jsonbody,
@@ -162,7 +162,7 @@ export default function Home() {
       }
 
       // Assuming your server supports the DELETE request for deleting an item
-      await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/quotes/${id}`, {
+      await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/Rizzes/${id}`, {
         headers: headerlist,
         method: 'DELETE',
       }).then(response => {
