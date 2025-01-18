@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import DotPattern from './DotPattern';
 import { cn } from '@/lib/utils';
-const DarkCard = ({ children, color }) => {
+const DarkCard = ({ children, color, borderColor=null }) => {
   const [isHovered, setIsHovered] = React.useState(false);
 
   return (
@@ -10,7 +10,7 @@ const DarkCard = ({ children, color }) => {
       className="relative max-w-md p-6 bg-black rounded-xl border-[0.5px] overflow-hidden"
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
-      whileHover={{ borderColor: color }}
+      whileHover={{ borderColor: borderColor  }}
     >
       <div className="relative z-10">
         {children}

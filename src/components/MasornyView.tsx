@@ -1,8 +1,9 @@
 import { Quote } from "./columns"
 import { CardSpotlight } from "./ui/card-spotlight"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import DarkCard from "./ui/DarkCard";
 import Masonry from "react-masonry-css";
-export default function MasornyView({ data }: { data: Quote[] }) {
+export default function MasornyView({ data, color }: { data: Quote[], color:String }) {
   const breakpointColumns = {
     default: 5, // Default for large screens
     1100: 3,    // 3 columns for widths <= 1100px
@@ -17,7 +18,7 @@ export default function MasornyView({ data }: { data: Quote[] }) {
         columnClassName="my-masonry-grid_column"
       >
         {data.map((quote) => (
-          <Card className="p-8 bg-black">
+          <DarkCard key={quote.id} color={color} borderColor={null}>
             <div className='relative select-none'>
               <div className="space-y-2">
                 <p className="text-gray-400 md:text-sm text-xs">
@@ -26,7 +27,7 @@ export default function MasornyView({ data }: { data: Quote[] }) {
                 <p className="text-gray-300 text-sm md:text-base">{quote.text}</p>
               </div>
             </div>
-          </Card>
+          </DarkCard>
         ))}
       </Masonry>
     </div>

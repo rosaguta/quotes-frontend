@@ -254,7 +254,7 @@ export default function Home() {
                       />
                     ))}
                   </div>
-                  <MasornyView data={jsonData} />
+                  <MasornyView data={jsonData} color={"#fc03fc"} />
 
                 </div>
               )}
@@ -273,8 +273,8 @@ export default function Home() {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction asChild>
-              <Button onClick={()=>handleConfirmDelete(deleteIndex)}>continue</Button>
-              </AlertDialogAction>
+              <Button onClick={() => handleConfirmDelete(deleteIndex)}>continue</Button>
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

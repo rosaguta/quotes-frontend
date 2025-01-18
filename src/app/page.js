@@ -165,7 +165,7 @@ const HomePage = () => {
         <div className=" flex items-center justify-center">
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             {sections.map((section) => (
-              <DarkCard color={section.color}>
+              <DarkCard key={section.title} color={section.color} borderColor={section.color}>
                 <div className='relative select-none'>
                   <Link href={section.href}>
                     <div className="flex items-center justify-between mb-4 ">
