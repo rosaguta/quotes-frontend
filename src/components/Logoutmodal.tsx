@@ -6,11 +6,12 @@ import {
 } from "./ui/card";
 import { Button } from "./ui/button";
 import Cookies from "js-cookie";
- const LogoutModal=({isOpen, toggleModal})=> {
+ const LogoutModal=({isOpen, toggleModal, onLogoutSuccess})=> {
   if (!isOpen) return null;
   const handleTokenRemoval=()=>{
     Cookies.remove("token")
     toggleModal()
+    onLogoutSuccess();
   }
   return (
     <div>

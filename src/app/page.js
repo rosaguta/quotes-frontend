@@ -3,7 +3,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { SparklesCore } from '@/components/ui/sparkles';
-import { User, CircleCheck, CircleMinus, UserMinus } from 'lucide-react';
+import { User, CircleCheck, CircleMinus, UserMinus, Info } from 'lucide-react';
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/hooks/use-toast"
 import LoginModal from '@/components/LoginModal';
@@ -86,10 +86,11 @@ const HomePage = () => {
     setLoginModalOpen(!loginModalOpen)
     handleLoginState()
   }
-  const handleUserLogoutClick=()=>{
+  const handleUserLogoutClick = () => {
     setLogoutModalOpen(!logoutModalOpen)
     handleLoginState()
   }
+
   const sections = [
     {
       title: 'Quotes',
@@ -110,8 +111,9 @@ const HomePage = () => {
       color: "#ff0000"
     }
   ];
-  const handleLoginState=()=>{
+  const handleLoginState = () => {
     setJwtToken(Cookies.get("token"))
+    console.log(Cookies.get("token"))
   }
   const onLoginSuccess = (loginSucceeded) => {
     if (loginSucceeded) {
@@ -127,6 +129,13 @@ const HomePage = () => {
         </div>), duration: 3000,
       })
     }
+  }
+  const onLogoutSuccess = () => {
+    toast({
+      title: (<div className='flex place-items-center'>
+        <Info className="p-0.5" color='#FFFFFF' /><p>&nbsp; You have been successfully logged out</p>
+      </div>), duration: 3000,
+    })
   }
   return (
     <div>
@@ -159,7 +168,7 @@ const HomePage = () => {
         <UserMinus onClick={handleUserLogoutClick} className="md:block hidden absolute top-4 right-4 hover:cursor-pointer" />
       )}
       <LoginModal isOpen={loginModalOpen} toggleModal={handleUserClick} onLoginSuccess={onLoginSuccess}></LoginModal>
-      <LogoutModal isOpen={logoutModalOpen} toggleModal={handleUserLogoutClick} />
+      <LogoutModal isOpen={logoutModalOpen} toggleModal={handleUserLogoutClick} onLogoutSuccess={onLogoutSuccess} />
       <div className="p-12">
 
         <div className=" flex items-center justify-center">
