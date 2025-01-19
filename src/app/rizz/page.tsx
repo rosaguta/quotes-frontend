@@ -1,9 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie'
-import 'react-toastify/dist/ReactToastify.css';
-import { toast, ToastContainer } from "react-toastify";
-import * as jose from 'jose'
+import { Toaster } from "@/components/ui/toaster"
+import { useToast } from "@/hooks/use-toast"
 import { columns, Quote } from '@/components/columns';
 import { DataTable } from '@/components/data-table';
 import EditQuoteModal from "@/components/EditQuoteModal"
@@ -18,14 +17,11 @@ import {
   AlertDialogAction
 } from "@/components/ui/alert-dialog"
 import MasornyView from '@/components/MasornyView';
-import { SparklesCore } from '@/components/ui/sparkles';
 import { Button } from '@/components/ui/button';
+import { CircleCheck, CircleMinus } from 'lucide-react';
 export default function Home() {
-  // const token = Cookies.get('token');
-  // let claims = null
-  // if (token) {
-  //   claims = jose.decodeJwt(token);
-  // }
+  const { toast } = useToast()
+  
   const [jsonData, setJsonData] = useState<Quote[] | null>(null);
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [quoteToEdit, setQuoteToEdit] = useState<Quote | null>(null)
@@ -66,13 +62,14 @@ export default function Home() {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/Rizzes`, { headers });
         let data = await response.json();
-        if (!token) {
+
         // Convert dates after fetching
-        data = data.map((quote) => ({
-          ...quote,
-          dateTimeCreated: formatDate(quote.dateTimeCreated),
-        }));
-      }
+        if (!token) {
+          data = data.map((quote) => ({
+            ...quote,
+            dateTimeCreated: formatDate(quote.dateTimeCreated),
+          }));
+        }
         setJsonData(data);
         setJwtToken(token);
       } catch (error) {
@@ -88,12 +85,12 @@ export default function Home() {
     setEditModalOpen(true); // Ensure the modal opens
   };
   const handleSaveQuote = (updatedQuote) => {
-    setJsonData((prevData) =>
-      prevData.map((quote) =>
-        quote.id === updatedQuote.id ? updatedQuote : quote
-      )
-    );
-    setEditModalOpen(false);
+    // setJsonData((prevData) =>
+    //   prevData.map((quote) =>
+    //     quote.id === updatedQuote.id ? updatedQuote : quote
+    //   )
+    // );
+    // setEditModalOpen(false);
     handleSendClick(updatedQuote)
   };
   const handleDeleteClick = (index) => {
@@ -117,36 +114,44 @@ export default function Home() {
     }).then(response => {
       if (!response.ok) {
         if (response.status === 401) {
-          toast.error('Unauthorized: You are not authorized to perform this action.', {
-            position: "bottom-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark"
+          toast({
+            title: "Rizz not edited",
+            description: (
+              <div className='flex place-items-center'>
+                <CircleCheck className="p-0.5" color='#FF0000' />
+                <p className="ml-2">Unauthorized</p>
+              </div>
+            ),
+            duration: 3000,
           })
-        } else {
-          throw new Error('Network response was not ok');
-        }
+        } 
+        toast({
+          title: "Rizz not edited",
+          description: (
+            <div className='flex place-items-center'>
+              <CircleCheck className="p-0.5" color='#FF0000' />
+              <p className="ml-2">check the values again</p>
+            </div>
+          ),
+          duration: 3000,
+        })
       } else {
-        toast.success("Quote edited ^-^", {
-          position: "bottom-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark"
+        toast({
+          title: "Rizz edited",
+          description: (
+            <div className='flex place-items-center'>
+              <CircleCheck className="p-0.5" color='#00c000' />
+              <p className="ml-2">Successfully edited</p>
+            </div>
+          ),
+          duration: 3000,
         })
         setEditModalOpen(false);
-        setJsonData((prevData) => {
-          const newData = [...prevData];
-          newData[item.id] = item;
-          return newData;
-        });
+        setJsonData((prevData) =>
+          prevData.map((quote) =>
+            quote.id === item.id ? item : quote
+          )
+        );
       }
     });
 
@@ -168,29 +173,29 @@ export default function Home() {
       }).then(response => {
         if (!response.ok) {
           if (response.status === 401) {
-            toast.error('Unauthorized: You are not authorized to perform this action.', {
-              position: "bottom-right",
-              autoClose: 3000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "dark"
+            toast({
+              title: "Rizz not deleted",
+              description: (
+                <div className='flex place-items-center'>
+                  <CircleMinus className="p-0.5" color='#FF0000' />
+                  <p className="ml-2">Unsuccessfull deletion</p>
+                </div>
+              ),
+              duration: 3000,
             })
           } else {
             throw new Error('Network response was not ok');
           }
         } else {
-          toast.success("Quote deleted", {
-            position: "bottom-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark"
+          toast({
+            title: "Rizz deleted",
+            description: (
+              <div className='flex place-items-center'>
+                <CircleCheck className="p-0.5" color='#00c000' />
+                <p className="ml-2">Successfully deleted</p>
+              </div>
+            ),
+            duration: 3000,
           })
           // Remove the deleted item from the jsonData
           console.log("jsonData is not yet set")
@@ -254,7 +259,7 @@ export default function Home() {
                       />
                     ))}
                   </div>
-                  <MasornyView data={jsonData} color={"#fc03fc"} />
+                  <MasornyView data={jsonData} color={"#ff0000"} />
 
                 </div>
               )}
@@ -278,7 +283,7 @@ export default function Home() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <ToastContainer />
+      <Toaster />
     </div>
   );
 }
