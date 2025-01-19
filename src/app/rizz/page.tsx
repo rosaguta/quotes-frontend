@@ -259,7 +259,7 @@ export default function Home() {
                       />
                     ))}
                   </div>
-                  <MasornyView data={jsonData} color={"#ff0000"} />
+                  <MasornyView data={jsonData} color={"#fc03fc"} />
 
                 </div>
               )}
