@@ -5,20 +5,7 @@ import DotPattern from './DotPattern';
 import { cn } from '@/lib/utils';
 const DarkCard = ({ children, color, borderColor = null }) => {
   const [isHovered, setIsHovered] = React.useState(false);
-  const [isMobile, setIsMobile] = React.useState(false)
-
-  React.useEffect(() => {
-    setIsMobile(window.innerWidth <= 768)
-
-    // const handleResize = () => {
-    //   setIsMobile(window.innerWidth <= 768)
-    //   setIsHovered(true)
-    // }
-
-    // window.addEventListener('resize', handleResize)
-    // return () => window.removeEventListener('resize', handleResize)
-  }, [])
-  console.log(isHovered)
+ 
   return (
     <motion.div
       className="relative max-w-md p-6 bg-black rounded-xl border-[0.5px] overflow-hidden"
