@@ -68,11 +68,13 @@ export default function Home() {
         let data = await response.json();
 
         // Convert dates after fetching
-        data = data.map((quote) => ({
-          ...quote,
-          dateTimeCreated: formatDate(quote.dateTimeCreated),
-        }));
-
+        if (!token) {
+          console.log("converting dates")
+          data = data.map((quote) => ({
+            ...quote,
+            dateTimeCreated: formatDate(quote.dateTimeCreated),
+          }));
+        }
         setJsonData(data);
         setJwtToken(token);
       } catch (error) {
@@ -273,8 +275,8 @@ export default function Home() {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction asChild>
-              <Button onClick={()=>handleConfirmDelete(deleteIndex)}>continue</Button>
-              </AlertDialogAction>
+              <Button onClick={() => handleConfirmDelete(deleteIndex)}>continue</Button>
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

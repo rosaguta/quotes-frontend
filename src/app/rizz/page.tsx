@@ -66,13 +66,13 @@ export default function Home() {
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/Rizzes`, { headers });
         let data = await response.json();
-
+        if (!token) {
         // Convert dates after fetching
         data = data.map((quote) => ({
           ...quote,
           dateTimeCreated: formatDate(quote.dateTimeCreated),
         }));
-
+      }
         setJsonData(data);
         setJwtToken(token);
       } catch (error) {

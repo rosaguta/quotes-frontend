@@ -67,12 +67,13 @@ export default function Home() {
         const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/Quotes`, { headers });
         let data = await response.json();
 
-        // Convert dates after fetching
-        data = data.map((quote) => ({
-          ...quote,
-          dateTimeCreated: formatDate(quote.dateTimeCreated),
-        }));
-
+        if (!token) {
+          // Convert dates after fetching
+          data = data.map((quote) => ({
+            ...quote,
+            dateTimeCreated: formatDate(quote.dateTimeCreated),
+          }));
+        }
         setJsonData(data);
         setJwtToken(token);
       } catch (error) {
@@ -273,8 +274,8 @@ export default function Home() {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction asChild>
-              <Button onClick={()=>handleConfirmDelete(deleteIndex)}>continue</Button>
-              </AlertDialogAction>
+              <Button onClick={() => handleConfirmDelete(deleteIndex)}>continue</Button>
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
