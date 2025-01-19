@@ -52,7 +52,6 @@ const LoginModal = ({ isOpen, toggleModal, onLoginSuccess }) => {
 } else {
     let jwt = await response.text();
     const claims = jose.decodeJwt(jwt);
-    console.log(claims.exp);
     const rfc2822 = new Date(claims.exp * 1000).toUTCString();
     Setcookie(jwt, rfc2822)
     onLoginSuccess(true)
