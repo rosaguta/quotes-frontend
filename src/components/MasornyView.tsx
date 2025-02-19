@@ -22,6 +22,36 @@ export default function MasornyView({ data, color }: { data: Quote[], color: Str
 
   return (
     <div className="grid justify-center z-10 relative">
+      <Masonry
+        breakpointCols={breakpointColumns}
+        className="my-masonry-grid"
+        columnClassName="my-masonry-grid_column"
+      >
+        {data.map((quote) => (
+          <motion.div
+            key={quote.id}
+            layoutId={`card-container-${quote.id}`}
+            onClick={() => toggleExpand(quote.id)}
+            className="cursor-pointer mb-4"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <DarkCard color={color} borderColor={null}>
+              <motion.div className='relative select-none' layoutId={`card-content-${quote.id}`}>
+                <div className="space-y-2">
+                  <motion.p className="text-gray-400 md:text-sm text-xs" layoutId={`card-person-${quote.id}`}>
+                    {quote.person} - {quote.dateTimeCreated}
+                  </motion.p>
+                  <motion.p className="text-gray-300 text-sm md:text-base" layoutId={`card-text-${quote.id}`}>
+                    {quote.text}
+                  </motion.p>
+                </div>
+              </motion.div>
+            </DarkCard>
+          </motion.div>
+        ))}
+      </Masonry>
+
       <AnimatePresence>
         {expandedId && (
           <motion.div 
@@ -31,59 +61,37 @@ export default function MasornyView({ data, color }: { data: Quote[], color: Str
             exit={{ opacity: 0 }}
             onClick={() => setExpandedId(null)}
           >
-            {data.filter(quote => quote.id === expandedId).map((quote) => (
-              <motion.div
-                key={`expanded-${quote.id}`}
-                className="w-full flex justify-center max-w-4xl max-h-screen overflow-auto"
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1  }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                transition={{ type: "spring", damping: 15 , duration: 0.5}}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <DarkCard color={color} borderColor={null}>
-                  <div className='relative p-4'>
-                    <div className="space-y-4">
-                      <p className="text-gray-400 text-lg">
-                        {quote.person} - {quote.dateTimeCreated}
-                      </p>
-                      <p className="text-gray-300 text-xl">{quote.text}</p>
-                    </div>
-                  </div>
-                </DarkCard>
-              </motion.div>
-            ))}
+            <div className="w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
+              {data.filter(quote => quote.id === expandedId).map((quote) => (
+                <motion.div
+                  key={`expanded-container-${quote.id}`}
+                  layoutId={`card-container-${quote.id}`}
+                  className="w-full flex justify-center"
+                >
+                  <DarkCard color={color} borderColor={null}>
+                    <motion.div className='relative p-6' layoutId={`card-content-${quote.id}`}>
+                      <div className="space-y-4">
+                        <motion.p 
+                          className="text-gray-400 text-lg" 
+                          layoutId={`card-person-${quote.id}`}
+                        >
+                          {quote.person} - {quote.dateTimeCreated}
+                        </motion.p>
+                        <motion.p 
+                          className="text-gray-300 text-xl" 
+                          layoutId={`card-text-${quote.id}`}
+                        >
+                          {quote.text}
+                        </motion.p>
+                      </div>
+                    </motion.div>
+                  </DarkCard>
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      <Masonry
-        breakpointCols={breakpointColumns}
-        className="my-masonry-grid"
-        columnClassName="my-masonry-grid_column"
-      >
-        {data.map((quote) => (
-          <motion.div
-            key={quote.id}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => toggleExpand(quote.id)}
-            className="cursor-pointer mb-4"
-            layoutId={`card-${quote.id}`}
-          >
-            <DarkCard color={color} borderColor={null}>
-              <div className='relative select-none'>
-                <div className="space-y-2">
-                  <p className="text-gray-400 md:text-sm text-xs">
-                    {quote.person} - {quote.dateTimeCreated}
-                  </p>
-                  <p className="text-gray-300 text-sm md:text-base">{quote.text}</p>
-                </div>
-              </div>
-            </DarkCard>
-          </motion.div>
-        ))}
-      </Masonry>
     </div>
   );
 }
