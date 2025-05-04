@@ -20,12 +20,12 @@ import Cookies from "js-cookie";
         onClick={() => toggleModal(false)}
       >
         <div
-          className="w-1/4 bg-white rounded-lg shadow-lg"
+          className="md:w-1/4 w-2/3 bg-black rounded-lg shadow-lg"
           onClick={(e) => e.stopPropagation()}
         >
           <Card>
             <CardHeader>
-              <CardTitle>Are you sure you want to logout?</CardTitle>
+              <CardTitle className="text-lg md:text-2xl" >Are you sure you want to logout?</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="mt-4 flex w-full gap-4 justify-center">
