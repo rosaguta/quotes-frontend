@@ -19,9 +19,10 @@ import {
 import MasornyView from '@/components/MasornyView';
 import { Button } from '@/components/ui/button';
 import { CircleCheck, CircleMinus } from 'lucide-react';
+import * as jose from 'jose'
 export default function Home() {
   const { toast } = useToast()
-  
+
   const [jsonData, setJsonData] = useState<Quote[] | null>(null);
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [quoteToEdit, setQuoteToEdit] = useState<Quote | null>(null)
@@ -30,6 +31,7 @@ export default function Home() {
   const [originalItem, setOriginalItem] = useState(null);
   const [dummyState, setDummyState] = useState(0);
   const [jwtToken, setJwtToken] = useState<string>()
+  const [rights, setRights] = useState<boolean>(false)
   const [particleSettings, setParticleSettings] = useState({
     minSize: 0.5,
     maxSize: 2,
@@ -72,6 +74,10 @@ export default function Home() {
         }
         setJsonData(data);
         setJwtToken(token);
+        const JWTClaims = jose.decodeJwt(token)
+
+        const hasRights = JWTClaims.Rights === "True";
+        setRights(hasRights);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -124,7 +130,7 @@ export default function Home() {
             ),
             duration: 3000,
           })
-        } 
+        }
         toast({
           title: "Rizz not edited",
           description: (
@@ -166,7 +172,6 @@ export default function Home() {
         "Access-Control-Allow-Origin": "no-cors"
       }
 
-      // Assuming your server supports the DELETE request for deleting an item
       await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/Rizzes/${id}`, {
         headers: headerlist,
         method: 'DELETE',
@@ -239,7 +244,7 @@ export default function Home() {
       <div className=" overflow-x-auto">
         <div className="p-5 min-w-full inline-block align-middle">
           <div className="overflow-hidden">
-            {jwtToken ? (
+            {rights ? (
               <DataTable columns={columns(handleEditClick, handleDeleteClick)} data={jsonData} />)
               :
               (

@@ -9,8 +9,11 @@ import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/hooks/use-toast"
-import { Info } from 'lucide-react';
-import { motion, animate, stagger } from "framer-motion"
+import { Info, CircleCheck, LoaderCircle } from 'lucide-react';
+import { motion } from "framer-motion"
+import { useRouter } from "next/navigation"
+import Setcookie from "@/components/Cookies"
+import * as jose from 'jose'
 type Credentials = {
   username: string
   password: string
@@ -20,8 +23,10 @@ export default function Login() {
     username: "",
     password: ""
   })
+  const router = useRouter()
   const [acceptedTerms, setAcceptedTerms] = useState(false)
   const { toast } = useToast()
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
   const handleInputChange = (field: keyof Credentials, value: string) => {
     setLoginCredentials((prev) => ({
       ...prev,
@@ -32,7 +37,7 @@ export default function Login() {
     hidden: { opacity: 0, y: 50 },
     visible: { opacity: 1, y: 0 },
   }
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!acceptedTerms) {
       toast({
@@ -47,8 +52,36 @@ export default function Login() {
       })
       return
     }
-
-    console.log("Logging in with:", loginCredentials)
+    const header = { "content-type": "application/json" }
+    setIsLoggingIn(true)
+    await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/auth`, {
+      headers: header,
+      method: "POST",
+      body: JSON.stringify(loginCredentials)
+    }).then(async response => {
+      if (!response.ok) {
+        if (response.status === 401) {
+          setIsLoggingIn(false)
+          toast({
+            title: "Unauthorized",
+            description: (
+              <div className='flex place-items-center'>
+                <CircleCheck className="p-0.5" color='#FF0000' />
+                <p className="ml-2">Invalid Credentials</p>
+              </div>
+            ),
+            duration: 3000,
+          })
+        }
+      } else {
+        setIsLoggingIn(false)
+        let jwt = await response.text();
+        const claims = jose.decodeJwt(jwt);
+        const rfc2822 = new Date(claims.exp * 1000).toUTCString();
+        Setcookie(jwt, rfc2822)
+        router.push("/")
+      }
+    });
   }
 
   return (
@@ -139,8 +172,11 @@ export default function Login() {
                 </p>
               </div>
             </div>
-
-            <Button type="submit">Login</Button>
+            {isLoggingIn ? (
+                <Button disabled><LoaderCircle className="animate-spin bg-transparent" /></Button>
+            ) : (
+              <Button type="submit">Login</Button>
+            )}
           </motion.div>
         </motion.div>
       </form >

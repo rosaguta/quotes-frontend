@@ -10,6 +10,7 @@ import LoginModal from '@/components/LoginModal';
 import DarkCard from '@/components/ui/DarkCard';
 import Cookies from 'js-cookie'
 import LogoutModal from '@/components/Logoutmodal';
+import { useRouter } from 'next/navigation';
 const HomePage = () => {
   const { toast } = useToast()
   const [quote, setQuote] = useState(null)
@@ -23,6 +24,7 @@ const HomePage = () => {
     maxSize: 2,
     particleDensity: 25
   });
+  const router = useRouter()
   const [coolModeActivated, setCoolMode] = useState(false)
   let buttonstring = ""
   const CoolWords = ["shark", "trans", "pride"];
@@ -115,27 +117,9 @@ const HomePage = () => {
     setJwtToken(Cookies.get("token"))
     console.log(Cookies.get("token"))
   }
-  const onLoginSuccess = (loginSucceeded) => {
-    if (loginSucceeded) {
-      toast({
-        title: (<div className='flex place-items-center'>
-          <CircleCheck className="p-0.5" color='#00c000' /><p>&nbsp; Access granted</p>
-        </div>), duration: 3000,
-      })
-    } else {
-      toast({
-        title: (<div className='flex items-center'>
-          <CircleMinus className="p-0.5" color='#c00000' /><p>&nbsp; Access denied</p>
-        </div>), duration: 3000,
-      })
-    }
-  }
+
   const onLogoutSuccess = () => {
-    toast({
-      title: (<div className='flex place-items-center'>
-        <Info className="p-0.5" color='#FFFFFF' /><p>&nbsp; You have been successfully logged out</p>
-      </div>), duration: 3000,
-    })
+    router.push("/login")
   }
   return (
     <div>
@@ -162,12 +146,8 @@ const HomePage = () => {
           className="w-full h-full absolute"
         />
       )}
-      {!jwtToken ? (
-        <User onClick={handleUserClick} className='md:block hidden absolute top-4 right-4 hover:cursor-pointer' > </User>
-      ) : (
-        <UserMinus onClick={handleUserLogoutClick} className="md:block hidden absolute top-4 right-4 hover:cursor-pointer" />
-      )}
-      <LoginModal isOpen={loginModalOpen} toggleModal={handleUserClick} onLoginSuccess={onLoginSuccess}></LoginModal>
+      <UserMinus onClick={handleUserLogoutClick} className="md:block hidden absolute top-4 right-4 hover:cursor-pointer" />
+
       <LogoutModal isOpen={logoutModalOpen} toggleModal={handleUserLogoutClick} onLogoutSuccess={onLogoutSuccess} />
       <div className="p-12">
 
