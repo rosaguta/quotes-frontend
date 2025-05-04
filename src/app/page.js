@@ -146,7 +146,7 @@ const HomePage = () => {
           className="w-full h-full absolute"
         />
       )}
-      <UserMinus onClick={handleUserLogoutClick} className="md:block hidden absolute top-4 right-4 hover:cursor-pointer" />
+      <UserMinus onClick={handleUserLogoutClick} className="absolute top-4 right-4 hover:cursor-pointer" />
 
       <LogoutModal isOpen={logoutModalOpen} toggleModal={handleUserLogoutClick} onLogoutSuccess={onLogoutSuccess} />
       <div className="p-12">
