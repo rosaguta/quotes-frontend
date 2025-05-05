@@ -65,13 +65,10 @@ export default function Home() {
         const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/Insults`, { headers });
         let data = await response.json();
 
-        // Convert dates after fetching
-        if (!token) {
           data = data.map((quote) => ({
             ...quote,
             dateTimeCreated: formatDate(quote.dateTimeCreated),
           }));
-        }
         setJsonData(data);
         setJwtToken(token);
         const JWTClaims = jose.decodeJwt(token)

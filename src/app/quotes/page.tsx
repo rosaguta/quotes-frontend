@@ -66,12 +66,10 @@ export default function Home() {
         let data = await response.json();
 
         // Convert dates after fetching
-        if (!token) {
           data = data.map((quote) => ({
             ...quote,
             dateTimeCreated: formatDate(quote.dateTimeCreated),
           }));
-        }
         setJsonData(data);
         setJwtToken(token);
         const JWTClaims = jose.decodeJwt(token)
