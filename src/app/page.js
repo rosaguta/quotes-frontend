@@ -47,6 +47,7 @@ const HomePage = () => {
   useEffect(() => {
     const token = Cookies.get('token');
     setJwtToken(token)
+
     const formatDate = (isoString) => {
       const date = new Date(isoString);
       const year = date.getFullYear();
@@ -59,7 +60,7 @@ const HomePage = () => {
     };
     const fetchData = async () => {
       const fetchEndpoint = async (endpoint) => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/${endpoint}/random?asObject=true`)
+        const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/${endpoint}/random?asObject=true`,{headers:{"Authorization": `Bearer ${token}`}})
         return await response.json()
       }
       const [fetchedQuote, fetchedRizz, fetchedInsult] = await Promise.all([
