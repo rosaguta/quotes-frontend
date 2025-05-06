@@ -16,13 +16,13 @@ export default function RootLayout({ children }: any) {
         <meta name="description" content="Find all the crazy and wacky quotes on this website :3" />
         <meta property="og:title" content="Quotes" />
         <meta property="og:description" content="Find all the crazy and wacky quotes on this website :3" />
-        <meta property="og:image" content="https://quotes.divsphere.net/femboynt.png" />
+        <meta property="og:image" content="https://quotes.divsphere.net/quote.png" />
         <meta property="og:url" content="https://quotes.divsphere.net/" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Quotes" />
         <meta name="twitter:description" content="Find all the crazy and wacky quotes on this website :3" />
-        <meta name="twitter:image" content="https://quotes.divsphere.net/femboynt.png" />
+        <meta name="twitter:image" content="https://quotes.divsphere.net/quote.png" />
       </head>
       <body className={inter.className}>
         <ThemeProvider
