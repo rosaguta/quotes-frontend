@@ -14,6 +14,8 @@ import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
 import Setcookie from "@/components/Cookies"
 import * as jose from 'jose'
+import { GetColor } from "@/utils/Color"
+import { useEffect } from "react"
 type Credentials = {
   username: string
   password: string
@@ -23,6 +25,19 @@ export default function Login() {
     username: "",
     password: ""
   })
+  const [color, setColor] = useState("#000000");
+  const freq = 0.1;
+  let i = 0;
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+        const newColor = GetColor(freq, i);
+        setColor(newColor);
+        i++;
+    }, 100);
+
+    return () => clearInterval(interval); // cleanup
+}, []);
   const router = useRouter()
   const [acceptedTerms, setAcceptedTerms] = useState(false)
   const { toast } = useToast()
@@ -97,7 +112,7 @@ export default function Login() {
           "absolute inset-0 z-[-1] [mask-image:linear-gradient(to_bottom_right,white,transparent,transparent)]"
         )}
         style={{
-          fill: '#6d28d9',
+          fill: color,
           transition: "fill 0.2s ease-in-out",
         }}
       />
