@@ -99,19 +99,22 @@ const HomePage = () => {
       title: 'Quotes',
       ...quote,
       href: '/quotes',
-      color: "#9803fc"
+      color: "#9803fc",
+      initColor: "#5d3678"
     },
     {
       title: 'Rizz',
       ...rizz,
       href: '/rizz',
-      color: "#fc03fc"
+      color: "#fc03fc",
+      initColor: "#631663"
     },
     {
       title: 'Insults',
       ...insult,
       href: '/insults',
-      color: "#ff0000"
+      color: "#ff0000",
+      initColor: "#753535"
     }
   ];
   const handleLoginState = () => {
@@ -155,7 +158,7 @@ const HomePage = () => {
         <div className=" flex items-center justify-center">
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
             {sections.map((section) => (
-              <DarkCard key={section.title} color={section.color} borderColor={section.color}>
+              <DarkCard key={section.title} color={section.color} borderColor={section.color} initColor={section.initColor}>
                 <div className='relative select-none'>
                   <Link href={section.href}>
                     <div className="flex items-center justify-between mb-4 ">

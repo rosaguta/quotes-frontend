@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { Quote } from "./columns";
-import { CardSpotlight } from "./ui/card-spotlight";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import DarkCard from "./ui/DarkCard";
 import Masonry from "react-masonry-css";
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function MasornyView({ data, color }: { data: Quote[], color: String }) {
+export default function MasornyView({ data, color, initColor}: { data: Quote[], color: String, initColor:string }) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const breakpointColumns = {
@@ -36,7 +34,7 @@ export default function MasornyView({ data, color }: { data: Quote[], color: Str
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <DarkCard color={color} borderColor={null}>
+            <DarkCard color={color} borderColor={null} initColor={initColor}>
               <motion.div className='relative select-none' layoutId={`card-content-${quote.id}`}>
                 <div className="space-y-2">
                   <motion.p className="text-gray-400 md:text-sm text-xs" layoutId={`card-person-${quote.id}`}>
@@ -68,7 +66,7 @@ export default function MasornyView({ data, color }: { data: Quote[], color: Str
                   layoutId={`card-container-${quote.id}`}
                   className="w-full flex justify-center"
                 >
-                  <DarkCard color={color} borderColor={null}>
+                  <DarkCard color={color} borderColor={null} initColor={initColor}>
                     <motion.div className='relative p-6' layoutId={`card-content-${quote.id}`}>
                       <div className="space-y-4">
                         <motion.p 

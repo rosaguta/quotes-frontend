@@ -3,7 +3,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import DotPattern from './DotPattern';
 import { cn } from '@/lib/utils';
-const DarkCard = ({ children, color, borderColor = null }) => {
+const DarkCard = ({ children, color, borderColor = null , initColor}) => {
   const [isHovered, setIsHovered] = React.useState(false);
  
   return (
@@ -27,7 +27,7 @@ const DarkCard = ({ children, color, borderColor = null }) => {
           className={cn(
             "[mask-image:linear-gradient(to_bottom_left,white,transparent,transparent)]")}
           style={{
-            fill: isHovered ? color : "rgba(156, 163, 175, 0.8)", // Adjusted to hover state
+            fill: isHovered ? color : initColor, // Adjusted to hover state
             transition: "fill 0.2s ease-in-out"
           }}
         />
