@@ -6,7 +6,7 @@ import Image from "next/image"
 import { cn } from '@/lib/utils'
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/hooks/use-toast"
 import { Info, CircleCheck, LoaderCircle } from 'lucide-react';
@@ -15,11 +15,14 @@ import { useRouter } from "next/navigation"
 import Setcookie from "@/components/Cookies"
 import * as jose from 'jose'
 import { GetColor } from "@/utils/Color"
-import { useEffect } from "react"
+import { Switch } from "@/components/ui/switch"
+import Cookies from "js-cookie"
+
 type Credentials = {
   username: string
   password: string
 }
+
 export default function Login() {
   const [loginCredentials, setLoginCredentials] = useState<Credentials>({
     username: "",
@@ -28,30 +31,47 @@ export default function Login() {
   const [color, setColor] = useState("#000000");
   const freq = 0.1;
   let i = 0;
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-        const newColor = GetColor(freq, i);
-        setColor(newColor);
-        i++;
-    }, 100);
-
-    return () => clearInterval(interval); // cleanup
-}, []);
   const router = useRouter()
   const [acceptedTerms, setAcceptedTerms] = useState(false)
   const { toast } = useToast()
   const [isLoggingIn, setIsLoggingIn] = useState(false)
+  
+  const [colorMode, setColorMode] = useState<boolean>(false);
+  
+  const itemVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { opacity: 1, y: 0 },
+  }
+
+  useEffect(() => {
+    const savedMode = Cookies.get("colorMode");
+    if (savedMode !== undefined) {
+      setColorMode(savedMode === "true");
+    }
+  }, []);
+  
+  useEffect(() => {
+    if (!colorMode) {
+      i = 0
+      setColor("#6d28d9")
+      return
+    }
+    const interval = setInterval(() => {
+      const newColor = GetColor(freq, i);
+      setColor(newColor);
+      i++
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [colorMode]);
+
   const handleInputChange = (field: keyof Credentials, value: string) => {
     setLoginCredentials((prev) => ({
       ...prev,
       [field]: value,
     }))
   }
-  const itemVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0 },
-  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!acceptedTerms) {
@@ -99,6 +119,12 @@ export default function Login() {
     });
   }
 
+  const toggleColorMode = () => {
+    const newMode = !colorMode;
+    setColorMode(newMode);
+    Cookies.set("colorMode", newMode.toString());
+  }
+
   return (
     <div
       className="w-screen h-screen relative overflow-hidden ">
@@ -112,10 +138,11 @@ export default function Login() {
           "absolute inset-0 z-[-1] [mask-image:linear-gradient(to_bottom_right,white,transparent,transparent)]"
         )}
         style={{
-          fill: color,
+          fill: colorMode ? color : "#6d28d9",
           transition: "fill 0.2s ease-in-out",
         }}
       />
+
       <form
         onSubmit={handleSubmit}
         className="p-5 w-full h-full grid place-items-center"
@@ -188,13 +215,17 @@ export default function Login() {
               </div>
             </div>
             {isLoggingIn ? (
-                <Button disabled><LoaderCircle className="animate-spin bg-transparent" /></Button>
+              <Button disabled><LoaderCircle className="animate-spin bg-transparent" /></Button>
             ) : (
               <Button type="submit">Login</Button>
             )}
           </motion.div>
         </motion.div>
+
       </form >
+
+      <Switch className="absolute bottom-20 md:bottom-5 left-2" checked={colorMode} onCheckedChange={toggleColorMode} />
+
       <Toaster />
     </div >
   )
