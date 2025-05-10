@@ -28,15 +28,8 @@ export default function Home() {
   const [quoteToEdit, setQuoteToEdit] = useState<Quote | null>(null)
   const [deleteAlertOpen, setDeleteAlertOpen] = useState(false)
   const [deleteIndex, setDeleteIndex] = useState(null);
-  const [originalItem, setOriginalItem] = useState(null);
-  const [dummyState, setDummyState] = useState(0);
   const [jwtToken, setJwtToken] = useState<string>()
   const [rights, setRights] = useState<boolean>(false)
-  const [particleSettings, setParticleSettings] = useState({
-    minSize: 0.5,
-    maxSize: 2,
-    particleDensity: 25
-  });
 
   useEffect(() => {
     const formatDate = (isoString) => {
@@ -84,16 +77,11 @@ export default function Home() {
   }, []);
 
   const handleEditClick = (index) => {
-    setQuoteToEdit(jsonData.find((el) => el.id == index)); // Directly set the new quote to edit
-    setEditModalOpen(true); // Ensure the modal opens
+    setQuoteToEdit(jsonData.find((el) => el.id == index)); 
+    setEditModalOpen(true); 
   };
   const handleSaveQuote = (updatedQuote) => {
-    // setJsonData((prevData) =>
-    //   prevData.map((quote) =>
-    //     quote.id === updatedQuote.id ? updatedQuote : quote
-    //   )
-    // );
-    // setEditModalOpen(false);
+
     handleSendClick(updatedQuote)
   };
   const handleDeleteClick = (index) => {
@@ -169,7 +157,6 @@ export default function Home() {
         "Access-Control-Allow-Origin": "no-cors"
       }
 
-      // Assuming your server supports the DELETE request for deleting an item
       await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/Insults/${id}`, {
         headers: headerlist,
         method: 'DELETE',
@@ -204,7 +191,7 @@ export default function Home() {
           console.log("jsonData is not yet set")
           setJsonData((prevData) => {
             if (!prevData) return prevData; // Safeguard
-            return prevData.filter((item) => item.id !== id); // Use the `id` instead of `deleteIndex`
+            return prevData.filter((item) => item.id !== id); 
           });
           console.log("jsonData is set")
         }

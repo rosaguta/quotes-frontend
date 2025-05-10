@@ -25,7 +25,7 @@ const DarkCard = ({ children, color, borderColor = null , initColor}) => {
           cy={1}
           cr={1}
           className={cn(
-            "[mask-image:linear-gradient(to_bottom_left,white,transparent,transparent)]")}
+            "[mask-image:linear-gradient(to_bottom_left,white,transparent,transparent)] ")}
           style={{
             fill: isHovered ? color : initColor, // Adjusted to hover state
             transition: "fill 0.2s ease-in-out"
