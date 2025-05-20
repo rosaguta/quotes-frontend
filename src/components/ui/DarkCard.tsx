@@ -3,12 +3,12 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import DotPattern from './DotPattern';
 import { cn } from '@/lib/utils';
-const DarkCard = ({ children, color, borderColor = null , initColor}) => {
+const DarkCard = ({ children, color, borderColor = null , initColor, className}) => {
   const [isHovered, setIsHovered] = React.useState(false);
  
   return (
     <motion.div
-      className="relative max-w-md p-6 bg-black rounded-xl border-[0.5px] overflow-hidden"
+      className={cn("relative max-w-md p-6 bg-black rounded-xl border-[0.5px] overflow-hidden", className)}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       whileHover={{ borderColor: borderColor }}
