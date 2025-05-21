@@ -95,3 +95,16 @@
 .my-masonry-grid > .my-masonry-grid_column > * {
   margin-bottom: 30px; /* adjust as needed */
 }
+.ripple-outro {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: white;
+  opacity: 0.4;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  pointer-events: none;
+  z-index: 50;
+}
