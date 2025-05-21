@@ -15,22 +15,22 @@ export default function DarkCardClient({ quotes }) {
         opacity: 1,
         translateY: [1000, 0],
         easing: "easeOutExpo",
-        ease: createSpring({ stiffness: 70 }),
-        delay: 1000,
+        ease: createSpring({ stiffness: 50 }),
+        delay: 500,
       });
       animate(".card-1", {
         opacity: 1,
         translateX: [-1000, 0],
         easing: "easeInOutQuad",
-        ease: createSpring({ stiffness: 70 }),
-        delay: 2000,
+        ease: createSpring({ stiffness: 50 }),
+        delay: 1000,
       });
       animate(".card-2", {
         opacity: 1,
         translateX: [1000, 0],
         easing: "easeOutExpo",
-        ease: createSpring({ stiffness: 70 }),
-        delay: 3000,
+        ease: createSpring({ stiffness: 50 }),
+        delay: 1500,
       });
 
       return () => scope.current?.revert();
