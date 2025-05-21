@@ -1,0 +1,8 @@
+ideas:
+    accept queue click just like league
+    lobby view just like league 
+
+websockets
+name input
+game code input
+gamemaster view
