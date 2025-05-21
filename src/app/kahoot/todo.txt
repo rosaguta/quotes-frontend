@@ -1,6 +1,7 @@
 ideas:
     accept queue click just like league
     lobby view just like league 
+    cards flying by as an intro animation
 
 websockets
 name input
