@@ -10,6 +10,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily:{
+        terminal:['"Fira Code"','monospace']
+      },
       keyframes: {
         float: {
           '0%, 100%': { transform: 'translateY(0)', opacity: 0 },

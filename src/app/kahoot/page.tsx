@@ -1,117 +1,67 @@
-"use client";
-import { useEffect, useRef, useState } from "react";
-import { animate, createScope, createSpring, stagger } from "animejs";
-import DarkCard from "@/components/ui/DarkCard";
+import DarkCardClient from './DarkCardClient';
 
-export default function Kahoot() {
-  const root = useRef(null);
-  const scope = useRef(null);
-  const [quote, setQuote] = useState(null)
-  const [rizz, setRizz] = useState(null)
-  const [insult, setInsult] = useState(null)
+export default async function KahootServer() {
+  let token = ""
+  const login = async () => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/auth`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ username: "SuperUser", password: "xxrtNmbqrCLY8P27Ln2i" })
+    })
+    token = await response.text()
+    console.log(token)
+  }
+  await login()
+  const fetchQuote = async () => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_QUOTE_API}/quotes/random?asObject=true&withContext=true`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return await response.json();
+  };
 
+  const formatDate = (isoString: string) =>
+    new Date(isoString).toLocaleString("nl-NL", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+
+  const quotes = await Promise.all(Array.from({ length: 3 }, fetchQuote));
+
+
+  quotes.forEach((quote) => {
+    quote.dateTimeCreated = formatDate(quote.dateTimeCreated);
+  });
   const sections = [
     {
       title: 'Quotes',
-      ...quote,
-      href: '/quotes',
+      ...quotes[0],
       color: "#9803fc",
-      initColor: "#5d3678"
+      initColor: "#9803fc"
     },
     {
-      title: 'Rizz',
-      ...rizz,
-      href: '/rizz',
-      color: "#fc03fc",
-      initColor: "#631663"
+      title: 'Quotes',
+      ...quotes[1],
+      color: "#9803fc",
+      initColor: "#9803fc"
     },
     {
-      title: 'Insults',
-      ...insult,
-      href: '/insults',
-      color: "#ff0000",
-      initColor: "#753535"
+      title: 'Quotes',
+      ...quotes[2],
+      color: "#9803fc",
+      initColor: "#9803fc"
     }
   ];
-  useEffect(() => {
-    const formatDate = (isoString) => {
-      const date = new Date(isoString);
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-      const day = String(date.getDate()).padStart(2, '0');
-      const hours = String(date.getHours()).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
-      const seconds = String(date.getSeconds()).padStart(2, '0');
-      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-    };
-    const fetchData = async () => {
-      const fetchEndpoint = async (endpoint) => {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/${endpoint}/random?asObject=true`)
-        return await response.json()
-      }
-      const [fetchedQuote, fetchedRizz, fetchedInsult] = await Promise.all([
-        fetchEndpoint("quotes"),
-        fetchEndpoint("rizzes"),
-        fetchEndpoint("insults")
-      ]);
-
-      fetchedQuote.dateTimeCreated = formatDate(fetchedQuote.dateTimeCreated)
-      fetchedRizz.dateTimeCreated = formatDate(fetchedRizz.dateTimeCreated)
-      fetchedInsult.dateTimeCreated = formatDate(fetchedInsult.dateTimeCreated)
-
-      setQuote(fetchedQuote)
-      setRizz(fetchedRizz)
-      setInsult(fetchedInsult)
-    }
-
-    fetchData()
-
-  }, [])
-
-  useEffect(() => {
-  scope.current = createScope({ root }).add(() => {
-    const directions = [
-      { translateX: [-200, 0] }, // First card: from left
-      { translateY: [200, 0] },  // Second card: from bottom
-      { translateX: [200, 0] }   // Third card: from right
-    ];
-
-    animate(".card",{
-      opacity: 1,
-      x: (_, i) => directions[i].translateX?.[0] ?? directions[i].translateX?.[1],
-      y: (_, i) => directions[i].translateX?.[0] ?? directions[i].translateX?.[1],
-      delay: stagger(100),
-      // duration: 800,
-      easing: "easeOutExpo",
-      
-    });
-
-    return () => scope.current?.revert();
-  });
-}, []);
-
-  return (
-    <div ref={root} className="h-screen w-screen flex items-center justify-center bg-black">
-      <div className="grid grid-cols-5 gap-4">
-        {sections.map((section) => (
-          <DarkCard key={section.title} color={section.color} borderColor={section.color} initColor={section.initColor} className="card">
-            <div className='relative select-none'>
-              <div>
-                <div className="flex items-center justify-between mb-4 ">
-                  <h2 className="text-2xl min-w-72 font-bold text-white">{section.title}</h2>
-                  {section.icon}
-                </div>
-                <div className="space-y-2">
-                  <p className="text-gray-400 text-sm">
-                    {section.person} - {section.dateTimeCreated}
-                  </p>
-                  <p className="text-gray-300">{section.text}</p>
-                </div>
-              </div>
-            </div>
-          </DarkCard>
-        ))}
-      </div>
-    </div>
-  );
+  console.log("quotes", quotes)
+  console.log("sections", sections)
+  const personIndexToRemove = Math.floor(Math.random()*3)
+  console.log(personIndexToRemove)
+  sections[personIndexToRemove].person = null
+  return <DarkCardClient quotes={sections}/>;
 }
