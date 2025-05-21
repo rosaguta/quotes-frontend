@@ -40,7 +40,7 @@ export default function DarkCardClient({ quotes }) {
   return (
 <div ref={root} className="h-screen w-screen flex flex-col items-center justify-center overflow-hidden">
   {/* TODO: make quote svg and animate it by flashing it or smtin*/}
-    <img src="/blahaj.png"></img>
+    <img src="/quote.svg"></img>
   <div className="mb-4 text-sm text-gray-400 font-mono bg-black/30 px-4 py-2 rounded shadow">
     System Log: Loaded {quotes.length} quotes.
   </div>
