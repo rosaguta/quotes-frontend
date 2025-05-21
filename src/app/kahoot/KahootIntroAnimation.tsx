@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { animate, createScope, createSpring, svg, stagger } from "animejs";
 import DarkCard from "@/components/ui/DarkCard";
 
-export default function KahootIntroAnimation({ quotes }) {
+export default function KahootIntroAnimation({ quotes, onDone }: { quotes: any[], onDone: () => void }) {
   const root = useRef(null);
   const scope = useRef(null);
 
@@ -45,6 +45,13 @@ export default function KahootIntroAnimation({ quotes }) {
 
       return () => scope.current?.revert();
     });
+  }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onDone(); 
+    }, 5000); 
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
