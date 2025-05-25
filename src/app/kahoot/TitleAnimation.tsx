@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 export default function TitleAnimationGame() {
   const root = useRef(null);
   const scope = useRef(null);
-
+  const inputRef = useRef(null);
+  const standbyAnimationRef = useRef(null);
   const getRandomPos = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
 
   useEffect(() => {
@@ -17,11 +18,17 @@ export default function TitleAnimationGame() {
       });
       animate(".questions", {
         opacity: [0, 1, 1, 1, 0],
-        translateX: (el, i) => [getRandomPos(-50, 50), getRandomPos(-50, 50)],
+        translateX: (el, i) => [getRandomPos(50, 100), getRandomPos(50, 100)],
         translateY: (el, i) => [getRandomPos(-200, 50), getRandomPos(-200, 50)],
         delay: stagger(750),
       });
 
+      standbyAnimationRef.current = animate(".standby", {
+        opacity: [0, 1, 0],
+        delay: 15000,
+        loop: true,
+        duration: 2000,
+      });
       animate(svg.createDrawable('.line'), {
         draw: ['0 0', '0 1', "1 1", "0 0", '0 1'],
         ease: 'inOutQuad',
@@ -35,12 +42,22 @@ export default function TitleAnimationGame() {
         opacity: [0, 1],
         delay: 5000
       })
-      return () => scope.current?.revert();
-    })
+
+      const inputElement = inputRef.current;
+      const stopStandbyAnimation = () => {
+        standbyAnimationRef.current?.restart();
+        inputElement.removeEventListener("input", stopStandbyAnimation);
+      };
+      inputElement?.addEventListener("input", stopStandbyAnimation);
+
+      return () => {
+        scope.current?.revert();
+        inputElement?.removeEventListener("input", stopStandbyAnimation);
+      };
+    });
   }, [])
   return (
     <div ref={root} className="overflow-hidden">
-      {/* TODO: make quote svg and animate it by flashing it or smtin*/}
       <div className="flex flex-col items-center justify-center overflow-hidden">
         <div className="svgWrapper opacity-0">
           <svg width="170" height="130" viewBox="0 0 170 149" fill="none" xmlns="http://www.w3.org/2000/svg" >
@@ -65,10 +82,12 @@ export default function TitleAnimationGame() {
         <p className="questions absolute text-neutral-500">huh??</p>
       </div>
       <div className="game opacity-0 z-10 mt-20">
+        <p className="standby text-yellow-100 font-terminal text-sm">Please stand by to retrieve the code</p>
         <Label>Game Code</Label>
         <Input
           id="game code"
           required
+          ref={inputRef}
         />
       </div>
     </div>
