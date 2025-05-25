@@ -2,7 +2,6 @@
 import { useEffect, useState, useRef } from 'react';
 import KahootIntroAnimation from './KahootIntroAnimation';
 import TitleAnimationGame from "./TitleAnimation"
-import Game from './Game';
 
 export default function KahootClientWrapper({ quotes }: { quotes: any[] }) {
     const [phase, setPhase] = useState<'intro' | 'second' | 'game'>('intro');
@@ -16,9 +15,6 @@ export default function KahootClientWrapper({ quotes }: { quotes: any[] }) {
             {phase === 'second' && (
                 <TitleAnimationGame />
             )}
-            {/* {phase === 'game' && (
-                <Game />
-            )} */}
         </div>
     );
 }
