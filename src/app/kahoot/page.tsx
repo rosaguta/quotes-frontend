@@ -17,6 +17,7 @@ export default async function KahootServer() {
       `${process.env.NEXT_PUBLIC_QUOTE_API}/quotes/random?asObject=true&withContext=true`,
       {
         headers: { Authorization: `Bearer ${token}` },
+        cache: 'no-store'
       }
     );
     return await response.json();
