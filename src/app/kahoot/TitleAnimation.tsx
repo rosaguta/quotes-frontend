@@ -38,7 +38,6 @@ export default function TitleAnimationGame() {
 
   useEffect(() => {
     scope.current = createScope({ root }).add(() => {
-      const [$joinButton] = utils.$('.join')
       animate(".svgWrapper", {
         opacity: [0, 1],
       });
