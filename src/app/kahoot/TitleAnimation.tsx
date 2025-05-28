@@ -1,18 +1,44 @@
 "use client"
-import { useEffect, useRef } from "react";
-import { animate, createScope, createSpring, svg, stagger } from "animejs";
+import { useEffect ,useRef, useState } from "react";
+import { animate, createScope, utils, svg, stagger } from "animejs";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {useRouter} from "next/navigation"
 export default function TitleAnimationGame() {
+  const router = useRouter()
   const root = useRef(null);
   const scope = useRef(null);
   const inputRef = useRef(null);
   const standbyAnimationRef = useRef(null);
+  const [gameCode, setGameCode] = useState<string>("")
+  const [canJoin, setCanJoin] = useState<boolean>(false)
   const getRandomPos = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+
+
+  const handleJoinClick = () => {
+    console.log("Join clicked, gameCode:", gameCode); // Debug log
+    
+    if (!gameCode.trim()) {
+      alert("Please enter a game code");
+      return;
+    }
+    setCanJoin(true)
+    // Play outro animation
+    const outro = animate('.root', {
+      opacity: [1, 0],
+      duration: 1500,
+      ease: 'inOutQuint',
+      onComplete: () => {
+        console.log("Animation complete, redirecting to:", `/kahoot/${gameCode}`); // Debug log
+        router.push(`/kahoot/${gameCode}`);
+      }
+    });
+  };
 
   useEffect(() => {
     scope.current = createScope({ root }).add(() => {
-
+      const [$joinButton] = utils.$('.join')
       animate(".svgWrapper", {
         opacity: [0, 1],
       });
@@ -28,13 +54,13 @@ export default function TitleAnimationGame() {
         delay: 15000,
         loop: true,
         duration: 2000,
+        ease: 'inOutQuad'
       });
       animate(svg.createDrawable('.line'), {
         draw: ['0 0', '0 1', "1 1", "0 0", '0 1'],
         ease: 'inOutQuad',
         duration: 3000,
         delay: stagger(250),
-        background: 'rgb(255, 168, 40)'
         // loop: 1,
         // opacity: [0, 1]
       });
@@ -42,7 +68,7 @@ export default function TitleAnimationGame() {
         opacity: [0, 1],
         delay: 5000
       })
-
+      
       const inputElement = inputRef.current;
       const stopStandbyAnimation = () => {
         standbyAnimationRef.current?.restart();
@@ -56,8 +82,9 @@ export default function TitleAnimationGame() {
       };
     });
   }, [])
+
   return (
-    <div ref={root} className="overflow-hidden">
+    <div ref={root} className="overflow-hidden root">
       <div className="flex flex-col items-center justify-center overflow-hidden">
         <div className="svgWrapper opacity-0">
           <svg width="170" height="130" viewBox="0 0 170 149" fill="none" xmlns="http://www.w3.org/2000/svg" >
@@ -81,14 +108,20 @@ export default function TitleAnimationGame() {
         <p className="questions absolute text-neutral-500">Context hello?!?!</p>
         <p className="questions absolute text-neutral-500">huh??</p>
       </div>
-      <div className="game opacity-0 z-10 mt-20">
+      <div className="game grid grid-cols-1 place-items-center gap-3 opacity-0 z-10 mt-20">
         <p className="standby text-yellow-100 font-terminal text-sm">Please stand by to retrieve the code</p>
-        <Label>Game Code</Label>
+        <Label className="place-self-start">Game Code</Label>
         <Input
           id="game code"
+          onChange={e => setGameCode(e.target.value)}
           required
+          value={gameCode}
           ref={inputRef}
         />
+        <Button className="join w-20" onClick={handleJoinClick}>Join</Button>
+        {canJoin && (
+          <div className="text-green-300">Have Fun!!!</div>
+        )}
       </div>
     </div>
   );

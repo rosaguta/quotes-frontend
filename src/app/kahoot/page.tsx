@@ -11,7 +11,6 @@ export default async function KahootServer() {
   };
 
   const token = await login();
-
   const fetchQuote = async () => {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_QUOTE_API}/quotes/random?asObject=true&withContext=true`,
