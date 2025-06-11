@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { animate, createTimer, utils } from 'animejs';
 import { useParams } from "next/navigation";
+import { GetColor } from "@/utils/Color";
 
 export default function Page() {
   const root = useRef(null);
@@ -9,10 +10,23 @@ export default function Page() {
   const scope = useRef(null);
   const { gamecode } = params;
   const orbitContainer = useRef(null);
-  const [players, setPlayers] = useState(["Rose", "Robin", "Liv", "benjamin", "Stijn"]);
+  const [players, setPlayers] = useState(["Rose", "Robin", "Liv", "Gibby", "stijn"]);
   const particlesRef = useRef([]);
   const timersRef = useRef([]);
 
+  const freq = 0.05;
+  let i = 0;
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     const newColor = GetColor(freq, i);
+  //     const hostmsg = document.getElementById("HOSTMSG")
+  //     hostmsg.style.color = newColor
+  //     i++
+  //   }, 100);
+
+  //   return () => clearInterval(interval);
+  // },[]);
 
   // Function to clean up existing animations and particles
   const cleanup = () => {
@@ -33,11 +47,11 @@ export default function Page() {
 
   // Function to create animation for a single particle
   const animateParticle = ($el, particleIndex, totalParticles) => {
-    const $circle = document.querySelector('#logo');
-    if (!$circle) return null;
+    const $logo = document.querySelector('#logo');
+    if (!$logo) return null;
 
-    const baseRadius = $circle.offsetWidth / 1.1;
-    const activeRadius = $circle.offsetWidth / 1.75;
+    const baseRadius = $logo.offsetWidth / 1.1;
+    const activeRadius = $logo.offsetWidth / 1.75;
 
     // Calculate unique angle for each particle
     const angleStep = (Math.PI * 2) / totalParticles;
@@ -93,7 +107,9 @@ export default function Page() {
       $particle.style.fontWeight = 'bold';
       $particle.style.userSelect = 'none';
       $particle.style.pointerEvents = 'none';
-      $particle.style.boxShadow = 'none'
+      $particle.style.boxShadow = 'none';
+      $particle.style.opacity = "5";
+      $particle.style.position = "absolute";
 
       utils.set($particle, {
         color: `var(--${colors[utils.random(0, colors.length - 1)]})`
@@ -143,28 +159,14 @@ export default function Page() {
   };
 
   return (
-    <div className="">
-      <div
-        id="animation-wrapper"
-        style={{
-          // position: 'relative',
-          // width: '100%',
-          // height: '500px',
-          // display: 'flex',
-          // justifyContent: 'center',
-          // alignItems: 'center'
-        }}
-      >
-        <div
-          id='logo'
-          style={{
-            // width: '200px',
-            // height: '200px',
-            // borderRadius: '50%',
-            // border: '2px solid rgba(255, 255, 255, 0.3)',
-            // backgroundColor: 'rgba(255, 255, 255, 0.1)'
-          }}
-        >
+    <div className="w-screen h-screen">
+      <div className="flex mt-14 justify-center">
+        <h1 id="HOSTMSG" className="font-terminal font-bold text-xs">please wait until the host starts the game...</h1>
+
+      </div>
+      <div className=""
+        id="animation-wrapper">
+        <div id='logo'>
           <svg className='w-[200ox] h-[200ox]' width="170" height="130" viewBox="0 0 170 149" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clipPath="url(#clip0_1_127)" stroke="currentColor" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
               <path className="line" d="M 77.082 46.853 C 74.229 27.139 64.658 1.208 34.78 1.208 C 15.571 1.208 1.577 18.456 1.661 37.089 C 1.763 58.83 17.698 69.472 39.422 72.953 C 40.773 73.172 42.241 73.392 43.777 73.594 C 55.07 75.149 63.477 84.829 63.477 96.248 C 63.477 116.672 48.268 133.598 28.585 136.285 C 25.479 136.706 23.116 139.274 23.116 142.416 L 23.116 142.704 C 23.116 146.471 25.837 147.935 29.567 147.445 C 55.546 143.998 73.706 126.419 77.099 96.265 C 77.099 96.265 79.952 66.601 77.099 46.887 L 77.082 46.853 Z"></path>
@@ -176,7 +178,6 @@ export default function Page() {
               </clipPath>
             </defs>
           </svg>
-
         </div>
       </div>
     </div>
