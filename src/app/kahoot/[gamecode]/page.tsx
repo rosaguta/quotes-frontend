@@ -2,31 +2,20 @@
 import { useEffect, useRef, useState } from "react";
 import { animate, createTimer, utils } from 'animejs';
 import { useParams } from "next/navigation";
-import { GetColor } from "@/utils/Color";
-
+import { socket } from "@/utils/socket"
 export default function Page() {
   const root = useRef(null);
   const params = useParams();
   const scope = useRef(null);
   const { gamecode } = params;
   const orbitContainer = useRef(null);
-  const [players, setPlayers] = useState(["Rose", "Robin", "Liv", "Gibby", "stijn"]);
+  const userName = localStorage.getItem('userName')
+  const [players, setPlayers] = useState<[string]>([userName]);
   const particlesRef = useRef([]);
   const timersRef = useRef([]);
-
+  const [isConnected, setIsConnected] = useState(socket.connected)
   const freq = 0.05;
   let i = 0;
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     const newColor = GetColor(freq, i);
-  //     const hostmsg = document.getElementById("HOSTMSG")
-  //     hostmsg.style.color = newColor
-  //     i++
-  //   }, 100);
-
-  //   return () => clearInterval(interval);
-  // },[]);
 
   // Function to clean up existing animations and particles
   const cleanup = () => {
@@ -91,10 +80,10 @@ export default function Page() {
     if (!$animationWrapper) return;
 
     // Filter out empty players
-    const activePlayers = players.filter(player => player && player.trim() !== '');
+    // const activePlayers = players.filter(player => player && player.trim() !== '');
     const colors = ['red', 'orange', 'lightorange'];
 
-    activePlayers.forEach((player, i) => {
+    players.forEach((player, i) => {
       const $particle = document.createElement('div');
       $particle.classList.add('particle');
       $particle.textContent = player; // Display player name
@@ -119,7 +108,7 @@ export default function Page() {
       particlesRef.current.push($particle);
 
       // Create animation timer for this particle
-      const timer = animateParticle($particle, i, activePlayers.length);
+      const timer = animateParticle($particle, i, players.length);
       if (timer) {
         timersRef.current.push(timer);
       }
@@ -142,24 +131,32 @@ export default function Page() {
     };
   }, [players]); // Re-run when players array changes
 
-  // Functions to add/remove players for testing
-  const addPlayer = () => {
-    const newPlayerNames = ["gibby", "Stijn", "Benjamin"];
-    const unusedNames = newPlayerNames.filter(name => !players.includes(name));
-    if (unusedNames.length > 0) {
-      const randomName = unusedNames[Math.floor(Math.random() * unusedNames.length)];
-      setPlayers(prev => [...prev, randomName]);
+  useEffect(() => {
+    function onConnect() {
+      setIsConnected(true);
     }
-  };
 
-  const removePlayer = () => {
-    if (players.length > 0) {
-      setPlayers(prev => prev.slice(0, -1));
+    function onDisconnect() {
+      setIsConnected(false);
     }
-  };
+    function onPlayersChange(players){
+      console.log("onPlayersChange", players)
+      setPlayers(players)
+    }
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+    socket.on('playersUpdate', onPlayersChange);
+    socket.emit("join", {gamecode, userName})
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+      socket.off('playersUpdate');
+    };
+  }, [])
 
+  console.log(players)
   return (
-    <div className="w-screen h-screen">
+    <div className="">
       <div className="flex mt-14 justify-center">
         <h1 id="HOSTMSG" className="font-terminal font-bold text-xs">please wait until the host starts the game...</h1>
 

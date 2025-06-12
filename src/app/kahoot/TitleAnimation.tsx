@@ -12,9 +12,10 @@ export default function TitleAnimationGame() {
   const inputRef = useRef(null);
   const standbyAnimationRef = useRef(null);
   const [gameCode, setGameCode] = useState<string>("")
+  const [userName, setUserName] = useState<string>("")
   const [canJoin, setCanJoin] = useState<boolean>(false)
   const getRandomPos = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
-
+  const [submitEnabled, setSubmitEnabled] = useState(false)
 
   const handleJoinClick = () => {
     console.log("Join clicked, gameCode:", gameCode); // Debug log
@@ -23,6 +24,8 @@ export default function TitleAnimationGame() {
       alert("Please enter a game code");
       return;
     }
+    localStorage.setItem("userName", userName)
+    localStorage.setItem("gameCode", gameCode)
     setCanJoin(true)
     // Play outro animation
     const outro = animate('.root', {
@@ -37,6 +40,9 @@ export default function TitleAnimationGame() {
   };
 
   useEffect(() => {
+
+    localStorage.clear()
+
     scope.current = createScope({ root }).add(() => {
       animate(".svgWrapper", {
         opacity: [0, 1],
@@ -81,7 +87,12 @@ export default function TitleAnimationGame() {
       };
     });
   }, [])
-
+  const handleDisabledButton = () =>{
+    if(userName.length == 0 && gameCode.length == 0){
+      setSubmitEnabled(false)
+    }
+    setSubmitEnabled(true)
+  }
   return (
     <div ref={root} className="overflow-hidden root">
       <div className="flex flex-col items-center justify-center overflow-hidden">
@@ -117,7 +128,15 @@ export default function TitleAnimationGame() {
           value={gameCode}
           ref={inputRef}
         />
-        <Button className="join w-20" onClick={handleJoinClick}>Join</Button>
+        <Label className="place-self-start">Username</Label>
+        <Input
+          id="username"
+          onChange={e => setUserName(e.target.value)}
+          required
+          value={userName}
+          ref={inputRef}
+        />
+        <Button disabled={submitEnabled} className="join w-20" onClick={handleJoinClick}>Join</Button>
         {canJoin && (
           <div className="text-green-300">Have Fun!!!</div>
         )}
