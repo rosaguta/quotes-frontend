@@ -3,19 +3,18 @@ import { useEffect, useRef, useState } from "react";
 import { animate, createTimer, utils } from 'animejs';
 import { useParams } from "next/navigation";
 import { socket } from "@/utils/socket"
+import { Player } from "@/types/player";
+
 export default function Page() {
   const root = useRef(null);
   const params = useParams();
   const scope = useRef(null);
   const { gamecode } = params;
   const orbitContainer = useRef(null);
-  const userName = localStorage.getItem('userName')
-  const [players, setPlayers] = useState<[string]>([userName]);
+  const [players, setPlayers] = useState<Player[]>([]);
   const particlesRef = useRef([]);
   const timersRef = useRef([]);
   const [isConnected, setIsConnected] = useState(socket.connected)
-  const freq = 0.05;
-  let i = 0;
 
   // Function to clean up existing animations and particles
   const cleanup = () => {
@@ -79,14 +78,12 @@ export default function Page() {
     const $animationWrapper = document.querySelector('#animation-wrapper');
     if (!$animationWrapper) return;
 
-    // Filter out empty players
-    // const activePlayers = players.filter(player => player && player.trim() !== '');
-    const colors = ['red', 'orange', 'lightorange'];
 
-    players.forEach((player, i) => {
+    players.forEach((player: Player, i) => {
       const $particle = document.createElement('div');
       $particle.classList.add('particle');
-      $particle.textContent = player; // Display player name
+      $particle.style.color = player.color
+      $particle.textContent = player.userName;
       $particle.style.position = 'absolute';
       $particle.style.padding = '8px 12px';
       $particle.style.borderRadius = '8px';
@@ -100,10 +97,7 @@ export default function Page() {
       $particle.style.opacity = "5";
       $particle.style.position = "absolute";
 
-      utils.set($particle, {
-        color: `var(--${colors[utils.random(0, colors.length - 1)]})`
-      });
-
+      
       $animationWrapper.appendChild($particle);
       particlesRef.current.push($particle);
 
@@ -133,28 +127,35 @@ export default function Page() {
 
   useEffect(() => {
     function onConnect() {
-      setIsConnected(true);
-    }
-
-    function onDisconnect() {
-      setIsConnected(false);
-    }
-    function onPlayersChange(players){
-      console.log("onPlayersChange", players)
-      setPlayers(players)
-    }
+    console.log('[CLIENT] Connected to server');
+    setIsConnected(true);
+  }
+  
+  function onDisconnect() {
+    console.log('[CLIENT] Disconnected from server');
+    setIsConnected(false);
+  }
+  
+  function onPlayersChange(players) {
+    console.log('[CLIENT] playersUpdate received:', players);
+    setPlayers(players);
+  }
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('playersUpdate', onPlayersChange);
-    socket.emit("join", {gamecode, userName})
+    const userName = localStorage.getItem('userName')
+
+    const color = localStorage.getItem('color')
+
+    socket.emit("join", {gamecode, userName, color})
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
-      socket.off('playersUpdate');
+      socket.off('playersUpdate', onPlayersChange);
     };
   }, [])
 
-  console.log(players)
+  console.log('players',players)
   return (
     <div className="">
       <div className="flex mt-14 justify-center">

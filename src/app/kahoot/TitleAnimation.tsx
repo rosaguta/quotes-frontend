@@ -1,10 +1,12 @@
 "use client"
-import { useEffect ,useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { animate, createScope, utils, svg, stagger } from "animejs";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {useRouter} from "next/navigation"
+import { useRouter } from "next/navigation"
+import { GetColor } from "@/utils/Color"
+
 export default function TitleAnimationGame() {
   const router = useRouter()
   const root = useRef(null);
@@ -16,16 +18,20 @@ export default function TitleAnimationGame() {
   const [canJoin, setCanJoin] = useState<boolean>(false)
   const getRandomPos = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
   const [submitEnabled, setSubmitEnabled] = useState(false)
+  const [color, setColor] = useState("#000000");
+  const freq = 0.1;
+  let i = 0;
 
   const handleJoinClick = () => {
     console.log("Join clicked, gameCode:", gameCode); // Debug log
-    
+
     if (!gameCode.trim()) {
       alert("Please enter a game code");
       return;
     }
     localStorage.setItem("userName", userName)
     localStorage.setItem("gameCode", gameCode)
+    localStorage.setItem('color', color)
     setCanJoin(true)
     // Play outro animation
     const outro = animate('.root', {
@@ -40,9 +46,7 @@ export default function TitleAnimationGame() {
   };
 
   useEffect(() => {
-
     localStorage.clear()
-
     scope.current = createScope({ root }).add(() => {
       animate(".svgWrapper", {
         opacity: [0, 1],
@@ -73,7 +77,7 @@ export default function TitleAnimationGame() {
         opacity: [0, 1],
         delay: 5000
       })
-      
+
       const inputElement = inputRef.current;
       const stopStandbyAnimation = () => {
         standbyAnimationRef.current?.restart();
@@ -87,8 +91,20 @@ export default function TitleAnimationGame() {
       };
     });
   }, [])
-  const handleDisabledButton = () =>{
-    if(userName.length == 0 && gameCode.length == 0){
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newColor = GetColor(freq, i);
+      setColor(newColor);
+      i++
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, []);
+
+
+  const handleDisabledButton = () => {
+    if (userName.length == 0 && gameCode.length == 0) {
       setSubmitEnabled(false)
     }
     setSubmitEnabled(true)

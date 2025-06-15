@@ -1,8 +1,5 @@
 ideas:
     accept queue click just like league
-    lobby view just like league 
-    cards flying by as an intro animation
-    logo gradient like gta 6
 
 websockets
 name input
