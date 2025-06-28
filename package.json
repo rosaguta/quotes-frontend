@@ -26,6 +26,7 @@
     "@tsparticles/engine": "^3.3.0",
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.3.0",
+    "@types/animejs": "^3.1.13",
     "@types/three": "^0.172.0",
     "animejs": "^4.0.2",
     "chart.js": "^4.4.7",

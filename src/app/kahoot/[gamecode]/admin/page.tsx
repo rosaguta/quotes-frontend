@@ -4,14 +4,25 @@ import { useState, useEffect } from 'react'
 import { useParams } from "next/navigation";
 import DarkCard from '@/components/ui/DarkCard';
 import { Player } from '@/types/player';
+import { animate, stagger } from 'animejs';
 
 
 export default function AdminPanel() {
   const params = useParams();
   const [players, setPlayers] = useState<Player[]>([])
   const { gamecode } = params
-  console.log(params)
-  console.log(gamecode)
+
+ useEffect(() => {
+  // Animate all player cards on join/change
+  animate('.player-card',{
+    // targets: '.player-card',
+    translateY: [20, 0],
+    opacity: [0, 1],
+    delay: stagger(100), // stagger animation if multiple join
+    duration: 500,
+    easing: 'easeOutExpo'
+  });
+}, [players]);
 
   useEffect(() => {
     function adminRegistered(gamecode) {
@@ -28,17 +39,17 @@ export default function AdminPanel() {
     socket.on('adminRegistered', (gamecode) => {
       adminRegistered(gamecode)
     })
-    socket.on('playersUpdate', onPlayersChange)
+    socket.on('adminPlayerUpdate', onPlayersChange)
 
     socket.emit('registerAdmin', { gamecode })
 
     return () => {
       socket.off('connect')
-      socket.off('playerUpdate', onPlayersChange)
+      socket.off('adminPlayerUpdate', onPlayersChange)
       socket.off('adminRegistered', adminRegistered)
     };
   }, [gamecode]);
-  console.log('players', players)
+  // console.log('players', players)
 
 
   return (
@@ -66,8 +77,15 @@ export default function AdminPanel() {
       <div className="flex-1 flex flex-col items-center justify-center px-4">
         <p className="mb-4 font-bold">Players:</p>
         <div className="flex flex-wrap justify-center gap-4">
+          <div id='player'></div>
           {players.map((player, index) => (
-            <DarkCard key={index} color={player.color} borderColor={null} initColor={player.color}>
+            <DarkCard
+              key={player.userName}
+              color={player.color}
+              borderColor={null}
+              initColor={player.color}
+              className="player-card"
+            >
               {player.userName} - Score: {player.score}
             </DarkCard>
           ))}
