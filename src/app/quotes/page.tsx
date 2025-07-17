@@ -45,30 +45,28 @@ export default function Home() {
 
     const fetchData = async () => {
       const token = Cookies.get('token');
+      setJwtToken(token);
+      const JWTClaims = jose.decodeJwt(token)
+      const hasRights = JWTClaims.Rights === "True";
+      setRights(hasRights);
+
       const headers = {
         "Accept": "*/*",
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "no-cors",
+        "Authorization": `Bearer ${token}`
       };
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-      }
-
+     
       try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/Quotes`, { headers });
         let data = await response.json();
-
-        data = data.map((quote) => ({
-          ...quote,
-          dateTimeCreated: formatDate(quote.dateTimeCreated),
-        }));
-
+        if (hasRights == false) {
+          data = data.map((quote) => ({
+            ...quote,
+            dateTimeCreated: formatDate(quote.dateTimeCreated),
+          }));
+        }
         setJsonData(data);
-        setJwtToken(token);
-        const JWTClaims = jose.decodeJwt(token)
-
-        const hasRights = JWTClaims.Rights === "True";
-        setRights(hasRights);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -79,7 +77,7 @@ export default function Home() {
 
   const handleEditClick = (index) => {
     setQuoteToEdit(jsonData.find((el) => el.id == index));
-    setEditModalOpen(true); 
+    setEditModalOpen(true);
   };
   const handleSaveQuote = (updatedQuote) => {
     handleSendClick(updatedQuote)
@@ -249,7 +247,7 @@ export default function Home() {
                       />
                     ))}
                   </div>
-                  <MasornyView data={jsonData} color={"#9803fc"} initColor={"#5d3678"}/>
+                  <MasornyView data={jsonData} color={"#9803fc"} initColor={"#5d3678"} />
 
                 </div>
               )}
