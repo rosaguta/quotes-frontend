@@ -36,7 +36,7 @@ export default function MasornyView({ data, color, initColor }: { data: Quote[],
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <DarkCard color={color} borderColor={null} initColor={initColor}>
+            <DarkCard className="" color={color} borderColor={null} initColor={initColor}>
               <motion.div className='relative select-none' layoutId={`card-content-${quote.id}`}>
                 <div className="space-y-2">
                   <motion.p className="text-gray-400 md:text-sm text-xs flex justify-between" layoutId={`card-person-${quote.id}`}>
@@ -62,7 +62,7 @@ export default function MasornyView({ data, color, initColor }: { data: Quote[],
             exit={{ opacity: 0 }}
             onClick={() => toggleExpand(null, null)}
           >
-            <div className="w-full" onClick={(e) => e.stopPropagation()}>
+            <div className="" onClick={(e) => e.stopPropagation()}>
               {data.filter(quote => quote.id === expandedId).map((quote, index) => (
                 <motion.div
                   key={`expanded-container-${quote.id}`}
