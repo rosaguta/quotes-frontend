@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useParams } from "next/navigation";
 import DarkCard from '@/components/ui/DarkCard';
 import { Player } from '@/types/player';
+import { Quote } from '@/types/quote';
 import { animate, stagger } from 'animejs';
 import { Button } from '@/components/ui/button';
 
@@ -12,7 +13,7 @@ export default function AdminPanel() {
   const params = useParams();
   const [players, setPlayers] = useState<Player[]>([])
   const { gamecode } = params
-  const [currentQuestionList, setCurrentQuestionList] = useState<String[]>([])
+  const [currentQuestionList, setCurrentQuestionList] = useState<Quote[]>([])
 
  useEffect(() => {
   // Animate all player cards on join/change
