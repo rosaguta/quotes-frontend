@@ -5,12 +5,14 @@ import { useParams } from "next/navigation";
 import DarkCard from '@/components/ui/DarkCard';
 import { Player } from '@/types/player';
 import { animate, stagger } from 'animejs';
+import { Button } from '@/components/ui/button';
 
 
 export default function AdminPanel() {
   const params = useParams();
   const [players, setPlayers] = useState<Player[]>([])
   const { gamecode } = params
+  const [currentQuestionList, setCurrentQuestionList] = useState<String[]>([])
 
  useEffect(() => {
   // Animate all player cards on join/change
@@ -27,12 +29,17 @@ export default function AdminPanel() {
   useEffect(() => {
     function adminRegistered(gamecode) {
       console.log(`[admin] connected to ${gamecode}`)
-
     }
     function onPlayersChange(players) {
       console.log('[ADMIN] playersUpdate received:', players);
       setPlayers(players);
     }
+    
+    socket.on('RandomizedGame',(game)=>{
+      console.log('[ADMIN] Game received:', game)
+      setCurrentQuestionList(game)
+
+    })
     socket.on('connect', () => {
       console.log('[admin] connected');
     });
@@ -40,7 +47,6 @@ export default function AdminPanel() {
       adminRegistered(gamecode)
     })
     socket.on('adminPlayerUpdate', onPlayersChange)
-
     socket.emit('registerAdmin', { gamecode })
 
     return () => {
@@ -50,7 +56,10 @@ export default function AdminPanel() {
     };
   }, [gamecode]);
   // console.log('players', players)
-
+  function handlePrepRandomGame(game) {
+      socket.emit('RandomPrepGame')
+      setCurrentQuestionList(game)
+    }
 
   return (
     <div className="flex flex-col w-screen h-screen">
@@ -73,7 +82,7 @@ export default function AdminPanel() {
           </svg>
         </div>
       </div>
-
+      <Button className='w-16' onClick={handlePrepRandomGame}>Generate Game</Button>
       <div className="flex-1 flex flex-col items-center justify-center px-4">
         <p className="mb-4 font-bold">Players:</p>
         <div className="flex flex-wrap justify-center gap-4">
