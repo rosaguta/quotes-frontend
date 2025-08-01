@@ -1,11 +1,12 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { animate, createTimer, utils } from 'animejs';
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { socket } from "@/utils/socket"
 import { Player } from "@/types/player";
 
 export default function Page() {
+  const router = useRouter()
   const root = useRef(null);
   const params = useParams();
   const scope = useRef(null);
@@ -135,7 +136,10 @@ export default function Page() {
     console.log('[CLIENT] Disconnected from server');
     setIsConnected(false);
   }
-  
+  function returnToLanding(){
+    console.log('[CLIENT] Invalid Code');
+    router.back()
+  }
   function onPlayersChange(players) {
     console.log('[CLIENT] playersUpdate received:', players);
     setPlayers(players);
@@ -143,6 +147,7 @@ export default function Page() {
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('playersUpdate', onPlayersChange);
+    socket.on('invalid_gamecode',returnToLanding)
     const userName = localStorage.getItem('userName')
 
     const color = localStorage.getItem('color')
