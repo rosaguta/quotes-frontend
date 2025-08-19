@@ -136,9 +136,12 @@ export default function Page() {
     console.log('[CLIENT] Disconnected from server');
     setIsConnected(false);
   }
-  function returnToLanding(){
+  function returnToLanding(message:any){
+
     console.log('[CLIENT] Invalid Code');
-    router.back()
+    console.log(message)
+    localStorage.setItem("InvalidCodeMessage", "Oopsie woopsie, The game code that you used is incorrect >.<. You naughty naughty")
+    router.push("/kahoot")
   }
   function onPlayersChange(players) {
     console.log('[CLIENT] playersUpdate received:', players);

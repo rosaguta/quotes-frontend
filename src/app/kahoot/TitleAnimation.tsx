@@ -11,14 +11,17 @@ export default function TitleAnimationGame() {
   const router = useRouter()
   const root = useRef(null);
   const scope = useRef(null);
-  const inputRef = useRef(null);
+  const gameCodeInputRef = useRef(null);
+  const UserNameInputRef = useRef(null);
   const standbyAnimationRef = useRef(null);
+  const errorAnimationRef = useRef(null)
   const [gameCode, setGameCode] = useState<string>("")
   const [userName, setUserName] = useState<string>("")
   const [canJoin, setCanJoin] = useState<boolean>(false)
   const getRandomPos = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
   const [submitEnabled, setSubmitEnabled] = useState(false)
   const [color, setColor] = useState("#000000");
+  const [errorMessage, setErrorMessage] = useState<string | null>(localStorage.getItem("InvalidCodeMessage"))
   const freq = 0.1;
   let i = 0;
 
@@ -65,6 +68,13 @@ export default function TitleAnimationGame() {
         duration: 2000,
         ease: 'inOutQuad'
       });
+      errorAnimationRef.current = animate(".error",{
+        opacity: [0, 1, 0],
+        loop: 10,
+        duration: 2000,
+        ease: 'inOutQuad',
+        onComplete: ()=>setErrorMessage(null)
+      })
       animate(svg.createDrawable('.line'), {
         draw: ['0 0', '0 1', "1 1", "0 0", '0 1'],
         ease: 'inOutQuad',
@@ -78,16 +88,19 @@ export default function TitleAnimationGame() {
         delay: 5000
       })
 
-      const inputElement = inputRef.current;
+      const gameCodeElement = gameCodeInputRef.current;
+      const userNameElement = UserNameInputRef.current
       const stopStandbyAnimation = () => {
+        console.log("input ref has been triggered")
         standbyAnimationRef.current?.restart();
-        inputElement.removeEventListener("input", stopStandbyAnimation);
       };
-      inputElement?.addEventListener("input", stopStandbyAnimation);
+      gameCodeElement?.addEventListener("input", stopStandbyAnimation);
+      userNameElement?.addEventListener("input", stopStandbyAnimation);
 
       return () => {
         scope.current?.revert();
-        inputElement?.removeEventListener("input", stopStandbyAnimation);
+        gameCodeElement?.removeEventListener("input", stopStandbyAnimation);
+        userNameElement?.removeEventListener("input", stopStandbyAnimation);
       };
     });
   }, [])
@@ -134,15 +147,18 @@ export default function TitleAnimationGame() {
         <p className="questions absolute text-neutral-500">Context hello?!?!</p>
         <p className="questions absolute text-neutral-500">huh??</p>
       </div>
-      <div className="game grid grid-cols-1 place-items-center gap-3 opacity-0 z-10 mt-20">
+      <div className="game grid grid-cols-1 place-items-center gap-3 opacity-0 z-10 mt-20 max-w-72">
         <p className="standby text-yellow-100 font-terminal text-sm">Please stand by to retrieve the code</p>
+        {errorMessage !== null &&(
+          <p className="error text-red-200 font-terminal text-sm ">{errorMessage}</p>
+          )}
         <Label className="place-self-start">Game Code</Label>
         <Input
           id="game code"
           onChange={e => setGameCode(e.target.value)}
           required
           value={gameCode}
-          ref={inputRef}
+          ref={gameCodeInputRef}
         />
         <Label className="place-self-start">Username</Label>
         <Input
@@ -150,7 +166,7 @@ export default function TitleAnimationGame() {
           onChange={e => setUserName(e.target.value)}
           required
           value={userName}
-          ref={inputRef}
+          ref={UserNameInputRef}
         />
         <Button disabled={submitEnabled} className="join w-20" onClick={handleJoinClick}>Join</Button>
         {canJoin && (
