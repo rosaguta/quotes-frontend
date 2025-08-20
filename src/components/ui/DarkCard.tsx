@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import DotPattern from './DotPattern';
 import { cn } from '@/lib/utils';
 
-const DarkCard = ({ children, color, borderColor = null, initColor, className, direction = "to_bottom_left" }) => {
+const DarkCard = ({ children, color, borderColor = null, initColor, className, direction = "to_bottom_left", Style }) => {
   const [isHovered, setIsHovered] = React.useState(false);
   
   // Map direction prop to CSS gradient direction
@@ -31,6 +31,7 @@ const DarkCard = ({ children, color, borderColor = null, initColor, className, d
   
   return (
     <motion.div
+      style={Style}
       className={cn("relative max-w-md p-6 bg-black rounded-xl border-[0.5px] overflow-hidden", className)}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
