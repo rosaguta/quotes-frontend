@@ -94,20 +94,7 @@ export default function LobbyScreen() {
 
     }, []);
 
-    // Countdown timer
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setCountdown(prev => {
-                if (prev <= 1) {
-                    clearInterval(timer);
-                    return 0;
-                }
-                return prev - 1;
-            });
-        }, 1000);
-
-        return () => clearInterval(timer);
-    }, []);
+   
 
     return (
         <div className="w-full h-dvh p-4 flex flex-col bg-black">
