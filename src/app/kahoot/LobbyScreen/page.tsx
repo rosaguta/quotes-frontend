@@ -85,7 +85,7 @@ export default function LobbyScreen() {
 
         // Ready status pulse
         animate('.ready-indicator', {
-            opacity: [0.7, 1, 0.7],
+            opacity: [0.6, 1, 0.6],
             //   scale: [1, 1.05, 1],
             duration: 2000,
             loop: true,
