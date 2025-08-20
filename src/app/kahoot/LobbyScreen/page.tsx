@@ -50,7 +50,12 @@ export default function LobbyScreen() {
             delay: 600,
             ease: 'easeOutExpo',
         });
-
+        animate('.player-ready', {
+            opacity: [0, 1],
+            duration: 1000,
+            delay: 700,
+            ease: 'easeOutExpo',
+        });
         // Player cards stagger animation
         animate('.player-card', {
             scale: [0.8, 1],
@@ -128,7 +133,7 @@ export default function LobbyScreen() {
 
             {/* Players grid */}
             <div className="flex-grow">
-                <h2 className="text-center text-xl font-terminal text-white mb-4">
+                <h2 className="player-ready opacity-0 text-center text-xl font-terminal text-white mb-4">
                     Players ({players.filter(p => p.ready).length}/{players.length} ready)
                 </h2>
 
