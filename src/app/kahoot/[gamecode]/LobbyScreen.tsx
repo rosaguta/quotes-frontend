@@ -4,8 +4,11 @@ import { Card } from "@/components/ui/card"
 import DarkCard from "@/components/ui/DarkCard"
 import { useEffect, useRef, useState } from "react";
 import { animate, stagger } from "animejs";
-
-export default function LobbyScreen() {
+import { Socket } from "socket.io-client";
+interface LobbyScreenProps {
+  socket: Socket;
+}
+export default function LobbyScreen({socket}:LobbyScreenProps) {
     const [countdown, setCountdown] = useState(15);
     const [players] = useState([
         { name: "Rose", color: "#F27EBE", ready: true },
