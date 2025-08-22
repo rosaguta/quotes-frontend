@@ -7,14 +7,13 @@ import { cn } from '@/lib/utils';
 const DarkCard = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
->(({ children, color, borderColor = null, initColor, className, direction = "to_bottom_left", Style }) =>{
+>(({ children, color, borderColor = null, initColor, className, direction = "to_bottom_left", ...rest }) => {
   const [isHovered, setIsHovered] = React.useState(false);
-  
-  // Map direction prop to CSS gradient direction
-  const getGradientDirection = (dir) => {
-    const directionMap = {
+
+  const getGradientDirection = (dir: string) => {
+    const directionMap: Record<string, string> = {
       'to_bottom_left': 'to bottom left',
-      'to_bottom_right': 'to bottom right', 
+      'to_bottom_right': 'to bottom right',
       'to_top_left': 'to top left',
       'to_top_right': 'to top right',
       'to_bottom': 'to bottom',
@@ -25,24 +24,22 @@ const DarkCard = React.forwardRef<
     return directionMap[dir] || 'to bottom left';
   };
 
-  // Create CSS custom property for the mask
   const maskStyle = {
     '--mask-direction': getGradientDirection(direction),
     maskImage: `linear-gradient(var(--mask-direction), white, transparent, transparent)`,
     WebkitMaskImage: `linear-gradient(var(--mask-direction), white, transparent, transparent)`
-  };
-  
+  } as React.CSSProperties;
+
   return (
     <motion.div
-      style={Style}
       className={cn("relative max-w-md p-6 bg-black rounded-xl border-[0.5px] overflow-hidden", className)}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       whileHover={{ borderColor: borderColor }}
+      {...rest}  
     >
-      <div className="relative z-10">
-        {children}
-      </div>
+      <div className="relative z-10">{children}</div>
+
       {/* desktop */}
       <div className="hidden md:block">
         <DotPattern
@@ -58,8 +55,9 @@ const DarkCard = React.forwardRef<
           }}
         />
       </div>
+
       {/* phone */}
-      <div className='block md:hidden'>
+      <div className="block md:hidden">
         <DotPattern
           width={12}
           height={12}
@@ -68,14 +66,13 @@ const DarkCard = React.forwardRef<
           cr={1}
           style={{
             ...maskStyle,
-            fill: true ? color : "rgba(156, 163, 175, 0.8)",
+            fill: color,
             transition: "fill 0.2s ease-in-out"
           }}
         />
       </div>
     </motion.div>
   );
-}
-) 
+});
 
 export default DarkCard;

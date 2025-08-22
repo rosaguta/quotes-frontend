@@ -5,19 +5,13 @@ import DarkCard from "@/components/ui/DarkCard"
 import { useEffect, useRef, useState } from "react";
 import { animate, stagger } from "animejs";
 import { Socket } from "socket.io-client";
+import { Player } from "@/types/player";
+
 interface LobbyScreenProps {
-  socket: Socket;
+  players: Player[];
 }
-export default function LobbyScreen({socket}:LobbyScreenProps) {
+export default function LobbyScreen({players}:LobbyScreenProps) {
     const [countdown, setCountdown] = useState(15);
-    const [players] = useState([
-        { name: "Rose", color: "#F27EBE", ready: true },
-        { name: "Liv", color: "#35BDF2", ready: true },
-        { name: "Daan", color: "#F2E74B", ready: false },
-        { name: "Vika", color: "#4CAF50", ready: true },
-        { name: "Robin", color: "#FF6B6B", ready: true },
-        { name: "Gibby", color: "#9B59B6", ready: false },
-    ]);
 
     useEffect(() => {
         // Main card border animation
@@ -129,7 +123,7 @@ export default function LobbyScreen({socket}:LobbyScreenProps) {
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-4xl mx-auto">
                     {players.map((player, index) => (
-                        <div key={player.name} className="player-card opacity-0">
+                        <div key={player.userName} className="player-card opacity-0">
                             <DarkCard
                                 // className={`border-[${player.color}]/80`}
                                 direction="to_bottom_right"
@@ -137,7 +131,7 @@ export default function LobbyScreen({socket}:LobbyScreenProps) {
                                 Style={{ borderColor: player.color }}
                             >
                                 <span className="text-white font-medium text-lg z-10">
-                                    {player.name}
+                                    {player.userName}
                                 </span>
 
                                 <div className="flex items-center z-10">
@@ -156,7 +150,6 @@ export default function LobbyScreen({socket}:LobbyScreenProps) {
                                         </div>
                                     )}
                                 </div>
-
                             </DarkCard>
                         </div>
                     ))}

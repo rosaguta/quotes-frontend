@@ -6,12 +6,20 @@ import { useEffect, useRef, useState } from "react";
 import { animate, createTimer, stagger, utils } from "animejs";
 import { Socket } from "socket.io-client";
 
-interface QuestionScreenProps {
-  socket: Socket;
-  onGotoLobby: () => void
+interface Answer {
+  answer: string
+  timeTaken: number
 }
 
-export default function QuestionScreen({ socket, onGotoLobby }: QuestionScreenProps) {
+interface QuestionScreenProps {
+  onGotoLobby: () => void
+  submitAnswer: (Answer) => void
+  possibleAnswers : string[]
+  question: string
+  fillerText: string
+}
+
+export default function QuestionScreen({ onGotoLobby, submitAnswer, possibleAnswers, question, fillerText }: QuestionScreenProps) {
   const countdownRef = useRef()
   const [timeTaken, setTimeTaken] = useState(0)
   useEffect(() => {
@@ -97,8 +105,9 @@ export default function QuestionScreen({ socket, onGotoLobby }: QuestionScreenPr
 
         if (newCountdown <= 0) {
           const maxTime = 10
-          socket.emit("playerAnswer", { answer: "", timeTaken: maxTime })
-          onGotoLobby();
+          // socket.emit("playerAnswer", { answer: "", timeTaken: maxTime })
+          submitAnswer({ answer: "", timeTaken: timeTaken })
+          // onGotoLobby();
         }
       },
     });
@@ -109,12 +118,12 @@ export default function QuestionScreen({ socket, onGotoLobby }: QuestionScreenPr
   }, [onGotoLobby]);
 
   const handleAnwerClick = (answer: string) => {
-    socket.emit("playerAnswer", { answer: answer, timeTaken: timeTaken })
-    gotoLobby()
+    // socket.emit("playerAnswer", { answer: answer, timeTaken: timeTaken })
+    console.log({ answer: answer, timeTaken: timeTaken })
+    submitAnswer({ answer: answer, timeTaken: timeTaken })
+    onGotoLobby()
   }
-  const gotoLobby = () => {
-
-  }
+  
   return (
     <div className="flex justify-center ">
       <div className="w-full md:w-1/3 h-dvh p-2 flex flex-col">
@@ -132,17 +141,17 @@ export default function QuestionScreen({ socket, onGotoLobby }: QuestionScreenPr
         {/* Main card */}
         <div className="flex justify-center w-full text-xl pb-2 ">
           <Card className="px-4 flex flex-col justify-evenly items-center h-60 w-full font-terminal main-card opacity-0">
-            <p className="text-zinc-400 quote-text">No way _____ said this:</p>
-            <p className="h-32 quote-text">Live in my walls? how about u live in my balls</p>
+            <p className="text-zinc-400 quote-text">{fillerText}</p>
+            <p className="h-32 quote-text">{question}</p>
           </Card>
         </div>
 
         {/* Grid answers → take up remaining space */}
         <div className="grid flex-grow gap-2 grid-cols-2 place-items-center font-terminal">
-          <DarkCard onClick={() => { handleAnwerClick("Rose") }} className="w-full h-full flex justify-center items-center border-[#F27EBE]/80 answer-card opacity-0" direction="to_bottom_right" color="#F27EBE">Rose</DarkCard>
-          <DarkCard className="w-full h-full flex justify-center items-center border-[#35BDF2]/80 answer-card opacity-0" direction="to_bottom_left" color="#35BDF2">Liv</DarkCard>
-          <DarkCard className="w-full h-full flex justify-center items-center border-[#F2E74B]/80 answer-card opacity-0" direction="to_top_right" color="#F2E74B">Daan</DarkCard>
-          <DarkCard className="w-full h-full flex justify-center items-center border-[#4CAF50]/80 answer-card opacity-0" direction="to_top_left" color="#4CAF50">Vika</DarkCard>
+          <DarkCard onClick={() => { handleAnwerClick(possibleAnswers [0]) }} className="w-full h-full flex justify-center items-center border-[#F27EBE]/80 answer-card opacity-0" direction="to_bottom_right" color="#F27EBE">{possibleAnswers [0]}</DarkCard>
+          <DarkCard onClick={() => { handleAnwerClick(possibleAnswers [1]) }} className="w-full h-full flex justify-center items-center border-[#35BDF2]/80 answer-card opacity-0" direction="to_bottom_left" color="#35BDF2">{possibleAnswers [1]}</DarkCard>
+          <DarkCard onClick={() => { handleAnwerClick(possibleAnswers [2]) }} className="w-full h-full flex justify-center items-center border-[#F2E74B]/80 answer-card opacity-0" direction="to_top_right" color="#F2E74B">{possibleAnswers [2]}</DarkCard>
+          <DarkCard onClick={() => { handleAnwerClick(possibleAnswers [3]) }} className="w-full h-full flex justify-center items-center border-[#4CAF50]/80 answer-card opacity-0" direction="to_top_left" color="#4CAF50">{possibleAnswers [3]}</DarkCard>
         </div>
       </div>
     </div>

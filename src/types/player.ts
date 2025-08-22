@@ -2,5 +2,6 @@ export type Player = {
   userName: string,
   joinedAt: number,
   score: number,
-  color: string
+  color: string,
+  ready: boolean
 }

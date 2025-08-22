@@ -5,18 +5,16 @@ import { useParams, useRouter } from "next/navigation";
 import { socket } from "@/utils/socket"
 import { Player } from "@/types/player";
 import { Socket } from "socket.io-client";
-
 interface BeforeGameLobbyProps {
-  socket: Socket;
+  players: Player[] ;
 }
-export default function BeforeGameLobby({ socket }: BeforeGameLobbyProps) {
+export default function BeforeGameLobby({ players }: BeforeGameLobbyProps) {
   const router = useRouter()
   const root = useRef(null);
   const params = useParams();
   const scope = useRef(null);
   const { gamecode } = params;
   const orbitContainer = useRef(null);
-  const [players, setPlayers] = useState<Player[]>([]);
   const particlesRef = useRef([]);
   const timersRef = useRef([]);
   const [isConnected, setIsConnected] = useState(socket.connected)
@@ -130,44 +128,6 @@ export default function BeforeGameLobby({ socket }: BeforeGameLobbyProps) {
     };
   }, [players]); // Re-run when players array changes
 
-  useEffect(() => {
-    function onConnect() {
-    console.log('[CLIENT] Connected to server');
-    setIsConnected(true);
-  }
-  
-  function onDisconnect() {
-    console.log('[CLIENT] Disconnected from server');
-    setIsConnected(false);
-  }
-  function returnToLanding(message:any){
-
-    console.log('[CLIENT] Invalid Code');
-    console.log(message)
-    localStorage.setItem("InvalidCodeMessage", "Oopsie woopsie, The game code that you used is incorrect >.<. You naughty naughty")
-    router.push("/kahoot")
-  }
-  function onPlayersChange(players) {
-    console.log('[CLIENT] playersUpdate received:', players);
-    setPlayers(players);
-  }
-    socket.on('connect', onConnect);
-    socket.on('disconnect', onDisconnect);
-    socket.on('playersUpdate', onPlayersChange);
-    socket.on('invalid_gamecode',returnToLanding)
-    const userName = localStorage.getItem('userName')
-
-    const color = localStorage.getItem('color')
-
-    socket.emit("join", {gamecode, userName, color})
-    return () => {
-      socket.off('connect', onConnect);
-      socket.off('disconnect', onDisconnect);
-      socket.off('playersUpdate', onPlayersChange);
-    };
-  }, [])
-
-  console.log('players',players)
   return (
     <div className="">
       <div className="flex mt-14 justify-center">
