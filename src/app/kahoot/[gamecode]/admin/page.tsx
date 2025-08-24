@@ -61,7 +61,9 @@ export default function AdminPanel() {
       socket.emit('RandomPrepGame')
       setCurrentQuestionList(game)
     }
-
+    function nextRound(){
+      socket.emit("NextRound")
+    }
   return (
     <div className="flex flex-col w-screen h-screen">
       <div className="flex justify-center pt-6">
@@ -83,7 +85,8 @@ export default function AdminPanel() {
           </svg>
         </div>
       </div>
-      <Button className='w-16' onClick={handlePrepRandomGame}>Generate Game</Button>
+      <Button className='w-32' onClick={handlePrepRandomGame}>Generate Game</Button>
+      <Button className='w-32' onClick={nextRound}>Next Round</Button>
       <div className="flex-1 flex flex-col items-center justify-center px-4">
         <p className="mb-4 font-bold">Players:</p>
         <div className="flex flex-wrap justify-center gap-4">
