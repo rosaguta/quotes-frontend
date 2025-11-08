@@ -8,98 +8,136 @@ import LobbyScreen from "./LobbyScreen";
 import BeforeGameLobby from "./ConnectingLobby";
 import QuestionScreen from "./QuestionScreen";
 
-type GameState = "Connecting" | "Lobby" | "Question"
+type GameState = "Connecting" | "Lobby" | "Question";
+
+interface QuestionData {
+  Category: string;
+  Question: string;
+  Answers: string[];
+}
 
 export default function Page() {
-  const router = useRouter()
+  const router = useRouter();
   const params = useParams();
   const { gamecode } = params;
   const [players, setPlayers] = useState<Player[]>([]);
   const [gameState, setGameState] = useState<GameState>('Connecting');
-  const [isConnected, setIsConnected] = useState(socket.connected)
-  const [roundNumber, setRoundNumber] = useState(0)
-  const [userName, setUserName] = useState("")
-  // if(!isConnected){
-  //   setPlayers([
-  //       { userName: "Rose", color: "#F27EBE", ready: true, score: 0, joinedAt:0 },
-  //       { userName: "Liv", color: "#35BDF2", ready: true, score: 0, joinedAt:0 },
-  //       { userName: "Daan", color: "#F2E74B", ready: false, score: 0, joinedAt:0 },
-  //       { userName: "Vika", color: "#4CAF50", ready: true, score: 0, joinedAt:0 },
-  //       { userName: "Robin", color: "#FF6B6B", ready: false, score: 0, joinedAt:0 },
-  //       { userName: "Gibby", color: "#9B59B6", ready: true, score: 0, joinedAt:0 },
-  //   ])
-  // }
+  const [isConnected, setIsConnected] = useState(socket.connected);
+  const [roundNumber, setRoundNumber] = useState(0);
+  const [userName, setUserName] = useState("");
+  const [currentQuestion, setCurrentQuestion] = useState<QuestionData | null>(null);
+
   useEffect(() => {
     function onConnect() {
       console.log('[CLIENT] Connected to server');
       setIsConnected(true);
+      // Move to lobby once connected and players are loaded
+      setGameState("Lobby");
     }
 
     function onDisconnect() {
       console.log('[CLIENT] Disconnected from server');
       setIsConnected(false);
     }
-    function returnToLanding(message: any) {
 
+    function returnToLanding(message: any) {
       console.log('[CLIENT] Invalid Code');
-      console.log(message)
-      localStorage.setItem("InvalidCodeMessage", "Oopsie woopsie, The game code that you used is incorrect >.<. You naughty naughty")
-      router.push("/kahoot")
+      console.log(message);
+      localStorage.setItem("InvalidCodeMessage", "Oopsie woopsie, The game code that you used is incorrect >.<. You naughty naughty");
+      router.push("/kahoot");
     }
-    function onPlayersChange(players) {
+
+    function onPlayersChange(players: Player[]) {
       console.log('[CLIENT] playersUpdate received:', players);
       setPlayers(players);
     }
-    function advanceGame(){
-      console.log("advance game is triggered")
-      setGameState("Question")
+
+    function advanceGame(questionData: QuestionData) {
+      console.log("advance game is triggered", questionData);
+      setCurrentQuestion(questionData);
+      setGameState("Question");
     }
-    function setRoundNbr(nbr:number){
-      setRoundNumber(nbr)
+
+    function setRoundNbr(nbr: number) {
+      console.log('[CLIENT] Round number:', nbr);
+      setRoundNumber(nbr);
     }
+
+    function onGameFinished() {
+      console.log('[CLIENT] Game finished');
+      // Handle game finished - maybe show results screen
+      setGameState("Lobby");
+    }
+
+    function onSessionAssigned(data: { sessionId: string }) {
+      console.log('[CLIENT] Session assigned:', data.sessionId);
+      localStorage.setItem('sessionId', data.sessionId);
+    }
+
+    // Set up event listeners
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
     socket.on('playersUpdate', onPlayersChange);
-    socket.on('invalid_gamecode', returnToLanding)
-    socket.on("NextRoundQuestion", advanceGame)
-    socket.on("RoundNbr", setRoundNbr)
-    const username = localStorage.getItem('userName')
-    setUserName(username)
-    const color = localStorage.getItem('color')
+    socket.on('invalid_gamecode', returnToLanding);
+    socket.on("NextRoundQuestion", advanceGame);
+    socket.on("RoundNbr", setRoundNbr);
+    socket.on('gameFinished', onGameFinished);
+    socket.on('sessionAssigned', onSessionAssigned);
 
-    socket.emit("join", { gamecode, userName, color })
+    // Get user data from localStorage
+    const username = localStorage.getItem('userName');
+    const color = localStorage.getItem('color');
+    
+    if (username) {
+      setUserName(username);
+    }
+
+    // Join the game
+    socket.emit("join", { 
+      gamecode, 
+      userName: username, 
+      color,
+      sessionId: localStorage.getItem('sessionId')
+    });
+
+    // Cleanup function
     return () => {
       socket.off('connect', onConnect);
       socket.off('disconnect', onDisconnect);
       socket.off('playersUpdate', onPlayersChange);
-      socket.off("invalid_gamecode",returnToLanding);
-      socket.off("NextRoundQuestion",advanceGame);
+      socket.off("invalid_gamecode", returnToLanding);
+      socket.off("NextRoundQuestion", advanceGame);
       socket.off('RoundNbr', setRoundNbr);
+      socket.off('gameFinished', onGameFinished);
+      socket.off('sessionAssigned', onSessionAssigned);
     };
-  }, [])
-  const submitAnswer = (answerObject) => {
-    const fullanswer = {
+  }, [gamecode, router]);
+
+  const submitAnswer = (answerObject: { answer: string, timeTaken: number }) => {
+    const fullAnswer = {
       gameCode: gamecode,
       userName: userName,
       ...answerObject
-    }
-    console.log(fullanswer)
-    socket.emit("playerAnswer", fullanswer);
+    };
+    console.log('[CLIENT] Submitting answer:', fullAnswer);
+    socket.emit("playerAnswer", fullAnswer);
   };
 
-  
-
+  // Render based on game state
   if (gameState === 'Connecting') {
     return <BeforeGameLobby players={players} />;
   } else if (gameState === 'Lobby') {
     return <LobbyScreen players={players} />;
-  } else if (gameState === 'Question') {
-    return <QuestionScreen
-      onGotoLobby={() => setGameState('Lobby')}
-      submitAnswer={submitAnswer} 
-      possibleAnswers={["Rose", "Liv", "Vika", "Daan"]} 
-      question="Live in my walls? how about u live in my balls"
-      fillerText="No way _____ said this:"/>;
+  } else if (gameState === 'Question' && currentQuestion) {
+    return (
+      <QuestionScreen
+        onGotoLobby={() => setGameState('Lobby')}
+        submitAnswer={submitAnswer} 
+        possibleAnswers={currentQuestion.Answers} 
+        question={currentQuestion.Question}
+        fillerText={`${currentQuestion.Category}:`}
+      />
+    );
   }
 
   // Fallback for unexpected states
