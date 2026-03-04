@@ -3,7 +3,23 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import DotPattern from './DotPattern';
 import { cn } from '@/lib/utils';
-const DarkCard = ({ children, color, borderColor = null , initColor, className}) => {
+
+type DarkCardProps = {
+  children: React.ReactNode;
+  color: String;
+  initColor: string;
+  borderColor?: string | null;
+  className?: string;
+};
+
+
+const DarkCard = ({
+  children,
+  color,
+  borderColor = null,
+  initColor,
+  className,
+}: DarkCardProps) => {
   const [isHovered, setIsHovered] = React.useState(false);
  
   return (
