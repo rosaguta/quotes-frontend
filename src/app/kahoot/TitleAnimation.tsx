@@ -1,28 +1,40 @@
 "use client"
-import { useEffect ,useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { animate, createScope, utils, svg, stagger } from "animejs";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {useRouter} from "next/navigation"
+import { useRouter } from "next/navigation"
+import { GetColor } from "@/utils/Color"
+
 export default function TitleAnimationGame() {
   const router = useRouter()
   const root = useRef(null);
   const scope = useRef(null);
-  const inputRef = useRef(null);
+  const gameCodeInputRef = useRef(null);
+  const UserNameInputRef = useRef(null);
   const standbyAnimationRef = useRef(null);
+  const errorAnimationRef = useRef(null)
   const [gameCode, setGameCode] = useState<string>("")
+  const [userName, setUserName] = useState<string>("")
   const [canJoin, setCanJoin] = useState<boolean>(false)
   const getRandomPos = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
-
+  const [submitEnabled, setSubmitEnabled] = useState(false)
+  const [color, setColor] = useState("#000000");
+  const [errorMessage, setErrorMessage] = useState<string | null>(localStorage.getItem("InvalidCodeMessage"))
+  const freq = 0.1;
+  let i = 0;
 
   const handleJoinClick = () => {
     console.log("Join clicked, gameCode:", gameCode); // Debug log
-    
+
     if (!gameCode.trim()) {
       alert("Please enter a game code");
       return;
     }
+    localStorage.setItem("userName", userName)
+    localStorage.setItem("gameCode", gameCode)
+    localStorage.setItem('color', color)
     setCanJoin(true)
     // Play outro animation
     const outro = animate('.root', {
@@ -37,6 +49,7 @@ export default function TitleAnimationGame() {
   };
 
   useEffect(() => {
+    localStorage.clear()
     scope.current = createScope({ root }).add(() => {
       animate(".svgWrapper", {
         opacity: [0, 1],
@@ -55,6 +68,13 @@ export default function TitleAnimationGame() {
         duration: 2000,
         ease: 'inOutQuad'
       });
+      errorAnimationRef.current = animate(".error",{
+        opacity: [0, 1, 0],
+        loop: 10,
+        duration: 2000,
+        ease: 'inOutQuad',
+        onComplete: ()=>setErrorMessage(null)
+      })
       animate(svg.createDrawable('.line'), {
         draw: ['0 0', '0 1', "1 1", "0 0", '0 1'],
         ease: 'inOutQuad',
@@ -67,21 +87,41 @@ export default function TitleAnimationGame() {
         opacity: [0, 1],
         delay: 5000
       })
-      
-      const inputElement = inputRef.current;
+
+      const gameCodeElement = gameCodeInputRef.current;
+      const userNameElement = UserNameInputRef.current
       const stopStandbyAnimation = () => {
+        console.log("input ref has been triggered")
         standbyAnimationRef.current?.restart();
-        inputElement.removeEventListener("input", stopStandbyAnimation);
       };
-      inputElement?.addEventListener("input", stopStandbyAnimation);
+      gameCodeElement?.addEventListener("input", stopStandbyAnimation);
+      userNameElement?.addEventListener("input", stopStandbyAnimation);
 
       return () => {
         scope.current?.revert();
-        inputElement?.removeEventListener("input", stopStandbyAnimation);
+        gameCodeElement?.removeEventListener("input", stopStandbyAnimation);
+        userNameElement?.removeEventListener("input", stopStandbyAnimation);
       };
     });
   }, [])
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newColor = GetColor(freq, i);
+      setColor(newColor);
+      i++
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, []);
+
+
+  const handleDisabledButton = () => {
+    if (userName.length == 0 && gameCode.length == 0) {
+      setSubmitEnabled(false)
+    }
+    setSubmitEnabled(true)
+  }
   return (
     <div ref={root} className="overflow-hidden root">
       <div className="flex flex-col items-center justify-center overflow-hidden">
@@ -107,17 +147,28 @@ export default function TitleAnimationGame() {
         <p className="questions absolute text-neutral-500">Context hello?!?!</p>
         <p className="questions absolute text-neutral-500">huh??</p>
       </div>
-      <div className="game grid grid-cols-1 place-items-center gap-3 opacity-0 z-10 mt-20">
+      <div className="game grid grid-cols-1 place-items-center gap-3 opacity-0 z-10 mt-20 max-w-72">
         <p className="standby text-yellow-100 font-terminal text-sm">Please stand by to retrieve the code</p>
+        {errorMessage !== null &&(
+          <p className="error text-red-200 font-terminal text-sm ">{errorMessage}</p>
+          )}
         <Label className="place-self-start">Game Code</Label>
         <Input
           id="game code"
           onChange={e => setGameCode(e.target.value)}
           required
           value={gameCode}
-          ref={inputRef}
+          ref={gameCodeInputRef}
         />
-        <Button className="join w-20" onClick={handleJoinClick}>Join</Button>
+        <Label className="place-self-start">Username</Label>
+        <Input
+          id="username"
+          onChange={e => setUserName(e.target.value)}
+          required
+          value={userName}
+          ref={UserNameInputRef}
+        />
+        <Button disabled={submitEnabled} className="join w-20" onClick={handleJoinClick}>Join</Button>
         {canJoin && (
           <div className="text-green-300">Have Fun!!!</div>
         )}

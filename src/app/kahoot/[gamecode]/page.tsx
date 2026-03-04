@@ -1,46 +1,145 @@
 "use client";
+import { useEffect, useRef, useState } from "react";
+import { animate, createTimer, utils } from 'animejs';
+import { useParams, useRouter } from "next/navigation";
+import { socket } from "@/utils/socket"
+import { Player } from "@/types/player";
+import LobbyScreen from "./LobbyScreen";
+import BeforeGameLobby from "./ConnectingLobby";
+import QuestionScreen from "./QuestionScreen";
 
-import { useEffect, useRef } from "react";
-import { animate, createScope } from "animejs";
-import { useParams } from "next/navigation";
+type GameState = "Connecting" | "Lobby" | "Question";
+
+interface QuestionData {
+  Category: string;
+  Question: string;
+  Answers: string[];
+}
 
 export default function Page() {
-  const root = useRef(null);
+  const router = useRouter();
   const params = useParams();
-  const scope = useRef(null)
   const { gamecode } = params;
-  console.log(gamecode);
+  const [players, setPlayers] = useState<Player[]>([]);
+  const [gameState, setGameState] = useState<GameState>('Connecting');
+  const [isConnected, setIsConnected] = useState(socket.connected);
+  const [roundNumber, setRoundNumber] = useState(0);
+  const [userName, setUserName] = useState("");
+  const [currentQuestion, setCurrentQuestion] = useState<QuestionData | null>(null);
 
   useEffect(() => {
-    scope.current = createScope({ root }).add(() => {
-      animate(root.current, {
-        opacity: [0,1],
-        ease: 'inOutQuad',
-        duration: 1500
-      });
-      return () => {
-        scope.current?.revert();
-      }
-    })
-  }, [])
+    function onConnect() {
+      console.log('[CLIENT] Connected to server');
+      setIsConnected(true);
+      // Move to lobby once connected and players are loaded
+      setGameState("Lobby");
+    }
 
-  return (
-    <div ref={root} className="root overflow-hidden">
-      <div className="flex flex-col items-center justify-center overflow-hidden">
-        <div className="">
-          <svg width="170" height="130" viewBox="0 0 170 149" fill="none" xmlns="http://www.w3.org/2000/svg" >
-            <g clipPath="url(#clip0_1_127)" stroke="currentColor" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
-              <path className="line" d="M 77.082 46.853 C 74.229 27.139 64.658 1.208 34.78 1.208 C 15.571 1.208 1.577 18.456 1.661 37.089 C 1.763 58.83 17.698 69.472 39.422 72.953 C 40.773 73.172 42.241 73.392 43.777 73.594 C 55.07 75.149 63.477 84.829 63.477 96.248 C 63.477 116.672 48.268 133.598 28.585 136.285 C 25.479 136.706 23.116 139.274 23.116 142.416 L 23.116 142.704 C 23.116 146.471 25.837 147.935 29.567 147.445 C 55.546 143.998 73.706 126.419 77.099 96.265 C 77.099 96.265 79.952 66.601 77.099 46.887 L 77.082 46.853 Z" ></path>
-              <path className="line" d="M 159.961 47 C 157.108 27.286 147.537 1.355 117.659 1.355 C 98.45 1.355 84.456 18.603 84.54 37.236 C 84.642 58.977 100.577 69.619 122.301 73.1 C 123.652 73.319 125.12 73.539 126.656 73.741 C 137.949 75.296 146.356 84.976 146.356 96.395 C 146.356 116.819 131.147 133.745 111.464 136.432 C 108.358 136.853 105.995 139.421 105.995 142.563 L 105.995 142.851 C 105.995 146.618 108.716 148.082 112.446 147.592 C 138.425 144.145 156.585 126.566 159.978 96.412 C 159.978 96.412 162.831 66.748 159.978 47.034 L 159.961 47 Z" ></path>
-            </g>
-            <defs>
-              <clipPath id="clip0_1_127">
-                <rect width="170" height="149" fill="white"></rect>
-              </clipPath>
-            </defs>
-          </svg>
-        </div>
-      </div>
-    </div>
-  );
+    function onDisconnect() {
+      console.log('[CLIENT] Disconnected from server');
+      setIsConnected(false);
+    }
+
+    function returnToLanding(message: any) {
+      console.log('[CLIENT] Invalid Code');
+      console.log(message);
+      localStorage.setItem("InvalidCodeMessage", "Oopsie woopsie, The game code that you used is incorrect >.<. You naughty naughty");
+      router.push("/kahoot");
+    }
+
+    function onPlayersChange(players: Player[]) {
+      console.log('[CLIENT] playersUpdate received:', players);
+      setPlayers(players);
+    }
+
+    function advanceGame(questionData: QuestionData) {
+      console.log("advance game is triggered", questionData);
+      setCurrentQuestion(questionData);
+      setGameState("Question");
+    }
+
+    function setRoundNbr(nbr: number) {
+      console.log('[CLIENT] Round number:', nbr);
+      setRoundNumber(nbr);
+    }
+
+    function onGameFinished() {
+      console.log('[CLIENT] Game finished');
+      // Handle game finished - maybe show results screen
+      setGameState("Lobby");
+    }
+
+    function onSessionAssigned(data: { sessionId: string }) {
+      console.log('[CLIENT] Session assigned:', data.sessionId);
+      localStorage.setItem('sessionId', data.sessionId);
+    }
+
+    // Set up event listeners
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+    socket.on('playersUpdate', onPlayersChange);
+    socket.on('invalid_gamecode', returnToLanding);
+    socket.on("NextRoundQuestion", advanceGame);
+    socket.on("RoundNbr", setRoundNbr);
+    socket.on('gameFinished', onGameFinished);
+    socket.on('sessionAssigned', onSessionAssigned);
+
+    // Get user data from localStorage
+    const username = localStorage.getItem('userName');
+    const color = localStorage.getItem('color');
+    
+    if (username) {
+      setUserName(username);
+    }
+
+    // Join the game
+    socket.emit("join", { 
+      gamecode, 
+      userName: username, 
+      color,
+      sessionId: localStorage.getItem('sessionId')
+    });
+
+    // Cleanup function
+    return () => {
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+      socket.off('playersUpdate', onPlayersChange);
+      socket.off("invalid_gamecode", returnToLanding);
+      socket.off("NextRoundQuestion", advanceGame);
+      socket.off('RoundNbr', setRoundNbr);
+      socket.off('gameFinished', onGameFinished);
+      socket.off('sessionAssigned', onSessionAssigned);
+    };
+  }, [gamecode, router]);
+
+  const submitAnswer = (answerObject: { answer: string, timeTaken: number }) => {
+    const fullAnswer = {
+      gameCode: gamecode,
+      userName: userName,
+      ...answerObject
+    };
+    console.log('[CLIENT] Submitting answer:', fullAnswer);
+    socket.emit("playerAnswer", fullAnswer);
+  };
+
+  // Render based on game state
+  if (gameState === 'Connecting') {
+    return <BeforeGameLobby players={players} />;
+  } else if (gameState === 'Lobby') {
+    return <LobbyScreen players={players} />;
+  } else if (gameState === 'Question' && currentQuestion) {
+    return (
+      <QuestionScreen
+        onGotoLobby={() => setGameState('Lobby')}
+        submitAnswer={submitAnswer} 
+        possibleAnswers={currentQuestion.Answers} 
+        question={currentQuestion.Question}
+        fillerText={`${currentQuestion.Category}:`}
+      />
+    );
+  }
+
+  // Fallback for unexpected states
+  return <div>Something went wrong...</div>;
 }
