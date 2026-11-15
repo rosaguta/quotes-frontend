@@ -2,16 +2,16 @@
 
 import { Card } from "@/components/ui/card"
 import DarkCard from "@/components/ui/DarkCard"
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 import { animate, stagger } from "animejs";
-import { Socket } from "socket.io-client";
-import { Player } from "@/types/player";
+import { Player, RoundResult } from "@/types/player";
+import { mediaUrl } from "@/utils/socket";
 
 interface LobbyScreenProps {
   players: Player[];
+  roundResult?: RoundResult | null;
 }
-export default function LobbyScreen({players}:LobbyScreenProps) {
-    const [countdown, setCountdown] = useState(15);
+export default function LobbyScreen({ players, roundResult }: LobbyScreenProps) {
 
     useEffect(() => {
         // Main card border animation
@@ -101,7 +101,9 @@ export default function LobbyScreen({players}:LobbyScreenProps) {
                     Game Lobby
                 </h1>
                 <p className="lobby-subtitle text-lg font-terminal text-zinc-400 opacity-0">
-                    Waiting for next round...
+                    {roundResult
+                        ? `Round ${roundResult.round}/${roundResult.totalRounds} done`
+                        : "Waiting for next round..."}
                 </p>
             </div>
 
@@ -110,8 +112,34 @@ export default function LobbyScreen({players}:LobbyScreenProps) {
                 <Card className="lobby-card px-6 py-8 flex flex-col items-center w-full max-w-2xl font-terminal border-2 opacity-0">
 
 
-                    <p className="text-zinc-300 text-md mb-2">Please wait until everyone is finished</p>
-                    <p className="text-zinc-500 text-sm">Get ready to answer!</p>
+                    {roundResult ? (
+                        <>
+                            <p className={`text-2xl font-bold mb-2 ${roundResult.correct ? "text-green-400" : "text-red-400"}`}>
+                                {roundResult.correct ? "Correct!" : roundResult.answer === null ? "Too slow!" : "Wrong!"}
+                                {roundResult.correct && ` +${roundResult.points}`}
+                            </p>
+                            {!roundResult.correct && (
+                                <p className="text-zinc-300 text-md mb-2 text-center">The answer was: {roundResult.correctAnswer}</p>
+                            )}
+                            {roundResult.audio && (
+                                <div className="flex flex-col items-center my-3 w-full">
+                                    <p className="text-zinc-300 text-sm mb-2">Here&apos;s what they actually said:</p>
+                                    <audio key={roundResult.audio} controls src={mediaUrl(roundResult.audio)} className="w-full max-w-sm" />
+                                </div>
+                            )}
+                            <p className="text-zinc-400 text-sm">
+                                Score: {roundResult.score} · #{roundResult.rank}
+                            </p>
+                            <p className="text-zinc-500 text-sm mt-2">
+                                {roundResult.isLastRound ? "That was the last question, final results coming up!" : "Get ready for the next question!"}
+                            </p>
+                        </>
+                    ) : (
+                        <>
+                            <p className="text-zinc-300 text-md mb-2">Answer locked in! Please wait until everyone is finished</p>
+                            <p className="text-zinc-500 text-sm">Get ready to answer!</p>
+                        </>
+                    )}
                 </Card>
             </div>
 
@@ -123,12 +151,10 @@ export default function LobbyScreen({players}:LobbyScreenProps) {
 
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-4xl mx-auto">
                     {players.map((player, index) => (
-                        <div key={player.userName} className="player-card opacity-0">
+                        <div key={player.userName} className="player-card">
                             <DarkCard
-                                // className={`border-[${player.color}]/80`}
-                                direction="to_bottom_right"
                                 color={player.color}
-                                Style={{ borderColor: player.color }}
+                                style={{ borderColor: player.color }}
                             >
                                 <span className="text-white font-medium text-lg z-10">
                                     {player.userName}
