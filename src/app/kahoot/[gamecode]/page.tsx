@@ -1,19 +1,33 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { animate, createTimer, utils } from 'animejs';
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { socket } from "@/utils/socket"
-import { Player } from "@/types/player";
+import { LeaderboardEntry, Player, RoundResult } from "@/types/player";
 import LobbyScreen from "./LobbyScreen";
 import BeforeGameLobby from "./ConnectingLobby";
 import QuestionScreen from "./QuestionScreen";
+import FinishedScreen from "./FinishedScreen";
 
-type GameState = "Connecting" | "Lobby" | "Question";
+type GameState = "Connecting" | "Waiting" | "Lobby" | "Question" | "Finished";
 
 interface QuestionData {
   Category: string;
   Question: string;
   Answers: string[];
+  Image: string | null;
+  round: number;
+  totalRounds: number;
+  introDelayMs: number;
+  timeLimitMs: number;
+}
+
+interface JoinedData {
+  userName: string;
+  phase: "lobby" | "question" | "results" | "finished";
+  round: number;
+  totalRounds: number;
+  score: number;
+  answered: boolean;
 }
 
 export default function Page() {
@@ -22,124 +36,160 @@ export default function Page() {
   const { gamecode } = params;
   const [players, setPlayers] = useState<Player[]>([]);
   const [gameState, setGameState] = useState<GameState>('Connecting');
-  const [isConnected, setIsConnected] = useState(socket.connected);
-  const [roundNumber, setRoundNumber] = useState(0);
   const [userName, setUserName] = useState("");
   const [currentQuestion, setCurrentQuestion] = useState<QuestionData | null>(null);
+  const [roundResult, setRoundResult] = useState<RoundResult | null>(null);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
 
   useEffect(() => {
-    function onConnect() {
-      console.log('[CLIENT] Connected to server');
-      setIsConnected(true);
-      // Move to lobby once connected and players are loaded
-      setGameState("Lobby");
+    const username = localStorage.getItem('userName');
+    const color = localStorage.getItem('color');
+
+    function backToLanding(message: string) {
+      localStorage.setItem("InvalidCodeMessage", message);
+      router.push("/kahoot");
+    }
+
+    if (!username) {
+      backToLanding("Pick a username first");
+      return;
+    }
+    setUserName(username);
+
+    function join() {
+      socket.emit("join", {
+        gamecode,
+        userName: username,
+        color,
+        sessionId: localStorage.getItem('sessionId'),
+      });
     }
 
     function onDisconnect() {
       console.log('[CLIENT] Disconnected from server');
-      setIsConnected(false);
+      setGameState("Connecting");
     }
 
-    function returnToLanding(message: any) {
-      console.log('[CLIENT] Invalid Code');
-      console.log(message);
-      localStorage.setItem("InvalidCodeMessage", "Oopsie woopsie, The game code that you used is incorrect >.<. You naughty naughty");
-      router.push("/kahoot");
+    function onInvalidGamecode(message?: string) {
+      console.log('[CLIENT] Invalid Code', message);
+      backToLanding(message || "Oopsie woopsie, The game code that you used is incorrect >.<. You naughty naughty");
+    }
+
+    function onJoinError(message: string) {
+      console.log('[CLIENT] Join error', message);
+      backToLanding(message);
+    }
+
+    function onSessionAssigned(data: { sessionId: string }) {
+      localStorage.setItem('sessionId', data.sessionId);
+    }
+
+    function onJoined(data: JoinedData) {
+      console.log('[CLIENT] Joined', data);
+      setUserName(data.userName);
+      if (data.phase === "lobby") {
+        setRoundResult(null);
+        setGameState("Waiting");
+      } else if (data.phase === "question" && data.answered) {
+        setGameState("Lobby");
+      } else if (data.phase === "results") {
+        setGameState("Lobby");
+      }
     }
 
     function onPlayersChange(players: Player[]) {
-      console.log('[CLIENT] playersUpdate received:', players);
       setPlayers(players);
     }
 
-    function advanceGame(questionData: QuestionData) {
-      console.log("advance game is triggered", questionData);
+    function onQuestion(questionData: QuestionData) {
+      console.log("[CLIENT] Question", questionData);
+      setRoundResult(null);
       setCurrentQuestion(questionData);
       setGameState("Question");
     }
 
-    function setRoundNbr(nbr: number) {
-      console.log('[CLIENT] Round number:', nbr);
-      setRoundNumber(nbr);
-    }
-
-    function onGameFinished() {
-      console.log('[CLIENT] Game finished');
-      // Handle game finished - maybe show results screen
+    function onAnswerReceived() {
       setGameState("Lobby");
     }
 
-    function onSessionAssigned(data: { sessionId: string }) {
-      console.log('[CLIENT] Session assigned:', data.sessionId);
-      localStorage.setItem('sessionId', data.sessionId);
+    function onRoundResult(result: RoundResult) {
+      console.log('[CLIENT] Round result', result);
+      setRoundResult(result);
+      setGameState("Lobby");
     }
 
-    // Set up event listeners
-    socket.on('connect', onConnect);
+    function onGameFinished(data: { leaderboard: LeaderboardEntry[] }) {
+      console.log('[CLIENT] Game finished');
+      setLeaderboard(data.leaderboard);
+      setGameState("Finished");
+    }
+
+    function onGameReset() {
+      setRoundResult(null);
+      setCurrentQuestion(null);
+      setGameState("Waiting");
+    }
+
+    socket.on('connect', join);
     socket.on('disconnect', onDisconnect);
-    socket.on('playersUpdate', onPlayersChange);
-    socket.on('invalid_gamecode', returnToLanding);
-    socket.on("NextRoundQuestion", advanceGame);
-    socket.on("RoundNbr", setRoundNbr);
-    socket.on('gameFinished', onGameFinished);
+    socket.on('invalid_gamecode', onInvalidGamecode);
+    socket.on('joinError', onJoinError);
     socket.on('sessionAssigned', onSessionAssigned);
+    socket.on('joined', onJoined);
+    socket.on('playersUpdate', onPlayersChange);
+    socket.on("NextRoundQuestion", onQuestion);
+    socket.on("answerReceived", onAnswerReceived);
+    socket.on("RoundResult", onRoundResult);
+    socket.on('gameFinished', onGameFinished);
+    socket.on('gameReset', onGameReset);
 
-    // Get user data from localStorage
-    const username = localStorage.getItem('userName');
-    const color = localStorage.getItem('color');
-    
-    if (username) {
-      setUserName(username);
-    }
+    if (socket.connected) join();
+    else socket.connect();
 
-    // Join the game
-    socket.emit("join", { 
-      gamecode, 
-      userName: username, 
-      color,
-      sessionId: localStorage.getItem('sessionId')
-    });
-
-    // Cleanup function
     return () => {
-      socket.off('connect', onConnect);
+      socket.off('connect', join);
       socket.off('disconnect', onDisconnect);
-      socket.off('playersUpdate', onPlayersChange);
-      socket.off("invalid_gamecode", returnToLanding);
-      socket.off("NextRoundQuestion", advanceGame);
-      socket.off('RoundNbr', setRoundNbr);
-      socket.off('gameFinished', onGameFinished);
+      socket.off('invalid_gamecode', onInvalidGamecode);
+      socket.off('joinError', onJoinError);
       socket.off('sessionAssigned', onSessionAssigned);
+      socket.off('joined', onJoined);
+      socket.off('playersUpdate', onPlayersChange);
+      socket.off("NextRoundQuestion", onQuestion);
+      socket.off("answerReceived", onAnswerReceived);
+      socket.off("RoundResult", onRoundResult);
+      socket.off('gameFinished', onGameFinished);
+      socket.off('gameReset', onGameReset);
     };
   }, [gamecode, router]);
 
-  const submitAnswer = (answerObject: { answer: string, timeTaken: number }) => {
-    const fullAnswer = {
-      gameCode: gamecode,
-      userName: userName,
-      ...answerObject
-    };
-    console.log('[CLIENT] Submitting answer:', fullAnswer);
-    socket.emit("playerAnswer", fullAnswer);
+  const submitAnswer = (answer: string) => {
+    console.log('[CLIENT] Submitting answer:', answer);
+    socket.emit("playerAnswer", { answer });
   };
 
-  // Render based on game state
-  if (gameState === 'Connecting') {
+  if (gameState === 'Connecting' || gameState === 'Waiting') {
     return <BeforeGameLobby players={players} />;
   } else if (gameState === 'Lobby') {
-    return <LobbyScreen players={players} />;
+    return <LobbyScreen players={players} roundResult={roundResult} />;
   } else if (gameState === 'Question' && currentQuestion) {
     return (
       <QuestionScreen
+        key={currentQuestion.round}
         onGotoLobby={() => setGameState('Lobby')}
-        submitAnswer={submitAnswer} 
-        possibleAnswers={currentQuestion.Answers} 
+        submitAnswer={submitAnswer}
+        possibleAnswers={currentQuestion.Answers}
         question={currentQuestion.Question}
+        image={currentQuestion.Image}
         fillerText={`${currentQuestion.Category}:`}
+        introDelayMs={currentQuestion.introDelayMs}
+        timeLimitMs={currentQuestion.timeLimitMs}
+        round={currentQuestion.round}
+        totalRounds={currentQuestion.totalRounds}
       />
     );
+  } else if (gameState === 'Finished') {
+    return <FinishedScreen leaderboard={leaderboard} userName={userName} />;
   }
 
-  // Fallback for unexpected states
-  return <div>Something went wrong...</div>;
+  return <BeforeGameLobby players={players} />;
 }
