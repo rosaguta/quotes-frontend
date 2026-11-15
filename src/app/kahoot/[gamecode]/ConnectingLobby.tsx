@@ -38,7 +38,7 @@ export default function BeforeGameLobby({ players }: BeforeGameLobbyProps) {
 
   // Function to create animation for a single particle
   const animateParticle = ($el, particleIndex, totalParticles) => {
-    const $logo = document.querySelector('#logo');
+    const $logo = document.querySelector<HTMLElement>('#logo');
     if (!$logo) return null;
 
     const baseRadius = $logo.offsetWidth / 1.1;
