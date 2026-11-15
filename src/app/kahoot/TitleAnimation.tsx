@@ -15,7 +15,7 @@ export default function TitleAnimationGame() {
   const UserNameInputRef = useRef(null);
   const standbyAnimationRef = useRef(null);
   const errorAnimationRef = useRef(null)
-  const [gameCode, setGameCode] = useState<string>("")
+  const [gameCode, setGameCode] = useState<string>(() => new URLSearchParams(window.location.search).get("code") ?? "")
   const [userName, setUserName] = useState<string>("")
   const [canJoin, setCanJoin] = useState<boolean>(false)
   const getRandomPos = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
