@@ -6,3 +6,10 @@ const URL = process.env.NODE_ENV === 'production' ? undefined : process.env.NEXT
 export const socket = io(URL,{
   // autoConnect: false
 });
+
+const HTTP_URL = URL ? URL.replace(/^ws(s?):\/\//, 'http$1://').replace(/\/+$/, '') : '';
+
+export function mediaUrl(path) {
+  if (!path) return null;
+  return `${HTTP_URL}${path}`;
+}
