@@ -5,7 +5,7 @@ export default async function KahootServer() {
     const response = await fetch(`${process.env.NEXT_PUBLIC_QUOTE_API}/auth`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ username: "SuperUser", password: "xxrtNmbqrCLY8P27Ln2i" })
+      body: JSON.stringify({ username: process.env.NEXT_PUBLIC_QUOTE_USERNAME, password: process.env.NEXT_PUBLIC_QUOTE_PASSWORD })
     });
     return await response.text();
   };
