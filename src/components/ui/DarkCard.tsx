@@ -7,9 +7,11 @@ import { cn } from '@/lib/utils';
 type DarkCardProps = {
   children: React.ReactNode;
   color: String;
-  initColor: string;
+  initColor?: string;
   borderColor?: string | null;
   className?: string;
+  style?: React.CSSProperties;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
 };
 
 
@@ -19,12 +21,16 @@ const DarkCard = ({
   borderColor = null,
   initColor,
   className,
+  style,
+  onClick,
 }: DarkCardProps) => {
   const [isHovered, setIsHovered] = React.useState(false);
  
   return (
     <motion.div
       className={cn("relative max-w-md p-6 bg-black rounded-xl border-[0.5px] overflow-hidden", className)}
+      style={style}
+      onClick={onClick}
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       whileHover={{ borderColor: borderColor }}
@@ -43,7 +49,7 @@ const DarkCard = ({
           className={cn(
             "[mask-image:linear-gradient(to_bottom_left,white,transparent,transparent)] ")}
           style={{
-            fill: isHovered ? color : initColor, // Adjusted to hover state
+            fill: isHovered ? color : (initColor ?? color), // Adjusted to hover state
             transition: "fill 0.2s ease-in-out"
           }}
         />
