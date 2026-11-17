@@ -1,18 +1,14 @@
 'use client';
-import { useEffect, useState, useRef } from 'react';
-import KahootIntroAnimation from './KahootIntroAnimation';
+import { useEffect, useState, useRef } from 'react';;
 import TitleAnimationGame from "./TitleAnimation"
 
-export default function KahootClientWrapper({ quotes }: { quotes: any[] }) {
+export default function KahootClientWrapper() {
     const [phase, setPhase] = useState<'intro' | 'second' | 'game'>('intro');
     
 
     return (
         <div className='h-screen w-screen flex flex-col items-center justify-center overflow-hidden'>
             {phase === 'intro' && (
-                <KahootIntroAnimation quotes={quotes} onDone={() => setPhase('second')} />
-            )}
-            {phase === 'second' && (
                 <TitleAnimationGame />
             )}
         </div>
