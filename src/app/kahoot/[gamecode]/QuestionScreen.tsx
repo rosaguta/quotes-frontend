@@ -130,8 +130,8 @@ export default function QuestionScreen({ onGotoLobby, submitAnswer, possibleAnsw
           {image ? (
             <Card className="p-2 flex flex-col items-center gap-2 w-full font-terminal main-card opacity-0">
               <p className="text-zinc-400 quote-text">{question}</p>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={mediaUrl(image)} alt="Quote" className="quote-text max-h-[40dvh] w-full object-contain rounded-md" />
+              {/* eslint-disable-next-line @next/next/no-img-element
+              <img src={mediaUrl(image)} alt="Quote" className="quote-text max-h-[40dvh] w-full object-contain rounded-md" /> */}
             </Card>
           ) : (
             <Card className="px-4 flex flex-col justify-evenly items-center h-60 w-full font-terminal main-card opacity-0">
