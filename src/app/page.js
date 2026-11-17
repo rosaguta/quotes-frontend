@@ -6,6 +6,7 @@ import { SparklesCore } from '@/components/ui/sparkles';
 import { User, CircleCheck, CircleMinus, UserMinus, Info } from 'lucide-react';
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/hooks/use-toast"
+import FloatingStars from "@/components/FloatingStars"
 import LoginModal from '@/components/LoginModal';
 import DarkCard from '@/components/ui/DarkCard';
 import Cookies from 'js-cookie'
@@ -129,20 +130,7 @@ const HomePage = () => {
     <div>
       {!coolModeActivated ? (
 
-        <div className="fixed inset-0 opacity-30 -z-20">
-          {[...Array(50)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-[4px] h-[4px] bg-white rounded-full animate-float"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 5}s`,
-                animationDuration: `${5 + Math.random() * 5}s`
-              }}
-            />
-          ))}
-        </div>
+        <FloatingStars count={50} />
       ) : (
         <SparklesCore
           {...particleSettings}

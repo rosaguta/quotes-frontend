@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function RootLayout({ children }: any) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <title>Quotes</title>
         <meta name="description" content="Find all the crazy and wacky quotes on this website :3" />

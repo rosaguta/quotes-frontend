@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Cookies from 'js-cookie'
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/hooks/use-toast"
+import FloatingStars from "@/components/FloatingStars"
 import { columns, Quote } from '@/components/columns';
 import { DataTable } from '@/components/data-table';
 import EditQuoteModal from "@/components/EditQuoteModal"
@@ -233,20 +234,7 @@ export default function Home() {
               (
 
                 <div className=''>
-                  <div className="fixed inset-0 opacity-30 -z-20">
-                    {[...Array(100)].map((_, i) => (
-                      <div
-                        key={i}
-                        className="absolute w-[4px] h-[4px] bg-white rounded-full animate-float"
-                        style={{
-                          left: `${Math.random() * 100}%`,
-                          top: `${Math.random() * 100}%`,
-                          animationDelay: `${Math.random() * 5}s`,
-                          animationDuration: `${5 + Math.random() * 5}s`
-                        }}
-                      />
-                    ))}
-                  </div>
+                  <FloatingStars count={100} />
                   <MasornyView data={jsonData} color={"#9803fc"} initColor={"#5d3678"} />
 
                 </div>
