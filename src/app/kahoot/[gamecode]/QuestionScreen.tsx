@@ -130,7 +130,7 @@ export default function QuestionScreen({ onGotoLobby, submitAnswer, possibleAnsw
           {image ? (
             <Card className="p-2 flex flex-col items-center gap-2 w-full font-terminal main-card opacity-0">
               <p className="text-zinc-400 quote-text">{question}</p>
-              {/* eslint-disable-next-line @next/next/no-img-element
+              {/* Media intentionally hidden on the phone:
               <img src={mediaUrl(image)} alt="Quote" className="quote-text max-h-[40dvh] w-full object-contain rounded-md" /> */}
             </Card>
           ) : (
