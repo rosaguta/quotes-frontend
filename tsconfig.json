@@ -20,19 +20,24 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "plugins": [
       {
         "name": "next"
       }
-    ]
+    ],
+    "target": "ES2017"
   },
   "include": [
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "src/components/MasornyView.jsx", "src/app/page.js", "src/app/kahoot/[gamecode]/page.js"  ],
+    "**/*.tsx",
+    "src/components/MasornyView.jsx",
+    "src/app/page.js",
+    "src/app/kahoot/[gamecode]/page.js",
+    ".next/dev/types/**/*.ts"
+  ],
   "exclude": [
     "node_modules"
   ]
