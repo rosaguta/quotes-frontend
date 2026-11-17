@@ -25,12 +25,14 @@ interface GameSettings {
   TimePerQuestion: number;
   ImageQuestions: number;
   AudioQuestions: number;
+  AutoAdvanceSeconds: number;
 }
 
 const settingFields: { key: keyof GameSettings; label: string; min: number; max: number }[] = [
   { key: "TimePerQuestion", label: "Seconds / question", min: 5, max: 120 },
   { key: "ImageQuestions", label: "Image questions", min: 0, max: 50 },
   { key: "AudioQuestions", label: "Audio questions", min: 0, max: 50 },
+  { key: "AutoAdvanceSeconds", label: "Auto next (s, 0 = off)", min: 0, max: 60 },
 ]
 
 // same order + colors as the player QuestionScreen, so the TV matches the phones
@@ -52,6 +54,7 @@ interface AdminState {
   answeredCount: number;
   playerCount: number;
   remainingMs: number;
+  autoAdvanceMs: number; // > 0 while the results screen is counting down to the next question
   leaderboard: LeaderboardEntry[];
 }
 
@@ -64,10 +67,11 @@ export default function AdminPanel() {
   const [error, setError] = useState<string | null>(null)
   const [generating, setGenerating] = useState(false)
   const [settings, setSettings] = useState<Record<keyof GameSettings, string>>({
-    TimePerQuestion: "10", ImageQuestions: "5", AudioQuestions: "5",
+    TimePerQuestion: "10", ImageQuestions: "5", AudioQuestions: "5", AutoAdvanceSeconds: "5",
   })
   const [customFiles, setCustomFiles] = useState<{ images: number, audio: number } | null>(null)
   const [remaining, setRemaining] = useState(0)
+  const [autoRemaining, setAutoRemaining] = useState(0)
   const [showControls, setShowControls] = useState(true)
   const [showSettings, setShowSettings] = useState(false)
 
@@ -99,12 +103,14 @@ export default function AdminPanel() {
     function onAdminState(s: AdminState) {
       setState(s)
       setRemaining(s.remainingMs)
+      setAutoRemaining(s.autoAdvanceMs ?? 0)
     }
     function onGameSettings(s: GameSettings) {
       setSettings({
         TimePerQuestion: String(s.TimePerQuestion),
         ImageQuestions: String(s.ImageQuestions),
         AudioQuestions: String(s.AudioQuestions),
+        AutoAdvanceSeconds: String(s.AutoAdvanceSeconds ?? 0),
       })
     }
     function onCustomFiles(counts: { images: number, audio: number }) {
@@ -139,12 +145,18 @@ export default function AdminPanel() {
     };
   }, [gamecode]);
 
-  // local countdown between server updates
+  // local countdowns between server updates
   useEffect(() => {
-    if (state?.phase !== 'question') return
-    const deadline = Date.now() + state.remainingMs
-    const interval = setInterval(() => setRemaining(Math.max(0, deadline - Date.now())), 250)
-    return () => clearInterval(interval)
+    if (state?.phase === 'question') {
+      const deadline = Date.now() + state.remainingMs
+      const interval = setInterval(() => setRemaining(Math.max(0, deadline - Date.now())), 250)
+      return () => clearInterval(interval)
+    }
+    if (state?.phase === 'results' && state.autoAdvanceMs > 0) {
+      const deadline = Date.now() + state.autoAdvanceMs
+      const interval = setInterval(() => setAutoRemaining(Math.max(0, deadline - Date.now())), 100)
+      return () => clearInterval(interval)
+    }
   }, [state])
 
   // join link for the QR code; built after mount since it needs window.location
@@ -176,6 +188,9 @@ export default function AdminPanel() {
   function endRound() {
     socket.emit("EndRound")
   }
+  function holdAutoAdvance() {
+    socket.emit("HoldAutoAdvance")
+  }
   function endGame() {
     socket.emit("EndGame")
   }
@@ -196,6 +211,8 @@ export default function AdminPanel() {
         e.preventDefault()
         if (canNext) nextRound()
         else if (phase === "question") socket.emit("EndRound")
+      } else if (e.key === "p" || e.key === "P") {
+        socket.emit("HoldAutoAdvance")
       } else if (e.key === "h" || e.key === "H") {
         setShowControls(v => !v)
       } else if (e.key === "f" || e.key === "F") {
@@ -208,6 +225,9 @@ export default function AdminPanel() {
 
   const totalMs = Math.max((state?.settings?.TimePerQuestion ?? 0) * 1000, remaining, 1)
   const secondsLeft = Math.ceil(remaining / 1000)
+  const showImage = phase === "results" && !!state?.question?.Image
+  const autoAdvancing = phase === "results" && !!state?.autoAdvanceMs
+  const autoTotalMs = Math.max(Number(state?.settings?.AutoAdvanceSeconds ?? 0) * 1000, autoRemaining, 1)
 
   return (
     <div className="flex flex-col w-screen h-dvh overflow-hidden font-terminal text-white select-none">
@@ -247,7 +267,7 @@ export default function AdminPanel() {
               <div className="flex items-start gap-[2vw]">
                 <div className="flex-1 min-w-0">
                   <p className="text-zinc-400 text-[clamp(1rem,1.8vw,2.25rem)]">{state.question.Category}</p>
-                  <p className="font-bold leading-tight mt-[1vh] text-[clamp(1.5rem,3.2vw,4.5rem)] line-clamp-4">
+                  <p className="font-bold leading-tight mt-[1vh] text-[clamp(1.5rem,2.2vw,4.5rem)] line-clamp-4">
                     {state.question.Question}
                   </p>
                 </div>
@@ -257,15 +277,16 @@ export default function AdminPanel() {
                 )}
               </div>
 
-              {state.question.Image && (
+              {/* the image is the reveal, so only show it once everyone has answered */}
+              {showImage && (
                 <div className="flex-1 min-h-0 flex justify-center">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={mediaUrl(state.question.Image)} alt="Quote" className="h-full max-w-full object-contain rounded-xl" />
+                  <img src={mediaUrl(state.question.Image!)} alt="Quote" className="h-full max-w-full object-contain rounded-xl" />
                 </div>
               )}
 
               {/* Answers: 2x2 grid in the same colors players see */}
-              <div className={`grid grid-cols-2 gap-[1.5vw] ${state.question.Image ? "h-[28vh]" : "flex-1 min-h-0"}`}>
+              <div className={`grid grid-cols-2 gap-[1.5vw] ${showImage ? "h-[28vh]" : "flex-1 min-h-0"}`}>
                 {state.question.Answers.map((a, i) => {
                   const color = answerColors[i % answerColors.length]
                   // only reveal the answer once the round is over (everyone voted or time ran out)
@@ -315,6 +336,17 @@ export default function AdminPanel() {
               ) : (
                 <Leaderboard entries={scoreboard} players={players} limit={10} />
               )}
+              {autoAdvancing && (
+                <div className="mt-auto pt-[2vh]">
+                  <p className="text-zinc-300 text-[clamp(1rem,1.6vw,2rem)]">
+                    {isLastRound ? "Final results" : "Next question"} in <span className="font-bold text-white">{Math.ceil(autoRemaining / 1000)}</span>
+                  </p>
+                  <div className="h-2 mt-2 rounded-full bg-zinc-800 overflow-hidden">
+                    <div className="h-full bg-[#35BDF2] transition-[width] duration-100 ease-linear"
+                      style={{ width: `${(autoRemaining / autoTotalMs) * 100}%` }} />
+                  </div>
+                </div>
+              )}
             </aside>
           </div>
         )}
@@ -336,6 +368,7 @@ export default function AdminPanel() {
           <div className="flex flex-wrap items-center gap-2">
             <Button size="lg" onClick={nextRound} disabled={!canNext}>{nextLabel}</Button>
             {phase === "question" && <Button size="lg" variant="outline" onClick={endRound}>End round now</Button>}
+            {autoAdvancing && <Button size="lg" variant="outline" onClick={holdAutoAdvance}>Hold</Button>}
             <Button variant="outline" onClick={handlePrepRandomGame} disabled={generating || phase === "question"}>
               {generating ? "Generating..." : hasGame ? "New game" : "Generate game"}
             </Button>
@@ -346,7 +379,7 @@ export default function AdminPanel() {
             <Button variant="ghost" onClick={toggleFullscreen}>Fullscreen</Button>
             {error && <span className="text-red-300 text-sm ml-2">{error}</span>}
             <span className="ml-auto text-zinc-500 text-xs hidden lg:inline">
-              Space / → next · F fullscreen · H hide controls
+              Space / → next · P hold · F fullscreen · H hide controls
             </span>
           </div>
           {showSettings && (
