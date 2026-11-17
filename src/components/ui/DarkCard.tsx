@@ -1,6 +1,6 @@
 "use client"
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, type MotionStyle } from 'framer-motion';
 import DotPattern from './DotPattern';
 import { cn } from '@/lib/utils';
 
@@ -10,7 +10,7 @@ type DarkCardProps = {
   initColor?: string;
   borderColor?: string | null;
   className?: string;
-  style?: React.CSSProperties;
+  style?: MotionStyle;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
 };
 
