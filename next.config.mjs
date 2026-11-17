@@ -4,7 +4,7 @@ const nextConfig = {
   reactStrictMode: true,
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx'],
   images: {
-    remotePatterns: [{ hostname: 'localhost' }],
+    remotePatterns: [{ hostname: 'localhost' }, { hostname: 'quotes.rosevanleeuwen.com' }, { hostname: 'kahoot.rosevanleeuwen.com' }],
   },
 }
 
