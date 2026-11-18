@@ -38,6 +38,16 @@ const settingFields: { key: keyof GameSettings; label: string; min: number; max:
 // same order + colors as the player QuestionScreen, so the TV matches the phones
 const answerColors = ["#F27EBE", "#35BDF2", "#F2E74B", "#4CAF50"]
 
+const GetSizeOfAnswer = ({question}: {question: string}) => {
+  const length = question.length;
+  console.log(length)
+  if(length < 40) return "text-[clamp(1.5rem,2.2vw,3.5rem)]"
+  if(length < 60) return "text-[clamp(1.5rem,2.2vw,2.25rem)]"
+  if(length < 90) return "text-[clamp(1.5rem,2.2vw,1.5rem)]"
+  if (length < 150) return "text-[clamp(1.5rem,2.2vw,1rem)]"
+  return "text-[clamp(1.5rem,2.2vw,2.25rem)]"
+}
+
 interface AdminState {
   phase: Phase;
   round: number;
@@ -292,6 +302,7 @@ export default function AdminPanel() {
                   // only reveal the answer once the round is over (everyone voted or time ran out)
                   const revealed = phase === "results"
                   const correct = a === state.question!.Answer
+                  const answerSizeClass = GetSizeOfAnswer({question: a})
                   return (
                     <div key={a}
                       className="relative flex items-center gap-[1.5vw] px-[2vw] rounded-2xl border-4 transition-all duration-500 overflow-hidden"
@@ -302,7 +313,7 @@ export default function AdminPanel() {
                         transform: revealed && correct ? "scale(1.02)" : undefined,
                       }}>
                       <span className="shrink-0 w-[2.5vw] h-[2.5vw] min-w-6 min-h-6 rounded-full" style={{ backgroundColor: color }} />
-                      <span className="font-bold leading-tight text-[clamp(1.25rem,2.6vw,3.5rem)] line-clamp-3">{a}</span>
+                      <span className={`font-bold leading-tight ${answerSizeClass} line-clamp-5`}>{a}</span>
                       {revealed && correct && <span className="ml-auto text-[clamp(1.5rem,3.5vw,5rem)] text-green-400">✔</span>}
                     </div>
                   )
