@@ -424,7 +424,7 @@ function LobbyView({ joinUrl, gamecode, players }: { joinUrl: string, gamecode: 
       <div className="flex flex-col items-center justify-center shrink-0">
         {joinUrl && (
           <div className="bg-white my-[2vh] p-[1vw] rounded-2xl">
-            <QRCodeSVG value={joinUrl} size={512} marginSize={0} className="w-[min(30vw,55vh)] h-[min(30vw,55vh)]" />
+            <QRCodeSVG value={joinUrl} size={256} marginSize={0} className="w-[min(20vw,45vh)] h-[min(20vw,45vh)]" />
           </div>
         )}
         <p className="mt-[2vh] text-[clamp(1.25rem,2.4vw,3rem)]">Scan to join</p>
