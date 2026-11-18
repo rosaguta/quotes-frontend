@@ -40,7 +40,6 @@ const answerColors = ["#F27EBE", "#35BDF2", "#F2E74B", "#4CAF50"]
 
 const GetSizeOfAnswer = ({question}: {question: string}) => {
   const length = question.length;
-  console.log(length)
   if(length < 40) return "text-[clamp(1.5rem,2.2vw,3.5rem)]"
   if(length < 60) return "text-[clamp(1.5rem,2.2vw,2.25rem)]"
   if(length < 90) return "text-[clamp(1.5rem,2.2vw,1.5rem)]"
